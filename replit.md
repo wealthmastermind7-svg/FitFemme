@@ -96,3 +96,14 @@ scripts/          # Build scripts for Expo web
 - **drizzle-kit**: Database migrations CLI
 - **eslint-config-expo**: Linting rules
 - **prettier**: Code formatting
+
+## Recent Changes
+
+### App Store Preparation (December 2024)
+- Custom pink-themed app icon generated and deployed to all platforms (iOS, Android, web)
+- Workout filtering system implemented with category pills (All, HIIT, Strength, Cardio, Core, Stretch)
+- Filter pills added (Popular, Short, No Equipment, New)
+- Empty state UI with "Clear Filters" button when no workouts match criteria
+- 5 sample workouts with unique images: Full Body Burn (HIIT), Glute Gains (Strength), Core Crusher (Core), Cardio Queen (Cardio), Flexibility Flow (Stretch)
+- All workout images properly mapped across WorkoutsScreen, WorkoutCard, and WorkoutPlayerScreen
+- Invalid Feather icons fixed (flame → trending-up, footprints → activity)
