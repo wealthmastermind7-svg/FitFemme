@@ -228,11 +228,29 @@ export const sampleWorkouts: Workout[] = [
       { id: "4", name: "Sprint in Place", duration: 30, sets: 6 },
     ],
   },
+  {
+    id: "5",
+    title: "Flexibility Flow",
+    duration: 20,
+    intensity: "Low",
+    coverImage: 1,
+    muscleGroups: ["Full Body", "Flexibility"],
+    equipment: ["Mat"],
+    category: "Stretch",
+    isNew: false,
+    exercises: [
+      { id: "1", name: "Standing Forward Fold", duration: 60, sets: 2 },
+      { id: "2", name: "Seated Hamstring Stretch", duration: 45, sets: 3 },
+      { id: "3", name: "Hip Flexor Stretch", duration: 45, sets: 3 },
+      { id: "4", name: "Pigeon Pose", duration: 60, sets: 2 },
+      { id: "5", name: "Cat-Cow Stretch", duration: 45, sets: 3 },
+    ],
+  },
 ];
 
 export const sampleMilestones: Milestone[] = [
-  { id: "1", type: "streak", title: "Streak", icon: "flame", achieved: true, dateAchieved: "2024-01-15" },
-  { id: "2", type: "steps", title: "Steps", icon: "footprints", achieved: true, dateAchieved: "2024-01-10" },
+  { id: "1", type: "streak", title: "Streak", icon: "trending-up", achieved: true, dateAchieved: "2024-01-15" },
+  { id: "2", type: "steps", title: "Steps", icon: "activity", achieved: true, dateAchieved: "2024-01-10" },
   { id: "3", type: "hydration", title: "Hydrated", icon: "droplet", achieved: false },
   { id: "4", type: "power", title: "Power", icon: "zap", achieved: false },
 ];
