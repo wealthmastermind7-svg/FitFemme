@@ -19,9 +19,9 @@ import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 
 const workoutImages: { [key: number]: any } = {
-  1: require("../../assets/images/workouts/workout1.jpg"),
-  2: require("../../assets/images/workouts/workout2.jpg"),
-  3: require("../../assets/images/workouts/workout3.jpg"),
+  1: require("../../assets/images/workouts/workout1.png"),
+  2: require("../../assets/images/workouts/workout2.png"),
+  3: require("../../assets/images/workouts/workout3.png"),
 };
 
 const CATEGORIES = ["All", "HIIT", "Strength", "Cardio", "Core", "Stretch"];

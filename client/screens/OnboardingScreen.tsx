@@ -34,7 +34,7 @@ const slides = [
     title2: "YOUR",
     title3: "POWER",
     subtitle: "Fitness designed for your curves and your culture.",
-    image: require("../../assets/images/onboarding/slide1.jpg"),
+    image: require("../../assets/images/onboarding/slide1.png"),
   },
   {
     id: 2,
@@ -42,7 +42,7 @@ const slides = [
     title2: "THE",
     title3: "STRENGTH",
     subtitle: "High-intensity workouts built for you.",
-    image: require("../../assets/images/onboarding/slide2.jpg"),
+    image: require("../../assets/images/onboarding/slide2.png"),
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ const slides = [
     title2: "TO FIT",
     title3: "FEMME",
     subtitle: "Celebrate your power, curves, and culture.",
-    image: require("../../assets/images/onboarding/slide3.jpg"),
+    image: require("../../assets/images/onboarding/slide3.png"),
   },
 ];
 

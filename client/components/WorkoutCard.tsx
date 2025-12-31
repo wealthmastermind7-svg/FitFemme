@@ -13,9 +13,9 @@ import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { Workout } from "@/lib/storage";
 
 const workoutImages: { [key: number]: any } = {
-  1: require("../../assets/images/workouts/workout1.jpg"),
-  2: require("../../assets/images/workouts/workout2.jpg"),
-  3: require("../../assets/images/workouts/workout3.jpg"),
+  1: require("../../assets/images/workouts/workout1.png"),
+  2: require("../../assets/images/workouts/workout2.png"),
+  3: require("../../assets/images/workouts/workout3.png"),
 };
 
 interface WorkoutCardProps {
