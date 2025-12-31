@@ -90,7 +90,7 @@ export default function HomeScreen() {
     >
       <View style={styles.heroContainer}>
         <ImageBackground
-          source={require("../../assets/images/home-background.png")}
+          source={require("../../assets/images/hero.jpg")}
           style={styles.heroImage}
           resizeMode="cover"
         >
