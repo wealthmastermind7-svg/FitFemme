@@ -40,6 +40,33 @@ export default function WorkoutsScreen() {
     navigation.navigate("WorkoutPlayer", { workoutId });
   };
 
+  const getFilteredWorkouts = (): Workout[] => {
+    let filtered = [...sampleWorkouts];
+
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((w) => w.category === selectedCategory);
+    }
+
+    switch (selectedFilter) {
+      case "Short":
+        filtered = filtered.filter((w) => w.duration <= 20);
+        break;
+      case "No Equipment":
+        filtered = filtered.filter((w) => w.equipment.includes("No Equipment"));
+        break;
+      case "New":
+        filtered = filtered.filter((w) => w.isNew === true);
+        break;
+      case "Popular":
+      default:
+        break;
+    }
+
+    return filtered;
+  };
+
+  const filteredWorkouts = getFilteredWorkouts();
+
   return (
     <ScrollView
       style={styles.container}
@@ -143,15 +170,35 @@ export default function WorkoutsScreen() {
       </View>
 
       <View style={styles.workoutList}>
-        <ThemedText style={styles.sectionTitle}>All Workouts</ThemedText>
-        {sampleWorkouts.map((workout, index) => (
-          <WorkoutListItem
-            key={workout.id}
-            workout={workout}
-            onPress={() => handleWorkoutPress(workout.id)}
-            index={index}
-          />
-        ))}
+        <ThemedText style={styles.sectionTitle}>
+          {selectedCategory === "All" ? "All Workouts" : `${selectedCategory} Workouts`}
+        </ThemedText>
+        {filteredWorkouts.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Feather name="inbox" size={48} color={Colors.white20} />
+            <ThemedText style={styles.emptyStateText}>
+              No workouts found for this filter
+            </ThemedText>
+            <Pressable
+              style={styles.clearFilterButton}
+              onPress={() => {
+                setSelectedCategory("All");
+                setSelectedFilter("Popular");
+              }}
+            >
+              <ThemedText style={styles.clearFilterText}>Clear Filters</ThemedText>
+            </Pressable>
+          </View>
+        ) : (
+          filteredWorkouts.map((workout, index) => (
+            <WorkoutListItem
+              key={workout.id}
+              workout={workout}
+              onPress={() => handleWorkoutPress(workout.id)}
+              index={index}
+            />
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -419,5 +466,29 @@ const styles = StyleSheet.create({
   },
   listItemAction: {
     paddingHorizontal: Spacing.md,
+  },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: Spacing["3xl"],
+    paddingHorizontal: Spacing.xl,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: Colors.white40,
+    textAlign: "center",
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.xl,
+  },
+  clearFilterButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.sm,
+  },
+  clearFilterText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.white,
   },
 });

@@ -28,6 +28,8 @@ export interface Workout {
   coverImage: number;
   muscleGroups: string[];
   equipment: string[];
+  category: "HIIT" | "Strength" | "Cardio" | "Core" | "Stretch";
+  isNew?: boolean;
   exercises: Exercise[];
 }
 
@@ -165,6 +167,8 @@ export const sampleWorkouts: Workout[] = [
     coverImage: 1,
     muscleGroups: ["Full Body"],
     equipment: ["No Equipment"],
+    category: "HIIT",
+    isNew: false,
     exercises: [
       { id: "1", name: "Jump Squats", duration: 45, sets: 5 },
       { id: "2", name: "Burpees", duration: 45, sets: 5 },
@@ -181,6 +185,8 @@ export const sampleWorkouts: Workout[] = [
     coverImage: 2,
     muscleGroups: ["Glutes", "Legs"],
     equipment: ["Resistance Band"],
+    category: "Strength",
+    isNew: true,
     exercises: [
       { id: "1", name: "Glute Bridges", duration: 45, sets: 4 },
       { id: "2", name: "Donkey Kicks", duration: 45, sets: 4 },
@@ -196,6 +202,8 @@ export const sampleWorkouts: Workout[] = [
     coverImage: 3,
     muscleGroups: ["Core", "Abs"],
     equipment: ["Mat"],
+    category: "Core",
+    isNew: false,
     exercises: [
       { id: "1", name: "Bicycle Crunches", duration: 45, sets: 4 },
       { id: "2", name: "Leg Raises", duration: 45, sets: 4 },
@@ -211,6 +219,8 @@ export const sampleWorkouts: Workout[] = [
     coverImage: 4,
     muscleGroups: ["Full Body", "Cardio"],
     equipment: ["No Equipment"],
+    category: "Cardio",
+    isNew: true,
     exercises: [
       { id: "1", name: "High Knees", duration: 45, sets: 5 },
       { id: "2", name: "Jump Rope", duration: 60, sets: 4 },
