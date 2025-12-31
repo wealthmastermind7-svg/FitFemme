@@ -208,7 +208,7 @@ export const sampleWorkouts: Workout[] = [
     title: "Cardio Queen",
     duration: 25,
     intensity: "High",
-    coverImage: 1,
+    coverImage: 4,
     muscleGroups: ["Full Body", "Cardio"],
     equipment: ["No Equipment"],
     exercises: [

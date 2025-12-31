@@ -16,6 +16,7 @@ const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
   2: require("../../assets/images/workouts/workout2.png"),
   3: require("../../assets/images/workouts/workout3.png"),
+  4: require("../../assets/images/workouts/workout4.png"),
 };
 
 interface WorkoutCardProps {
