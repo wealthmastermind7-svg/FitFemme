@@ -40,8 +40,8 @@ const slides = [
     id: 2,
     title1: "UNLEASH",
     title2: "THE",
-    title3: "FYAH",
-    subtitle: "High-intensity workouts that push your limits.",
+    title3: "STRENGTH",
+    subtitle: "High-intensity workouts built for you.",
     image: require("../../assets/images/onboarding/slide2.jpg"),
   },
   {
@@ -49,7 +49,7 @@ const slides = [
     title1: "WELCOME",
     title2: "TO FIT",
     title3: "FEMME",
-    subtitle: "Join the movement. Transform your body and mind.",
+    subtitle: "Celebrate your power, curves, and culture.",
     image: require("../../assets/images/onboarding/slide3.jpg"),
   },
 ];
