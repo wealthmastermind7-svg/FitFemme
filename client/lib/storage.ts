@@ -2,6 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface UserProfile {
   name: string;
+  age: number;
+  weight: number;
   avatarUri?: string;
   caloriesGoal: number;
   durationGoal: number;
@@ -68,6 +70,14 @@ export const storage = {
     await AsyncStorage.setItem(KEYS.USER_PROFILE, JSON.stringify(profile));
   },
 
+  async saveUserProfile(profile: UserProfile): Promise<void> {
+    await AsyncStorage.setItem(KEYS.USER_PROFILE, JSON.stringify(profile));
+  },
+
+  async clearAllData(): Promise<void> {
+    await AsyncStorage.multiRemove(Object.values(KEYS));
+  },
+
   async getDailyMetrics(): Promise<DailyMetrics | null> {
     try {
       const json = await AsyncStorage.getItem(KEYS.DAILY_METRICS);
@@ -127,6 +137,8 @@ export const storage = {
 
 export const sampleUserProfile: UserProfile = {
   name: "Keisha",
+  age: 28,
+  weight: 140,
   caloriesGoal: 2000,
   durationGoal: 45,
   stepsGoal: 10000,

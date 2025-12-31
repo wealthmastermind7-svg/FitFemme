@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable, Switch } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Switch, Modal, TextInput, Alert } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import * as WebBrowser from "expo-web-browser";
 
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
@@ -28,6 +29,20 @@ export default function ProfileScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
+  const [units, setUnits] = useState("Imperial");
+
+  // Modal states
+  const [personalInfoModalVisible, setPersonalInfoModalVisible] = useState(false);
+  const [goalsModalVisible, setGoalsModalVisible] = useState(false);
+  const [unitsModalVisible, setUnitsModalVisible] = useState(false);
+
+  // Edit form states
+  const [editName, setEditName] = useState("");
+  const [editAge, setEditAge] = useState("");
+  const [editWeight, setEditWeight] = useState("");
+  const [editCaloriesGoal, setEditCaloriesGoal] = useState("");
+  const [editDurationGoal, setEditDurationGoal] = useState("");
+  const [editStepsGoal, setEditStepsGoal] = useState("");
 
   useEffect(() => {
     loadProfile();
@@ -35,27 +50,89 @@ export default function ProfileScreen() {
 
   const loadProfile = async () => {
     const data = await storage.getUserProfile();
-    if (data) setProfile(data);
+    if (data) {
+      setProfile(data);
+      setEditName(data.name);
+      setEditAge(data.age.toString());
+      setEditWeight(data.weight.toString());
+      setEditCaloriesGoal(data.caloriesGoal.toString());
+      setEditDurationGoal(data.durationGoal.toString());
+      setEditStepsGoal(data.stepsGoal.toString());
+    }
   };
 
-  const accountSettings: SettingItem[] = [
-    { id: "personal", icon: "user", title: "Personal Info", type: "link" },
-    { id: "goals", icon: "target", title: "Fitness Goals", type: "link" },
-    { id: "units", icon: "sliders", title: "Units & Measurements", type: "value", value: "Imperial" },
-  ];
+  const handleSavePersonalInfo = async () => {
+    const updated = {
+      ...profile,
+      name: editName,
+      age: parseInt(editAge) || profile.age,
+      weight: parseFloat(editWeight) || profile.weight,
+    };
+    setProfile(updated);
+    await storage.saveUserProfile(updated);
+    setPersonalInfoModalVisible(false);
+  };
 
-  const appSettings: SettingItem[] = [
-    { id: "notifications", icon: "bell", title: "Notifications", type: "toggle", value: notificationsEnabled },
-    { id: "sounds", icon: "volume-2", title: "Workout Sounds", type: "toggle", value: soundEnabled },
-    { id: "vibration", icon: "smartphone", title: "Vibration", type: "toggle", value: vibrationEnabled },
-  ];
+  const handleSaveGoals = async () => {
+    const updated = {
+      ...profile,
+      caloriesGoal: parseInt(editCaloriesGoal) || profile.caloriesGoal,
+      durationGoal: parseInt(editDurationGoal) || profile.durationGoal,
+      stepsGoal: parseInt(editStepsGoal) || profile.stepsGoal,
+    };
+    setProfile(updated);
+    await storage.saveUserProfile(updated);
+    setGoalsModalVisible(false);
+  };
 
-  const supportSettings: SettingItem[] = [
-    { id: "help", icon: "help-circle", title: "Help Center", type: "link" },
-    { id: "feedback", icon: "message-square", title: "Send Feedback", type: "link" },
-    { id: "privacy", icon: "shield", title: "Privacy Policy", type: "link" },
-    { id: "terms", icon: "file-text", title: "Terms of Service", type: "link" },
-  ];
+  const handleAccountSettingPress = (id: string) => {
+    switch (id) {
+      case "personal":
+        setPersonalInfoModalVisible(true);
+        break;
+      case "goals":
+        setGoalsModalVisible(true);
+        break;
+      case "units":
+        setUnitsModalVisible(true);
+        break;
+    }
+  };
+
+  const handleSupportPress = async (id: string) => {
+    switch (id) {
+      case "help":
+        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/help");
+        break;
+      case "feedback":
+        Alert.alert("Send Feedback", "Open email client to send feedback", [
+          { text: "Cancel", onPress: () => {} },
+          { text: "OK", onPress: () => {} },
+        ]);
+        break;
+      case "privacy":
+        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/privacy");
+        break;
+      case "terms":
+        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/terms");
+        break;
+    }
+  };
+
+  const handleLogout = () => {
+    Alert.alert("Log Out", "Are you sure you want to log out?", [
+      { text: "Cancel", onPress: () => {} },
+      {
+        text: "Log Out",
+        onPress: async () => {
+          // Clear app data
+          await storage.clearAllData();
+          setProfile(sampleUserProfile);
+        },
+        style: "destructive",
+      },
+    ]);
+  };
 
   const handleToggle = (id: string) => {
     switch (id) {
@@ -71,8 +148,41 @@ export default function ProfileScreen() {
     }
   };
 
-  const renderSettingItem = (item: SettingItem) => (
-    <Pressable key={item.id} style={styles.settingItem}>
+  const accountSettings: SettingItem[] = [
+    { id: "personal", icon: "user", title: "Personal Info", type: "link" },
+    { id: "goals", icon: "target", title: "Fitness Goals", type: "link" },
+    { id: "units", icon: "sliders", title: "Units & Measurements", type: "value", value: units },
+  ];
+
+  const appSettings: SettingItem[] = [
+    { id: "notifications", icon: "bell", title: "Notifications", type: "toggle", value: notificationsEnabled },
+    { id: "sounds", icon: "volume-2", title: "Workout Sounds", type: "toggle", value: soundEnabled },
+    { id: "vibration", icon: "smartphone", title: "Vibration", type: "toggle", value: vibrationEnabled },
+  ];
+
+  const supportSettings: SettingItem[] = [
+    { id: "help", icon: "help-circle", title: "Help Center", type: "link" },
+    { id: "feedback", icon: "message-square", title: "Send Feedback", type: "link" },
+    { id: "privacy", icon: "shield", title: "Privacy Policy", type: "link" },
+    { id: "terms", icon: "file-text", title: "Terms of Service", type: "link" },
+  ];
+
+  const renderSettingItem = (item: SettingItem, isAccountSetting = false, isSupportSetting = false) => (
+    <Pressable
+      key={item.id}
+      style={styles.settingItem}
+      onPress={() => {
+        if (item.type === "toggle") {
+          handleToggle(item.id);
+        } else if (item.type === "link" || item.type === "value") {
+          if (isAccountSetting) {
+            handleAccountSettingPress(item.id);
+          } else if (isSupportSetting) {
+            handleSupportPress(item.id);
+          }
+        }
+      }}
+    >
       <View style={styles.settingIcon}>
         <Feather name={item.icon as any} size={20} color={Colors.white} />
       </View>
@@ -137,7 +247,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Account</ThemedText>
         <GlassCard style={styles.settingsCard}>
-          {accountSettings.map(renderSettingItem)}
+          {accountSettings.map((item) => renderSettingItem(item, true, false))}
         </GlassCard>
       </View>
 
@@ -148,23 +258,132 @@ export default function ProfileScreen() {
             item.id === "notifications" ? notificationsEnabled :
             item.id === "sounds" ? soundEnabled :
             vibrationEnabled
-          }))}
+          }, false, false))}
         </GlassCard>
       </View>
 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Support</ThemedText>
         <GlassCard style={styles.settingsCard}>
-          {supportSettings.map(renderSettingItem)}
+          {supportSettings.map((item) => renderSettingItem(item, false, true))}
         </GlassCard>
       </View>
 
       <View style={styles.section}>
-        <Pressable style={styles.logoutButton}>
+        <Pressable style={styles.logoutButton} onPress={handleLogout}>
           <Feather name="log-out" size={20} color={Colors.error} />
           <ThemedText style={styles.logoutText}>Log Out</ThemedText>
         </Pressable>
       </View>
+
+      {/* Personal Info Modal */}
+      <Modal visible={personalInfoModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>Personal Info</ThemedText>
+              <Pressable onPress={() => setPersonalInfoModalVisible(false)}>
+                <Feather name="x" size={24} color={Colors.white} />
+              </Pressable>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              placeholderTextColor={Colors.white40}
+              value={editName}
+              onChangeText={setEditName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Age"
+              placeholderTextColor={Colors.white40}
+              keyboardType="numeric"
+              value={editAge}
+              onChangeText={setEditAge}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Weight (lbs)"
+              placeholderTextColor={Colors.white40}
+              keyboardType="decimal-pad"
+              value={editWeight}
+              onChangeText={setEditWeight}
+            />
+            <Pressable style={styles.saveButton} onPress={handleSavePersonalInfo}>
+              <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Goals Modal */}
+      <Modal visible={goalsModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>Fitness Goals</ThemedText>
+              <Pressable onPress={() => setGoalsModalVisible(false)}>
+                <Feather name="x" size={24} color={Colors.white} />
+              </Pressable>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Daily Calories Goal"
+              placeholderTextColor={Colors.white40}
+              keyboardType="numeric"
+              value={editCaloriesGoal}
+              onChangeText={setEditCaloriesGoal}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Daily Duration Goal (mins)"
+              placeholderTextColor={Colors.white40}
+              keyboardType="numeric"
+              value={editDurationGoal}
+              onChangeText={setEditDurationGoal}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Daily Steps Goal"
+              placeholderTextColor={Colors.white40}
+              keyboardType="numeric"
+              value={editStepsGoal}
+              onChangeText={setEditStepsGoal}
+            />
+            <Pressable style={styles.saveButton} onPress={handleSaveGoals}>
+              <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Units Modal */}
+      <Modal visible={unitsModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>Units & Measurements</ThemedText>
+              <Pressable onPress={() => setUnitsModalVisible(false)}>
+                <Feather name="x" size={24} color={Colors.white} />
+              </Pressable>
+            </View>
+            {["Imperial", "Metric"].map((unit) => (
+              <Pressable
+                key={unit}
+                style={[styles.unitOption, units === unit && styles.unitOptionSelected]}
+                onPress={() => {
+                  setUnits(unit);
+                  setUnitsModalVisible(false);
+                }}
+              >
+                <ThemedText style={[styles.unitOptionText, units === unit && styles.unitOptionTextSelected]}>
+                  {unit}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.footer}>
         <ThemedText style={styles.footerText}>Fit Femme v1.0.0</ThemedText>
@@ -306,5 +525,71 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 12,
     color: Colors.white20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: Colors.backgroundDark,
+    borderTopLeftRadius: BorderRadius.xl,
+    borderTopRightRadius: BorderRadius.xl,
+    padding: Spacing["2xl"],
+    paddingBottom: Spacing["3xl"],
+    borderTopWidth: 1,
+    borderTopColor: Colors.white10,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: Spacing["2xl"],
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.white,
+  },
+  input: {
+    backgroundColor: Colors.white05,
+    borderWidth: 1,
+    borderColor: Colors.white10,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    color: Colors.white,
+    marginBottom: Spacing.md,
+    fontSize: 16,
+  },
+  saveButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.lg,
+    alignItems: "center",
+    marginTop: Spacing.xl,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.white,
+  },
+  unitOption: {
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.white10,
+  },
+  unitOptionSelected: {
+    backgroundColor: Colors.primary + "20",
+    borderBottomColor: Colors.primary,
+  },
+  unitOptionText: {
+    fontSize: 16,
+    color: Colors.white60,
+  },
+  unitOptionTextSelected: {
+    color: Colors.white,
+    fontWeight: "600",
   },
 });
