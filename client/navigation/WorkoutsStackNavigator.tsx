@@ -1,24 +1,24 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "@/screens/HomeScreen";
+import WorkoutsScreen from "@/screens/WorkoutsScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
 
-export type HomeStackParamList = {
-  Home: undefined;
+export type WorkoutsStackParamList = {
+  Workouts: undefined;
 };
 
-const Stack = createNativeStackNavigator<HomeStackParamList>();
+const Stack = createNativeStackNavigator<WorkoutsStackParamList>();
 
-export default function HomeStackNavigator() {
+export default function WorkoutsStackNavigator() {
   const screenOptions = useScreenOptions();
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Workouts"
+        component={WorkoutsScreen}
         options={{
-          headerShown: false,
+          headerTitle: "Workouts",
         }}
       />
     </Stack.Navigator>
