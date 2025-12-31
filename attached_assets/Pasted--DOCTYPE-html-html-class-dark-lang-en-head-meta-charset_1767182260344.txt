@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fitness Video Player</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d41173",
+                        "background-light": "#f8f6f7",
+                        "background-dark": "#221019",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(34, 16, 25, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(212, 17, 115, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-hidden h-screen w-screen selection:bg-primary selection:text-white">
+<!-- Main Container simulating a phone screen -->
+<div class="relative h-full w-full mx-auto max-w-md bg-black shadow-2xl overflow-hidden flex flex-col">
+<!-- Video Background Layer -->
+<div class="absolute inset-0 bg-cover bg-center z-0" data-alt="Black fitness woman performing jump squats in a modern gym with dark lighting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDdA2Q75c3BX0MWm17OmcC62NWT1flHCA1XXKKKb_uhMRv6M-CHXBegsPjymfaApgl2-o5CTbL22aua8Xb7Sk3DIIOVvv7HYpqktIEHS5nUatf-wPzfK_TmD2E1ifsm2ZQlK4hySCF0S2oO60GqeW65GbCTUqQrmJxT5neo7NZC1fKO9CnbRY7sR5CQoZqNaLA6czgEwTsd8mTDM2ec-8nFqsJIBjqZ0mbYbJoNWkHlKRGvfEKRicgy2GdpLNe3RQb6QlHHFLobpwY");'>
+<!-- Cinematic Dark Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-background-dark/95"></div>
+</div>
+<!-- Top Controls Layer (Z-Index 30) -->
+<div class="relative z-30 flex flex-col w-full px-5 pt-12 pb-4">
+<!-- Segmented Progress Bar (PageIndicators adapted) -->
+<div class="flex w-full flex-row items-center justify-center gap-1.5 mb-6">
+<div class="h-1 flex-1 rounded-full bg-primary shadow-[0_0_8px_rgba(212,17,115,0.8)]"></div>
+<div class="h-1 flex-1 rounded-full bg-primary shadow-[0_0_8px_rgba(212,17,115,0.8)]"></div>
+<div class="h-1 flex-1 rounded-full bg-white/30 overflow-hidden">
+<div class="h-full w-3/4 bg-white rounded-full"></div>
+</div>
+<div class="h-1 flex-1 rounded-full bg-white/20"></div>
+<div class="h-1 flex-1 rounded-full bg-white/20"></div>
+</div>
+<!-- Header Navigation (TopAppBar adapted) -->
+<div class="flex items-center justify-between text-white">
+<button class="flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/5">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+<span class="text-xs font-semibold tracking-wider uppercase text-white/90">08:24 / 24:00</span>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[24px]">cast</span>
+</button>
+</div>
+</div>
+<!-- Center Information Layer (Oversized Typography) -->
+<div class="flex-1 flex flex-col items-center justify-center relative z-20 pb-20">
+<h1 class="text-white text-[110px] font-bold leading-none tracking-tighter text-glow animate-pulse">
+                00:45
+            </h1>
+<p class="text-white/80 text-xl font-medium tracking-widest uppercase mt-4">High Intensity</p>
+</div>
+<!-- Bottom Controls & Info Panel (Glassmorphism) -->
+<div class="relative z-30 glass-panel rounded-t-3xl pb-8 pt-6 px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transform transition-transform duration-500 ease-out">
+<!-- Pull Indicator -->
+<div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6"></div>
+<!-- Info Card Content -->
+<div class="flex justify-between items-end mb-8">
+<div class="flex flex-col gap-1">
+<span class="text-primary font-bold tracking-wider text-xs uppercase bg-primary/10 w-fit px-2 py-0.5 rounded-md border border-primary/20">Set 3 of 5</span>
+<h2 class="text-white text-3xl font-bold leading-tight">Jump Squats</h2>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-white/50 text-xs font-medium uppercase tracking-wide mb-1">Up Next</span>
+<button class="group flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
+<span class="text-white font-semibold text-sm">Burpees</span>
+<span class="material-symbols-outlined text-[18px] text-primary group-hover:translate-x-0.5 transition-transform">arrow_forward_ios</span>
+</button>
+</div>
+</div>
+<!-- Toolbar Controls -->
+<div class="flex items-center justify-between gap-4">
+<!-- Secondary Action -->
+<button class="p-3 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined text-[28px] font-light">tune</span>
+</button>
+<!-- Playback Cluster -->
+<div class="flex items-center gap-6">
+<button class="p-3 text-white hover:text-primary transition-colors active:scale-90 transform">
+<span class="material-symbols-outlined text-[42px] font-light">replay_10</span>
+</button>
+<!-- Primary Play Button with Circular Progress -->
+<div class="relative flex items-center justify-center group cursor-pointer">
+<!-- Glow -->
+<div class="absolute inset-0 rounded-full bg-primary blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+<!-- SVG Ring -->
+<svg class="absolute w-24 h-24 rotate-[-90deg]" viewbox="0 0 100 100">
+<!-- Background Ring -->
+<circle cx="50" cy="50" fill="none" r="46" stroke="rgba(255,255,255,0.1)" stroke-width="2"></circle>
+<!-- Progress Ring -->
+<circle cx="50" cy="50" fill="none" r="46" stroke="#d41173" stroke-dasharray="289" stroke-dashoffset="72" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<!-- Button -->
+<button class="relative flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg active:scale-95 transition-transform duration-200 z-10">
+<span class="material-symbols-outlined text-[44px] text-background-dark fill-1 ml-1">play_arrow</span>
+</button>
+</div>
+<button class="p-3 text-white hover:text-primary transition-colors active:scale-90 transform">
+<span class="material-symbols-outlined text-[42px] font-light">forward_10</span>
+</button>
+</div>
+<!-- Secondary Action -->
+<button class="p-3 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined text-[28px] font-light">playlist_play</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>
