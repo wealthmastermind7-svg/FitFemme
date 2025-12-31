@@ -18,12 +18,26 @@ import {
 
 const PERIODS = ["Week", "Month", "Year"];
 
+// Data for different periods
+const WEEKLY_CALORIES = [520, 680, 450, 720, 580, 650, 540];
+const WEEKLY_DURATIONS = [25, 45, 20, 55, 35, 42, 28];
+const WEEKLY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
+
+const MONTHLY_CALORIES = [3640, 3820, 4100, 3900, 4250]; // 5 weeks
+const MONTHLY_DURATIONS = [180, 215, 190, 230, 200];
+const MONTHLY_LABELS = ["W1", "W2", "W3", "W4", "W5"];
+
+const YEARLY_CALORIES = [45000, 48000, 42000, 50000, 44000, 46000, 48000, 51000, 43000, 47000, 49000, 52000]; // 12 months
+const YEARLY_DURATIONS = [2100, 2300, 2000, 2400, 2150, 2200, 2350, 2450, 2050, 2280, 2400, 2500];
+const YEARLY_LABELS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
 
   const [selectedPeriod, setSelectedPeriod] = useState("Week");
   const [milestones, setMilestones] = useState<Milestone[]>(sampleMilestones);
+  const [expandedMilestones, setExpandedMilestones] = useState(false);
   const metrics = sampleDailyMetrics;
 
   useEffect(() => {
@@ -35,12 +49,37 @@ export default function StatsScreen() {
     if (data.length > 0) setMilestones(data);
   };
 
-  const weeklyCalories = [520, 680, 450, 720, 580, 650, 540];
-  const weeklyDurations = [25, 45, 20, 55, 35, 42, 28];
+  // Get data based on selected period
+  const getChartData = () => {
+    switch (selectedPeriod) {
+      case "Month":
+        return { data: MONTHLY_CALORIES, labels: MONTHLY_LABELS };
+      case "Year":
+        return { data: YEARLY_CALORIES, labels: YEARLY_LABELS };
+      default: // Week
+        return { data: WEEKLY_CALORIES, labels: WEEKLY_LABELS };
+    }
+  };
+
+  const getDurationData = () => {
+    switch (selectedPeriod) {
+      case "Month":
+        return MONTHLY_DURATIONS;
+      case "Year":
+        return YEARLY_DURATIONS;
+      default: // Week
+        return WEEKLY_DURATIONS;
+    }
+  };
+
+  const chartData = getChartData();
+  const durationData = getDurationData();
   const avgHeartRate = metrics.heartRateAvg;
-  const totalCalories = weeklyCalories.reduce((a, b) => a + b, 0);
-  const totalDuration = weeklyDurations.reduce((a, b) => a + b, 0);
+  const totalCalories = chartData.data.reduce((a, b) => a + b, 0);
+  const totalDuration = durationData.reduce((a, b) => a + b, 0);
   const avgSleep = metrics.sleepHours;
+  
+  const visibleMilestones = expandedMilestones ? milestones : milestones.slice(0, 4);
 
   return (
     <ScrollView
@@ -94,7 +133,7 @@ export default function StatsScreen() {
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Calories Burned</ThemedText>
         <GlassCard>
-          <BarChart data={weeklyCalories} color={Colors.primary} />
+          <BarChart data={chartData.data} labels={chartData.labels} color={Colors.primary} />
         </GlassCard>
       </View>
 
@@ -156,9 +195,16 @@ export default function StatsScreen() {
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Milestones</ThemedText>
+        <View style={styles.sectionHeader}>
+          <ThemedText style={styles.sectionTitle}>Milestones</ThemedText>
+          <Pressable onPress={() => setExpandedMilestones(!expandedMilestones)}>
+            <ThemedText style={styles.viewAllLink}>
+              {expandedMilestones ? "Show less" : "View all"}
+            </ThemedText>
+          </Pressable>
+        </View>
         <View style={styles.milestonesGrid}>
-          {milestones.map((milestone) => (
+          {visibleMilestones.map((milestone) => (
             <View
               key={milestone.id}
               style={[
@@ -199,15 +245,15 @@ export default function StatsScreen() {
 
 interface BarChartProps {
   data: number[];
+  labels: string[];
   color: string;
 }
 
-function BarChart({ data, color }: BarChartProps) {
+function BarChart({ data, labels, color }: BarChartProps) {
   const chartWidth = 280;
   const chartHeight = 120;
   const barWidth = 28;
   const maxValue = Math.max(...data);
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
 
   return (
     <View style={styles.chartContainer}>
@@ -241,7 +287,7 @@ function BarChart({ data, color }: BarChartProps) {
                 fontWeight="600"
                 textAnchor="middle"
               >
-                {days[index]}
+                {labels[index]}
               </SvgText>
             </G>
           );
@@ -321,11 +367,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing["2xl"],
     marginBottom: Spacing["2xl"],
   },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: Spacing.lg,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
     color: Colors.white,
-    marginBottom: Spacing.lg,
+  },
+  viewAllLink: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.primary,
   },
   chartContainer: {
     alignItems: "center",
