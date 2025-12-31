@@ -15,8 +15,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
-  runOnJS,
 } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -50,25 +48,26 @@ export default function WorkoutPlayerScreen() {
   const [timeRemaining, setTimeRemaining] = useState(exercises[0]?.duration || 45);
   const [totalElapsed, setTotalElapsed] = useState(0);
   const [isResting, setIsResting] = useState(false);
+  const [workoutComplete, setWorkoutComplete] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const buttonScale = useSharedValue(1);
-  const progressOpacity = useSharedValue(1);
 
   const currentExercise = exercises[currentExerciseIndex];
   const totalDuration = workout.duration * 60;
-  const overallProgress = (totalElapsed / totalDuration) * 100;
+  const overallProgress = Math.min((totalElapsed / totalDuration) * 100, 100);
   const exerciseProgress = currentExercise
-    ? ((currentExercise.duration - timeRemaining) / currentExercise.duration) * 100
+    ? isResting 
+      ? ((15 - timeRemaining) / 15) * 100
+      : ((currentExercise.duration - timeRemaining) / currentExercise.duration) * 100
     : 0;
 
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && !workoutComplete) {
       timerRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
-            handleExerciseComplete();
-            return prev;
+            return 0;
           }
           return prev - 1;
         });
@@ -86,9 +85,15 @@ export default function WorkoutPlayerScreen() {
         clearInterval(timerRef.current);
       }
     };
-  }, [isPlaying]);
+  }, [isPlaying, workoutComplete]);
 
-  const handleExerciseComplete = useCallback(() => {
+  useEffect(() => {
+    if (timeRemaining === 0 && isPlaying && !workoutComplete) {
+      handleExerciseComplete();
+    }
+  }, [timeRemaining, isPlaying, workoutComplete]);
+
+  const handleExerciseComplete = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     
     if (isResting) {
@@ -102,15 +107,17 @@ export default function WorkoutPlayerScreen() {
       setTimeRemaining(15);
       setCurrentSet((prev) => prev + 1);
     } else if (currentExerciseIndex < exercises.length - 1) {
-      setCurrentExerciseIndex((prev) => prev + 1);
+      const nextIndex = currentExerciseIndex + 1;
+      setCurrentExerciseIndex(nextIndex);
       setCurrentSet(1);
-      setTimeRemaining(exercises[currentExerciseIndex + 1].duration);
+      setTimeRemaining(exercises[nextIndex].duration);
       setIsResting(false);
     } else {
       setIsPlaying(false);
+      setWorkoutComplete(true);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
-  }, [currentExerciseIndex, currentSet, currentExercise, exercises, isResting]);
+  };
 
   const togglePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -120,9 +127,10 @@ export default function WorkoutPlayerScreen() {
   const handleSkip = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (currentExerciseIndex < exercises.length - 1) {
-      setCurrentExerciseIndex((prev) => prev + 1);
+      const nextIndex = currentExerciseIndex + 1;
+      setCurrentExerciseIndex(nextIndex);
       setCurrentSet(1);
-      setTimeRemaining(exercises[currentExerciseIndex + 1].duration);
+      setTimeRemaining(exercises[nextIndex].duration);
       setIsResting(false);
     }
   };
@@ -130,9 +138,10 @@ export default function WorkoutPlayerScreen() {
   const handlePrevious = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (currentExerciseIndex > 0) {
-      setCurrentExerciseIndex((prev) => prev - 1);
+      const prevIndex = currentExerciseIndex - 1;
+      setCurrentExerciseIndex(prevIndex);
       setCurrentSet(1);
-      setTimeRemaining(exercises[currentExerciseIndex - 1].duration);
+      setTimeRemaining(exercises[prevIndex].duration);
       setIsResting(false);
     }
   };
