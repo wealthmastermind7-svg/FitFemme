@@ -58,6 +58,9 @@ export default function ProfileScreen() {
       setEditCaloriesGoal(data.caloriesGoal.toString());
       setEditDurationGoal(data.durationGoal.toString());
       setEditStepsGoal(data.stepsGoal.toString());
+      if (data.units) {
+        setUnits(data.units);
+      }
     }
   };
 
@@ -67,6 +70,7 @@ export default function ProfileScreen() {
       name: editName,
       age: parseInt(editAge) || profile.age,
       weight: parseFloat(editWeight) || profile.weight,
+      units: units, // Preserve units when saving personal info
     };
     setProfile(updated);
     await storage.saveUserProfile(updated);
@@ -79,6 +83,7 @@ export default function ProfileScreen() {
       caloriesGoal: parseInt(editCaloriesGoal) || profile.caloriesGoal,
       durationGoal: parseInt(editDurationGoal) || profile.durationGoal,
       stepsGoal: parseInt(editStepsGoal) || profile.stepsGoal,
+      units: units, // Preserve units when saving goals
     };
     setProfile(updated);
     await storage.saveUserProfile(updated);
@@ -322,10 +327,10 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Weight (lbs)</ThemedText>
+              <ThemedText style={styles.inputLabel}>Weight ({units === "Metric" ? "kg" : "lbs"})</ThemedText>
               <TextInput
                 style={styles.input}
-                placeholder="Weight (lbs)"
+                placeholder={units === "Metric" ? "65" : "140"}
                 placeholderTextColor={Colors.white40}
                 keyboardType="decimal-pad"
                 value={editWeight}
