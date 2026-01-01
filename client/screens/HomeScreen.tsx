@@ -77,7 +77,7 @@ export default function HomeScreen() {
   const stepsProgress = (metrics.steps / profile.stepsGoal) * 100;
 
   const handleWorkoutPress = (workoutId: string) => {
-    navigation.navigate("WorkoutPlayer", { workoutId });
+    navigation.navigate("WorkoutPreview", { workoutId });
   };
 
   return (

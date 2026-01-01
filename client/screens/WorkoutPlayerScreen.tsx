@@ -50,9 +50,44 @@ export default function WorkoutPlayerScreen() {
   const [totalElapsed, setTotalElapsed] = useState(0);
   const [isResting, setIsResting] = useState(false);
   const [workoutComplete, setWorkoutComplete] = useState(false);
+  const [encouragement, setEncouragement] = useState<string | null>(null);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const encouragementTimeout = useRef<NodeJS.Timeout | null>(null);
   const buttonScale = useSharedValue(1);
+  const encouragementOpacity = useSharedValue(0);
+
+  const encouragingMessages = [
+    "Great form!",
+    "You got this!",
+    "Keep pushing!",
+    "Halfway there!",
+    "Almost done!",
+    "Strong finish!",
+    "Crushing it!",
+    "Feel the burn!",
+    "Power through!",
+    "Yes, queen!",
+  ];
+
+  const showEncouragement = () => {
+    const randomIndex = Math.floor(Math.random() * encouragingMessages.length);
+    setEncouragement(encouragingMessages[randomIndex]);
+    encouragementOpacity.value = withSpring(1, { damping: 15, stiffness: 150 });
+
+    if (encouragementTimeout.current) {
+      clearTimeout(encouragementTimeout.current);
+    }
+    encouragementTimeout.current = setTimeout(() => {
+      encouragementOpacity.value = withSpring(0, { damping: 15, stiffness: 150 });
+      setTimeout(() => setEncouragement(null), 300);
+    }, 2000);
+  };
+
+  const encouragementStyle = useAnimatedStyle(() => ({
+    opacity: encouragementOpacity.value,
+    transform: [{ scale: 0.9 + encouragementOpacity.value * 0.1 }],
+  }));
 
   const currentExercise = exercises[currentExerciseIndex];
   const totalDuration = workout.duration * 60;
@@ -89,6 +124,14 @@ export default function WorkoutPlayerScreen() {
   }, [isPlaying, workoutComplete]);
 
   useEffect(() => {
+    return () => {
+      if (encouragementTimeout.current) {
+        clearTimeout(encouragementTimeout.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (timeRemaining === 0 && isPlaying && !workoutComplete) {
       handleExerciseComplete();
     }
@@ -100,6 +143,7 @@ export default function WorkoutPlayerScreen() {
     if (isResting) {
       setIsResting(false);
       setTimeRemaining(currentExercise.duration);
+      showEncouragement();
       return;
     }
 
@@ -107,12 +151,14 @@ export default function WorkoutPlayerScreen() {
       setIsResting(true);
       setTimeRemaining(15);
       setCurrentSet((prev) => prev + 1);
+      showEncouragement();
     } else if (currentExerciseIndex < exercises.length - 1) {
       const nextIndex = currentExerciseIndex + 1;
       setCurrentExerciseIndex(nextIndex);
       setCurrentSet(1);
       setTimeRemaining(exercises[nextIndex].duration);
       setIsResting(false);
+      showEncouragement();
     } else {
       setIsPlaying(false);
       setWorkoutComplete(true);
@@ -236,6 +282,13 @@ export default function WorkoutPlayerScreen() {
             </ThemedText>
           </CircularProgress>
         </View>
+
+        {encouragement ? (
+          <Animated.View style={[styles.encouragementBadge, encouragementStyle]}>
+            <Feather name="star" size={16} color={Colors.yellow} />
+            <ThemedText style={styles.encouragementText}>{encouragement}</ThemedText>
+          </Animated.View>
+        ) : null}
 
         <View style={styles.controls}>
           <Pressable
@@ -443,5 +496,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: Colors.white,
+  },
+  encouragementBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.yellow + "20",
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    gap: Spacing.sm,
+    marginBottom: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.yellow + "40",
+  },
+  encouragementText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: Colors.yellow,
   },
 });

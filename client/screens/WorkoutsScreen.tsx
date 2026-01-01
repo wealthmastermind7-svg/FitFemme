@@ -37,7 +37,7 @@ export default function WorkoutsScreen() {
   const [selectedFilter, setSelectedFilter] = useState("Popular");
 
   const handleWorkoutPress = (workoutId: string) => {
-    navigation.navigate("WorkoutPlayer", { workoutId });
+    navigation.navigate("WorkoutPreview", { workoutId });
   };
 
   const getFilteredWorkouts = (): Workout[] => {

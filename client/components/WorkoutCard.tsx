@@ -76,8 +76,8 @@ export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
             </ThemedText>
           </View>
           <Pressable style={styles.startButton}>
-            <Feather name="play" size={14} color={Colors.white} />
-            <ThemedText style={styles.startText}>Start Workout</ThemedText>
+            <Feather name="eye" size={14} color={Colors.white} />
+            <ThemedText style={styles.startText}>Preview</ThemedText>
           </Pressable>
         </View>
       </ImageBackground>

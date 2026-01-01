@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MainTabNavigator from "@/navigation/MainTabNavigator";
 import OnboardingScreen from "@/screens/OnboardingScreen";
+import WorkoutPreviewScreen from "@/screens/WorkoutPreviewScreen";
 import WorkoutPlayerScreen from "@/screens/WorkoutPlayerScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
 import { Colors } from "@/constants/theme";
@@ -11,6 +12,7 @@ import { Colors } from "@/constants/theme";
 export type RootStackParamList = {
   Onboarding: undefined;
   Main: undefined;
+  WorkoutPreview: { workoutId?: string } | undefined;
   WorkoutPlayer: { workoutId?: string } | undefined;
 };
 
@@ -57,6 +59,15 @@ export default function RootStackNavigator() {
         name="Main"
         component={MainTabNavigator}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WorkoutPreview"
+        component={WorkoutPreviewScreen}
+        options={{
+          presentation: "modal",
+          headerShown: false,
+          animation: "slide_from_bottom",
+        }}
       />
       <Stack.Screen
         name="WorkoutPlayer"
