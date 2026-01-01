@@ -85,6 +85,17 @@ export default function ProfileScreen() {
     setGoalsModalVisible(false);
   };
 
+  const handleSaveUnits = async (newUnits: string) => {
+    const updated = {
+      ...profile,
+      units: newUnits,
+    };
+    setUnits(newUnits);
+    setProfile(updated);
+    await storage.saveUserProfile(updated);
+    setUnitsModalVisible(false);
+  };
+
   const handleAccountSettingPress = (id: string) => {
     switch (id) {
       case "personal":
@@ -397,10 +408,7 @@ export default function ProfileScreen() {
               <Pressable
                 key={unit}
                 style={[styles.unitOption, units === unit && styles.unitOptionSelected]}
-                onPress={() => {
-                  setUnits(unit);
-                  setUnitsModalVisible(false);
-                }}
+                onPress={() => handleSaveUnits(unit)}
               >
                 <ThemedText style={[styles.unitOptionText, units === unit && styles.unitOptionTextSelected]}>
                   {unit}
