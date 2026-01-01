@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Alert } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
@@ -140,7 +140,7 @@ export default function StatsScreen() {
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Health Metrics</ThemedText>
         <View style={styles.metricsRow}>
-          <GlassCard style={styles.metricCard}>
+          <Pressable style={styles.metricCard} onPress={() => Alert.alert("Heart Rate", "Log your current heart rate to track cardiovascular health.")}>
             <View style={styles.metricHeader}>
               <Feather name="heart" size={20} color={Colors.error} />
               <ThemedText style={styles.metricLabel}>Heart Rate</ThemedText>
@@ -154,9 +154,9 @@ export default function StatsScreen() {
               <ThemedText style={styles.metricValue}>{avgHeartRate}</ThemedText>
               <ThemedText style={styles.metricUnit}>bpm</ThemedText>
             </CircularProgress>
-          </GlassCard>
+          </Pressable>
 
-          <GlassCard style={styles.metricCard}>
+          <Pressable style={styles.metricCard} onPress={() => Alert.alert("Sleep Tracker", "Log your sleep hours to improve recovery.")}>
             <View style={styles.metricHeader}>
               <Feather name="moon" size={20} color={Colors.purple} />
               <ThemedText style={styles.metricLabel}>Sleep</ThemedText>
@@ -170,10 +170,13 @@ export default function StatsScreen() {
               <ThemedText style={styles.metricValue}>{avgSleep.toFixed(1)}</ThemedText>
               <ThemedText style={styles.metricUnit}>hrs</ThemedText>
             </CircularProgress>
-          </GlassCard>
+          </Pressable>
         </View>
 
-        <GlassCard style={styles.hydrationCard}>
+        <Pressable 
+          style={styles.hydrationCard} 
+          onPress={() => Alert.alert("Hydration", "Track your water intake throughout the day.")}
+        >
           <View style={styles.hydrationHeader}>
             <View style={styles.metricHeader}>
               <Feather name="droplet" size={20} color={Colors.info} />
@@ -191,7 +194,7 @@ export default function StatsScreen() {
               ]}
             />
           </View>
-        </GlassCard>
+        </Pressable>
       </View>
 
       <View style={styles.section}>
@@ -205,12 +208,13 @@ export default function StatsScreen() {
         </View>
         <View style={styles.milestonesGrid}>
           {visibleMilestones.map((milestone) => (
-            <View
+            <Pressable
               key={milestone.id}
               style={[
                 styles.milestoneCard,
                 milestone.achieved && styles.milestoneAchieved,
               ]}
+              onPress={() => Alert.alert(milestone.title, milestone.description || "Track your progress to earn this milestone.")}
             >
               <View
                 style={[
@@ -235,7 +239,7 @@ export default function StatsScreen() {
               {milestone.achieved && (
                 <Feather name="check-circle" size={16} color={Colors.success} />
               )}
-            </View>
+            </Pressable>
           ))}
         </View>
       </View>
@@ -396,6 +400,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingVertical: Spacing.lg,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.white05,
   },
   metricHeader: {
     flexDirection: "row",
@@ -419,6 +427,11 @@ const styles = StyleSheet.create({
   },
   hydrationCard: {
     paddingVertical: Spacing.lg,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.white05,
+    paddingHorizontal: Spacing.lg,
   },
   hydrationHeader: {
     flexDirection: "row",
