@@ -286,29 +286,42 @@ export default function ProfileScreen() {
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              placeholderTextColor={Colors.white40}
-              value={editName}
-              onChangeText={setEditName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Age"
-              placeholderTextColor={Colors.white40}
-              keyboardType="numeric"
-              value={editAge}
-              onChangeText={setEditAge}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Weight (lbs)"
-              placeholderTextColor={Colors.white40}
-              keyboardType="decimal-pad"
-              value={editWeight}
-              onChangeText={setEditWeight}
-            />
+            
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Name</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="Name"
+                placeholderTextColor={Colors.white40}
+                value={editName}
+                onChangeText={setEditName}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Age</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="Age"
+                placeholderTextColor={Colors.white40}
+                keyboardType="numeric"
+                value={editAge}
+                onChangeText={setEditAge}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Weight (lbs)</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="Weight (lbs)"
+                placeholderTextColor={Colors.white40}
+                keyboardType="decimal-pad"
+                value={editWeight}
+                onChangeText={setEditWeight}
+              />
+            </View>
+
             <Pressable style={styles.saveButton} onPress={handleSavePersonalInfo}>
               <ThemedText style={styles.saveButtonText}>Save</ThemedText>
             </Pressable>
@@ -326,30 +339,43 @@ export default function ProfileScreen() {
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Daily Calories Goal"
-              placeholderTextColor={Colors.white40}
-              keyboardType="numeric"
-              value={editCaloriesGoal}
-              onChangeText={setEditCaloriesGoal}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Daily Duration Goal (mins)"
-              placeholderTextColor={Colors.white40}
-              keyboardType="numeric"
-              value={editDurationGoal}
-              onChangeText={setEditDurationGoal}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Daily Steps Goal"
-              placeholderTextColor={Colors.white40}
-              keyboardType="numeric"
-              value={editStepsGoal}
-              onChangeText={setEditStepsGoal}
-            />
+            
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Daily Calories Goal</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="2000"
+                placeholderTextColor={Colors.white40}
+                keyboardType="numeric"
+                value={editCaloriesGoal}
+                onChangeText={setEditCaloriesGoal}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Daily Duration Goal (mins)</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="45"
+                placeholderTextColor={Colors.white40}
+                keyboardType="numeric"
+                value={editDurationGoal}
+                onChangeText={setEditDurationGoal}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Daily Steps Goal</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="10000"
+                placeholderTextColor={Colors.white40}
+                keyboardType="numeric"
+                value={editStepsGoal}
+                onChangeText={setEditStepsGoal}
+              />
+            </View>
+            
             <Pressable style={styles.saveButton} onPress={handleSaveGoals}>
               <ThemedText style={styles.saveButtonText}>Save</ThemedText>
             </Pressable>
@@ -551,6 +577,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.white,
   },
+  inputGroup: {
+    marginBottom: Spacing.lg,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.white60,
+    marginBottom: Spacing.xs,
+    marginLeft: Spacing.xs,
+  },
   input: {
     backgroundColor: Colors.white05,
     borderWidth: 1,
@@ -559,7 +595,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
     color: Colors.white,
-    marginBottom: Spacing.md,
     fontSize: 16,
   },
   saveButton: {
