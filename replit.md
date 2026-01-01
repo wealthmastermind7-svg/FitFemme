@@ -99,6 +99,14 @@ scripts/          # Build scripts for Expo web
 
 ## Recent Changes
 
+### UX Improvements (January 2026)
+- Enhanced onboarding flow explaining the app's unique "no-video" guided timer approach
+- Created WorkoutPreviewScreen showing exercise lists, equipment requirements, and workout details before starting
+- Changed workout card button from "Start Workout" to "Preview" to reduce commitment friction
+- Added encouraging feedback messages ("Great form!", "You got this!") to workout player with smooth animations
+- Updated navigation flow: Workout Card → Preview Screen → Player Screen
+- Fixed memory leak in WorkoutPlayerScreen encouragement timeout cleanup
+
 ### App Store Preparation (December 2024)
 - Custom pink-themed app icon generated and deployed to all platforms (iOS, Android, web)
 - Workout filtering system implemented with category pills (All, HIIT, Strength, Cardio, Core, Stretch)
