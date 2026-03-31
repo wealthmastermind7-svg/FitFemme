@@ -86,7 +86,6 @@ export default function ProfileScreen() {
 
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [units, setUnits] = useState("Imperial");
 
@@ -201,9 +200,6 @@ export default function ProfileScreen() {
       case "notifications":
         setNotificationsEnabled(!notificationsEnabled);
         break;
-      case "sounds":
-        setSoundEnabled(!soundEnabled);
-        break;
       case "vibration":
         setVibrationEnabled(!vibrationEnabled);
         break;
@@ -218,8 +214,7 @@ export default function ProfileScreen() {
 
   const appSettings: SettingItem[] = [
     { id: "notifications", icon: "bell", title: "Notifications", type: "toggle", value: notificationsEnabled },
-    { id: "sounds", icon: "volume-2", title: "Workout Sounds", type: "toggle", value: soundEnabled },
-    { id: "vibration", icon: "smartphone", title: "Vibration", type: "toggle", value: vibrationEnabled },
+    { id: "vibration", icon: "smartphone", title: "Haptic Feedback", type: "toggle", value: vibrationEnabled },
   ];
 
   const supportSettings: SettingItem[] = [
@@ -318,7 +313,6 @@ export default function ProfileScreen() {
         <GlassCard style={styles.settingsCard}>
           {appSettings.map((item) => renderSettingItem({ ...item, value: 
             item.id === "notifications" ? notificationsEnabled :
-            item.id === "sounds" ? soundEnabled :
             vibrationEnabled
           }, false, false))}
         </GlassCard>

@@ -82,7 +82,6 @@ export default function WorkoutPlayerScreen() {
   const [isResting, setIsResting] = useState(false);
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [encouragement, setEncouragement] = useState<string | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -97,7 +96,6 @@ export default function WorkoutPlayerScreen() {
     try {
       const profile = await storage.getUserProfile();
       if (profile) {
-        setSoundEnabled(true);
         setVibrationEnabled(true);
       }
     } catch (error) {
