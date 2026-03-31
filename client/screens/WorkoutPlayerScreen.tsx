@@ -21,7 +21,7 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { CircularProgress } from "@/components/CircularProgress";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { sampleWorkouts, Exercise } from "@/lib/storage";
+import { sampleWorkouts, Exercise, storage } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 
 const { width } = Dimensions.get("window");
@@ -82,11 +82,28 @@ export default function WorkoutPlayerScreen() {
   const [isResting, setIsResting] = useState(false);
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [encouragement, setEncouragement] = useState<string | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [vibrationEnabled, setVibrationEnabled] = useState(true);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const encouragementTimeout = useRef<NodeJS.Timeout | null>(null);
   const buttonScale = useSharedValue(1);
   const encouragementOpacity = useSharedValue(0);
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      const profile = await storage.getUserProfile();
+      if (profile) {
+        setSoundEnabled(true);
+        setVibrationEnabled(true);
+      }
+    } catch (error) {
+      console.log("Error loading settings");
+    }
+  };
 
   const encouragingMessages = [
     "Great form!",
@@ -169,7 +186,9 @@ export default function WorkoutPlayerScreen() {
   }, [timeRemaining, isPlaying, workoutComplete]);
 
   const handleExerciseComplete = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    if (vibrationEnabled) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
     
     if (isResting) {
       setIsResting(false);
@@ -193,17 +212,23 @@ export default function WorkoutPlayerScreen() {
     } else {
       setIsPlaying(false);
       setWorkoutComplete(true);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (vibrationEnabled) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
     }
   };
 
   const togglePlayPause = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (vibrationEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
     setIsPlaying(!isPlaying);
   };
 
   const handleSkip = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (vibrationEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     if (currentExerciseIndex < exercises.length - 1) {
       const nextIndex = currentExerciseIndex + 1;
       setCurrentExerciseIndex(nextIndex);
@@ -214,7 +239,9 @@ export default function WorkoutPlayerScreen() {
   };
 
   const handlePrevious = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (vibrationEnabled) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     if (currentExerciseIndex > 0) {
       const prevIndex = currentExerciseIndex - 1;
       setCurrentExerciseIndex(prevIndex);

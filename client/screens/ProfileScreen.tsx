@@ -20,6 +20,65 @@ interface SettingItem {
   value?: string | boolean;
 }
 
+const PRIVACY_POLICY = `PRIVACY POLICY
+
+Last Updated: March 2026
+
+Fit Femme respects your privacy. This policy explains how we collect, use, and protect your information.
+
+1. INFORMATION WE COLLECT
+- Profile information (name, age, weight)
+- Fitness goals and preferences
+- Workout history and performance data
+- App usage analytics
+
+2. HOW WE USE YOUR DATA
+- To personalize your fitness experience
+- To track your progress and achievements
+- To improve our app and services
+- To provide customer support
+
+3. DATA PROTECTION
+We implement industry-standard security measures to protect your personal information. Your data is stored locally on your device and never shared with third parties.
+
+4. YOUR RIGHTS
+You have the right to access, modify, or delete your personal data at any time through the app settings.
+
+5. CONTACT US
+If you have questions about this privacy policy, please contact us at privacy@fitfemme.com`;
+
+const TERMS_OF_SERVICE = `TERMS OF SERVICE
+
+Last Updated: March 2026
+
+1. ACCEPTANCE OF TERMS
+By using Fit Femme, you agree to these terms and conditions. If you do not agree, please do not use the app.
+
+2. LICENSE GRANT
+We grant you a limited, non-exclusive license to use this app for personal fitness purposes.
+
+3. USER RESPONSIBILITIES
+- You agree to use the app lawfully and in accordance with all applicable laws
+- You are responsible for your own fitness and health decisions
+- Consult a healthcare provider before starting a new fitness program
+- You assume all risks associated with your use of the app
+
+4. LIMITATIONS OF LIABILITY
+Fit Femme is provided "as-is" without warranties. We are not liable for any injuries or damages resulting from your use of the app or workout programs.
+
+5. INTELLECTUAL PROPERTY
+All content, design, and functionality of Fit Femme are owned by or licensed to Fit Femme and protected by copyright laws.
+
+6. TERMINATION
+We may terminate your access to the app at any time for violation of these terms.
+
+7. CHANGES TO TERMS
+We may update these terms at any time. Continued use of the app constitutes acceptance of changes.
+
+8. GOVERNING LAW
+These terms are governed by applicable laws. Any disputes shall be resolved in appropriate courts.`;
+
+
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
@@ -35,6 +94,8 @@ export default function ProfileScreen() {
   const [personalInfoModalVisible, setPersonalInfoModalVisible] = useState(false);
   const [goalsModalVisible, setGoalsModalVisible] = useState(false);
   const [unitsModalVisible, setUnitsModalVisible] = useState(false);
+  const [legalModalVisible, setLegalModalVisible] = useState(false);
+  const [legalContent, setLegalContent] = useState<"privacy" | "terms">("privacy");
 
   // Edit form states
   const [editName, setEditName] = useState("");
@@ -115,40 +176,25 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleSupportPress = async (id: string) => {
+  const handleSupportPress = (id: string) => {
     switch (id) {
       case "help":
-        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/help");
+        Alert.alert("Help Center", "Visit our help center for tutorials and FAQs.");
         break;
       case "feedback":
-        Alert.alert("Send Feedback", "Open email client to send feedback", [
-          { text: "Cancel", onPress: () => {} },
-          { text: "OK", onPress: () => {} },
-        ]);
+        Alert.alert("Send Feedback", "Thank you for helping us improve Fit Femme!");
         break;
       case "privacy":
-        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/privacy");
+        setLegalContent("privacy");
+        setLegalModalVisible(true);
         break;
       case "terms":
-        await WebBrowser.openBrowserAsync("https://fitfemme.example.com/terms");
+        setLegalContent("terms");
+        setLegalModalVisible(true);
         break;
     }
   };
 
-  const handleLogout = () => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", onPress: () => {} },
-      {
-        text: "Log Out",
-        onPress: async () => {
-          // Clear app data
-          await storage.clearAllData();
-          setProfile(sampleUserProfile);
-        },
-        style: "destructive",
-      },
-    ]);
-  };
 
   const handleToggle = (id: string) => {
     switch (id) {
@@ -285,13 +331,6 @@ export default function ProfileScreen() {
         </GlassCard>
       </View>
 
-      <View style={styles.section}>
-        <Pressable style={styles.logoutButton} onPress={handleLogout}>
-          <Feather name="log-out" size={20} color={Colors.error} />
-          <ThemedText style={styles.logoutText}>Log Out</ThemedText>
-        </Pressable>
-      </View>
-
       {/* Personal Info Modal */}
       <Modal visible={personalInfoModalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
@@ -424,6 +463,27 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
+      {/* Legal Modal */}
+      <Modal visible={legalModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>
+                {legalContent === "privacy" ? "Privacy Policy" : "Terms of Service"}
+              </ThemedText>
+              <Pressable onPress={() => setLegalModalVisible(false)}>
+                <Feather name="x" size={24} color={Colors.white} />
+              </Pressable>
+            </View>
+            <ScrollView style={styles.legalContent} showsVerticalScrollIndicator={false}>
+              <ThemedText style={styles.legalText}>
+                {legalContent === "privacy" ? PRIVACY_POLICY : TERMS_OF_SERVICE}
+              </ThemedText>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.footer}>
         <ThemedText style={styles.footerText}>Fit Femme v1.0.0</ThemedText>
         <ThemedText style={styles.footerText}>Made with love</ThemedText>
@@ -540,22 +600,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.white40,
   },
-  logoutButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.md,
-    backgroundColor: Colors.error + "10",
-    borderWidth: 1,
-    borderColor: Colors.error + "40",
-    borderRadius: BorderRadius.md,
-    padding: Spacing.lg,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.error,
-  },
   footer: {
     alignItems: "center",
     paddingVertical: Spacing["3xl"],
@@ -639,5 +683,14 @@ const styles = StyleSheet.create({
   unitOptionTextSelected: {
     color: Colors.white,
     fontWeight: "600",
+  },
+  legalContent: {
+    maxHeight: 400,
+    marginBottom: Spacing.lg,
+  },
+  legalText: {
+    fontSize: 13,
+    color: Colors.white60,
+    lineHeight: 20,
   },
 });
