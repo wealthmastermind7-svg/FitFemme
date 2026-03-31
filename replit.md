@@ -99,6 +99,12 @@ scripts/          # Build scripts for Expo web
 
 ## Recent Changes
 
+### Exercise Media Enhancements (March 2026)
+- Integrated Burpees exercise demonstration GIF (720x720, 1.6MB) into WorkoutPlayerScreen
+- Updated Exercise interface to support optional `gifUri` field for exercise demonstrations
+- GIF displays during active exercise sets, not during rest periods
+- Extracted from user-provided ZIP containing 4 GIF resolutions (180p, 360p, 720p, 1080p)
+
 ### UX Improvements (January 2026)
 - Enhanced onboarding flow explaining the app's unique "no-video" guided timer approach
 - Created WorkoutPreviewScreen showing exercise lists, equipment requirements, and workout details before starting

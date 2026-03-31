@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Pressable,
   Dimensions,
+  Image,
 } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,6 +31,10 @@ const workoutImages: { [key: number]: any } = {
   2: require("../../assets/images/workouts/workout2.png"),
   3: require("../../assets/images/workouts/workout3.png"),
   4: require("../../assets/images/workouts/workout4.png"),
+};
+
+const exerciseGifs: { [key: number]: any } = {
+  1: require("../../assets/gifs/burpee-demo.gif"),
 };
 
 type WorkoutPlayerRouteProp = RouteProp<RootStackParamList, "WorkoutPlayer">;
@@ -254,6 +259,13 @@ export default function WorkoutPlayerScreen() {
 
       <View style={styles.content}>
         <View style={styles.exerciseInfo}>
+          {!isResting && currentExercise?.gifUri && exerciseGifs[currentExercise.gifUri] ? (
+            <Image
+              source={exerciseGifs[currentExercise.gifUri]}
+              style={styles.exerciseGif}
+              resizeMode="contain"
+            />
+          ) : null}
           {isResting ? (
             <View style={styles.restBadge}>
               <ThemedText style={styles.restText}>REST</ThemedText>
@@ -437,6 +449,12 @@ const styles = StyleSheet.create({
   setInfo: {
     fontSize: 16,
     color: Colors.white40,
+  },
+  exerciseGif: {
+    width: 280,
+    height: 280,
+    marginBottom: Spacing.xl,
+    borderRadius: BorderRadius.lg,
   },
   timerContainer: {
     alignItems: "center",

@@ -38,6 +38,7 @@ export interface Exercise {
   name: string;
   duration: number;
   sets: number;
+  gifUri?: number;
 }
 
 export interface Milestone {
@@ -171,7 +172,7 @@ export const sampleWorkouts: Workout[] = [
     isNew: false,
     exercises: [
       { id: "1", name: "Jump Squats", duration: 45, sets: 5 },
-      { id: "2", name: "Burpees", duration: 45, sets: 5 },
+      { id: "2", name: "Burpees", duration: 45, sets: 5, gifUri: 1 },
       { id: "3", name: "Mountain Climbers", duration: 45, sets: 5 },
       { id: "4", name: "Push-ups", duration: 45, sets: 5 },
       { id: "5", name: "Plank Jacks", duration: 45, sets: 5 },
