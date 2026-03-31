@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useFocusEffect } from "@react-navigation/native";
 import Svg, { Polygon, Text as SvgText } from "react-native-svg";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -25,6 +26,12 @@ export default function StatsScreen() {
   useEffect(() => {
     calculateMuscleProgress();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      calculateMuscleProgress();
+    }, [])
+  );
 
   const calculateMuscleProgress = async () => {
     try {
