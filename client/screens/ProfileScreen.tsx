@@ -285,18 +285,8 @@ export default function ProfileScreen() {
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <ThemedText style={styles.statValue}>{profile.caloriesGoal}</ThemedText>
-            <ThemedText style={styles.statLabel}>Cal Goal</ThemedText>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
             <ThemedText style={styles.statValue}>{profile.durationGoal}</ThemedText>
             <ThemedText style={styles.statLabel}>Min Goal</ThemedText>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <ThemedText style={styles.statValue}>{profile.stepsGoal / 1000}k</ThemedText>
-            <ThemedText style={styles.statLabel}>Steps Goal</ThemedText>
           </View>
         </View>
       </View>

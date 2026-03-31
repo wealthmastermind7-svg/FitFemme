@@ -16,7 +16,6 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { CircularProgress } from "@/components/CircularProgress";
-import { WeeklyChart } from "@/components/WeeklyChart";
 import { WorkoutCard } from "@/components/WorkoutCard";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import {
@@ -25,7 +24,6 @@ import {
   DailyMetrics,
   sampleUserProfile,
   sampleDailyMetrics,
-  sampleWeeklyActivity,
   sampleWorkouts,
   initializeSampleData,
 } from "@/lib/storage";
@@ -38,8 +36,6 @@ export default function HomeScreen() {
 
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
-  const [weeklyActivity, setWeeklyActivity] = useState<number[]>(sampleWeeklyActivity);
-  const [streak, setStreak] = useState(5);
 
   useEffect(() => {
     loadData();
@@ -49,13 +45,9 @@ export default function HomeScreen() {
     await initializeSampleData();
     const userProfile = await storage.getUserProfile();
     const dailyMetrics = await storage.getDailyMetrics();
-    const activityData = await storage.getWeeklyActivity();
-    const streakData = await storage.getStreak();
 
     if (userProfile) setProfile(userProfile);
     if (dailyMetrics) setMetrics(dailyMetrics);
-    if (activityData.length > 0) setWeeklyActivity(activityData);
-    setStreak(streakData);
   };
 
   const getGreeting = () => {
@@ -72,9 +64,7 @@ export default function HomeScreen() {
     return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
   };
 
-  const caloriesProgress = (metrics.caloriesBurned / profile.caloriesGoal) * 100;
   const durationProgress = (metrics.durationMinutes / profile.durationGoal) * 100;
-  const stepsProgress = (metrics.steps / profile.stepsGoal) * 100;
 
   const handleWorkoutPress = (workoutId: string) => {
     navigation.navigate("WorkoutPreview", { workoutId });
@@ -125,10 +115,6 @@ export default function HomeScreen() {
               {getGreeting()},{"\n"}{profile.name}
             </ThemedText>
             <View style={styles.badges}>
-              <View style={[styles.badge, styles.badgePrimary]}>
-                <Feather name="zap" size={14} color={Colors.white} />
-                <ThemedText style={styles.badgeText}>{streak} Day Streak</ThemedText>
-              </View>
               <View style={[styles.badge, styles.badgeSecondary]}>
                 <Feather name="clock" size={14} color={Colors.white} />
                 <ThemedText style={styles.badgeText}>{profile.durationGoal}m Goal</ThemedText>
@@ -150,19 +136,6 @@ export default function HomeScreen() {
           <View style={styles.progressRings}>
             <View style={styles.ringContainer}>
               <CircularProgress
-                size={80}
-                strokeWidth={6}
-                progress={caloriesProgress}
-                color={Colors.primary}
-              >
-                <Feather name="zap" size={20} color={Colors.primary} />
-              </CircularProgress>
-              <ThemedText style={styles.ringValue}>{metrics.caloriesBurned}</ThemedText>
-              <ThemedText style={styles.ringLabel}>KCAL</ThemedText>
-            </View>
-
-            <View style={styles.ringContainer}>
-              <CircularProgress
                 size={96}
                 strokeWidth={5}
                 progress={durationProgress}
@@ -171,31 +144,9 @@ export default function HomeScreen() {
                 <ThemedText style={styles.durationValue}>{metrics.durationMinutes}</ThemedText>
                 <ThemedText style={styles.durationUnit}>min</ThemedText>
               </CircularProgress>
-              <ThemedText style={styles.ringValue}>Duration</ThemedText>
-            </View>
-
-            <View style={styles.ringContainer}>
-              <CircularProgress
-                size={80}
-                strokeWidth={6}
-                progress={stepsProgress}
-                color={Colors.purple}
-              >
-                <Feather name="activity" size={20} color={Colors.purple} />
-              </CircularProgress>
-              <ThemedText style={styles.ringValue}>
-                {(metrics.steps / 1000).toFixed(1)}k
-              </ThemedText>
-              <ThemedText style={styles.ringLabel}>STEPS</ThemedText>
+              <ThemedText style={styles.ringValue}>Today</ThemedText>
             </View>
           </View>
-        </GlassCard>
-      </View>
-
-      <View style={styles.chartSection}>
-        <ThemedText style={styles.sectionTitle}>Weekly Activity</ThemedText>
-        <GlassCard style={styles.chartCard}>
-          <WeeklyChart data={weeklyActivity} activeDay={3} />
         </GlassCard>
       </View>
 
