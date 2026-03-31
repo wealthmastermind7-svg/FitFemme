@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -6,17 +6,49 @@ import Svg, { Polygon, Text as SvgText } from "react-native-svg";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing } from "@/constants/theme";
+import { storage, sampleWorkouts } from "@/lib/storage";
+
+const muscleGroups = {
+  "Full Body Burn": { Back: 15, Chest: 15, Arms: 15, Legs: 15, Core: 15 },
+  "Glute Gains": { Back: 10, Chest: 5, Arms: 5, Legs: 40, Core: 10 },
+  "Core Crusher": { Back: 10, Chest: 5, Arms: 5, Legs: 5, Core: 35 },
+  "Cardio Queen": { Back: 15, Chest: 15, Arms: 15, Legs: 30, Core: 10 },
+  "Flexibility Flow": { Back: 20, Chest: 20, Arms: 20, Legs: 20, Core: 20 },
+  "No-Equipment Abs": { Back: 5, Chest: 5, Arms: 5, Legs: 5, Core: 40 },
+};
 
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
+  const [muscleData, setMuscleData] = useState({ Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 });
 
-  const muscleData = {
-    Back: 65,
-    Chest: 45,
-    Arms: 55,
-    Legs: 70,
-    Core: 60,
+  useEffect(() => {
+    calculateMuscleProgress();
+  }, []);
+
+  const calculateMuscleProgress = async () => {
+    try {
+      const dailyMetrics = await storage.getDailyMetrics();
+      
+      if (dailyMetrics && dailyMetrics.workoutsCompleted) {
+        const newMuscleData = { Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 };
+        
+        dailyMetrics.workoutsCompleted.forEach((workoutId) => {
+          const workout = sampleWorkouts.find(w => w.id === workoutId);
+          if (workout && muscleGroups[workout.title as keyof typeof muscleGroups]) {
+            const muscleContribution = muscleGroups[workout.title as keyof typeof muscleGroups];
+            Object.keys(newMuscleData).forEach(muscle => {
+              newMuscleData[muscle as keyof typeof newMuscleData] += 
+                muscleContribution[muscle as keyof typeof muscleContribution] || 0;
+            });
+          }
+        });
+        
+        setMuscleData(newMuscleData);
+      }
+    } catch (error) {
+      console.log("Error calculating muscle progress:", error);
+    }
   };
 
   const labels = Object.keys(muscleData);
