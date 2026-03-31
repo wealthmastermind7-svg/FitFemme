@@ -258,11 +258,11 @@ export const sampleWorkouts: Workout[] = [
     category: "Core",
     isNew: true,
     exercises: [
-      { id: "1", name: "Crunches", duration: 45, sets: 4 },
-      { id: "2", name: "Reverse Crunches", duration: 45, sets: 4 },
-      { id: "3", name: "Bicycle Crunches", duration: 45, sets: 4 },
-      { id: "4", name: "Dead Bug", duration: 45, sets: 4 },
-      { id: "5", name: "Hollow Body Hold", duration: 45, sets: 3 },
+      { id: "1", name: "Jack Split Crunches", duration: 45, sets: 4, gifUri: 23 },
+      { id: "2", name: "Reverse Crunch", duration: 45, sets: 4, gifUri: 24 },
+      { id: "3", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 25 },
+      { id: "4", name: "Dead Bug", duration: 45, sets: 4, gifUri: 26 },
+      { id: "5", name: "Hollow Hold", duration: 45, sets: 3, gifUri: 27 },
     ],
   },
 ];

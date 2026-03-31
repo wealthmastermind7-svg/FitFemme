@@ -56,6 +56,11 @@ const exerciseGifs: { [key: number]: any } = {
   20: require("../../assets/gifs/plank-jack-core.gif"),
   21: require("../../assets/gifs/high-knee-jump-rope.gif"),
   22: require("../../assets/gifs/jump-squat.gif"),
+  23: require("../../assets/gifs/jack-split-crunches.gif"),
+  24: require("../../assets/gifs/reverse-crunch.gif"),
+  25: require("../../assets/gifs/bicycle-crunch-ab.gif"),
+  26: require("../../assets/gifs/dead-bug.gif"),
+  27: require("../../assets/gifs/hollow-hold.gif"),
 };
 
 type WorkoutPlayerRouteProp = RouteProp<RootStackParamList, "WorkoutPlayer">;
