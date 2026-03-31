@@ -247,6 +247,24 @@ export const sampleWorkouts: Workout[] = [
       { id: "5", name: "Cat-Cow Stretch", duration: 45, sets: 3 },
     ],
   },
+  {
+    id: "6",
+    title: "No-Equipment Abs",
+    duration: 15,
+    intensity: "High",
+    coverImage: 3,
+    muscleGroups: ["Abs", "Core"],
+    equipment: ["No Equipment"],
+    category: "Core",
+    isNew: true,
+    exercises: [
+      { id: "1", name: "Crunches", duration: 45, sets: 4 },
+      { id: "2", name: "Reverse Crunches", duration: 45, sets: 4 },
+      { id: "3", name: "Bicycle Crunches", duration: 45, sets: 4 },
+      { id: "4", name: "Dead Bug", duration: 45, sets: 4 },
+      { id: "5", name: "Hollow Body Hold", duration: 45, sets: 3 },
+    ],
+  },
 ];
 
 export const sampleMilestones: Milestone[] = [
