@@ -100,10 +100,16 @@ scripts/          # Build scripts for Expo web
 ## Recent Changes
 
 ### Exercise Media Enhancements (March 2026)
-- Integrated Burpees exercise demonstration GIF (720x720, 1.6MB) into WorkoutPlayerScreen
+- Integrated 18 exercise demonstration GIFs (720x720) across all workouts
 - Updated Exercise interface to support optional `gifUri` field for exercise demonstrations
-- GIF displays during active exercise sets, not during rest periods
-- Extracted from user-provided ZIP containing 4 GIF resolutions (180p, 360p, 720p, 1080p)
+- GIFs display during active exercise sets, not during rest periods
+- Full Body Burn: Burpees, Mountain Climber, Plank Jacks, Push-ups
+- Glute Gains: Glute Bridge Walk, Basic to Cross Donkey Kick, Bottle Weighted Sumo Squat
+- Core Crusher: Bicycle Crunch, Lying Leg Raise, Russian Twist
+- Cardio Queen: High Knee Tap, Jump Box, Suspender Sprinter
+- Flexibility Flow: Standing Forward Bend Uttanasana, Seated Hamstring Stretch with Chair, Kneeling Hip Flexor Stretch, Double Pigeon Pose, Cow Yoga Pose Bitilasana
+- No-Equipment Abs: No GIFs yet (ready for user to add)
+- Updated exercise names to match correct terminology from GIF library
 
 ### UX Improvements (January 2026)
 - Enhanced onboarding flow explaining the app's unique "no-video" guided timer approach

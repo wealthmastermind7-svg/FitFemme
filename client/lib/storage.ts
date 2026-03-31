@@ -173,9 +173,9 @@ export const sampleWorkouts: Workout[] = [
     exercises: [
       { id: "1", name: "Jump Squats", duration: 45, sets: 5 },
       { id: "2", name: "Burpees", duration: 45, sets: 5, gifUri: 1 },
-      { id: "3", name: "Mountain Climbers", duration: 45, sets: 5 },
-      { id: "4", name: "Push-ups", duration: 45, sets: 5 },
-      { id: "5", name: "Plank Jacks", duration: 45, sets: 5 },
+      { id: "3", name: "Mountain Climber", duration: 45, sets: 5, gifUri: 2 },
+      { id: "4", name: "Push-ups", duration: 45, sets: 5, gifUri: 18 },
+      { id: "5", name: "Plank Jacks", duration: 45, sets: 5, gifUri: 3 },
     ],
   },
   {
@@ -189,10 +189,10 @@ export const sampleWorkouts: Workout[] = [
     category: "Strength",
     isNew: true,
     exercises: [
-      { id: "1", name: "Glute Bridges", duration: 45, sets: 4 },
-      { id: "2", name: "Donkey Kicks", duration: 45, sets: 4 },
+      { id: "1", name: "Glute Bridge Walk", duration: 45, sets: 4, gifUri: 4 },
+      { id: "2", name: "Basic to Cross Donkey Kick", duration: 45, sets: 4, gifUri: 5 },
       { id: "3", name: "Fire Hydrants", duration: 45, sets: 4 },
-      { id: "4", name: "Sumo Squats", duration: 45, sets: 4 },
+      { id: "4", name: "Bottle Weighted Sumo Squat", duration: 45, sets: 4, gifUri: 6 },
     ],
   },
   {
@@ -206,9 +206,9 @@ export const sampleWorkouts: Workout[] = [
     category: "Core",
     isNew: false,
     exercises: [
-      { id: "1", name: "Bicycle Crunches", duration: 45, sets: 4 },
-      { id: "2", name: "Leg Raises", duration: 45, sets: 4 },
-      { id: "3", name: "Russian Twists", duration: 45, sets: 4 },
+      { id: "1", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 7 },
+      { id: "2", name: "Lying Leg Raise", duration: 45, sets: 4, gifUri: 8 },
+      { id: "3", name: "Russian Twist", duration: 45, sets: 4, gifUri: 9 },
       { id: "4", name: "Plank Hold", duration: 60, sets: 3 },
     ],
   },
@@ -223,10 +223,10 @@ export const sampleWorkouts: Workout[] = [
     category: "Cardio",
     isNew: true,
     exercises: [
-      { id: "1", name: "High Knees", duration: 45, sets: 5 },
+      { id: "1", name: "High Knee Tap", duration: 45, sets: 5, gifUri: 10 },
       { id: "2", name: "Jump Rope", duration: 60, sets: 4 },
-      { id: "3", name: "Box Jumps", duration: 45, sets: 4 },
-      { id: "4", name: "Sprint in Place", duration: 30, sets: 6 },
+      { id: "3", name: "Jump Box", duration: 45, sets: 4, gifUri: 11 },
+      { id: "4", name: "Suspender Sprinter", duration: 30, sets: 6, gifUri: 12 },
     ],
   },
   {
@@ -240,11 +240,11 @@ export const sampleWorkouts: Workout[] = [
     category: "Stretch",
     isNew: false,
     exercises: [
-      { id: "1", name: "Standing Forward Fold", duration: 60, sets: 2 },
-      { id: "2", name: "Seated Hamstring Stretch", duration: 45, sets: 3 },
-      { id: "3", name: "Hip Flexor Stretch", duration: 45, sets: 3 },
-      { id: "4", name: "Pigeon Pose", duration: 60, sets: 2 },
-      { id: "5", name: "Cat-Cow Stretch", duration: 45, sets: 3 },
+      { id: "1", name: "Standing Forward Bend Uttanasana", duration: 60, sets: 2, gifUri: 13 },
+      { id: "2", name: "Seated Hamstring Stretch with Chair", duration: 45, sets: 3, gifUri: 14 },
+      { id: "3", name: "Kneeling Hip Flexor Stretch", duration: 45, sets: 3, gifUri: 15 },
+      { id: "4", name: "Double Pigeon Pose", duration: 60, sets: 2, gifUri: 16 },
+      { id: "5", name: "Cow Yoga Pose Bitilasana", duration: 45, sets: 3, gifUri: 17 },
     ],
   },
   {

@@ -35,6 +35,23 @@ const workoutImages: { [key: number]: any } = {
 
 const exerciseGifs: { [key: number]: any } = {
   1: require("../../assets/gifs/burpee-demo.gif"),
+  2: require("../../assets/gifs/mountain-climber.gif"),
+  3: require("../../assets/gifs/plank-jack.gif"),
+  4: require("../../assets/gifs/glute-bridge-walk.gif"),
+  5: require("../../assets/gifs/donkey-kick.gif"),
+  6: require("../../assets/gifs/sumo-squat.gif"),
+  7: require("../../assets/gifs/bicycle-crunch.gif"),
+  8: require("../../assets/gifs/lying-leg-raise.gif"),
+  9: require("../../assets/gifs/russian-twist.gif"),
+  10: require("../../assets/gifs/high-knees.gif"),
+  11: require("../../assets/gifs/box-jumps.gif"),
+  12: require("../../assets/gifs/sprint-in-place.gif"),
+  13: require("../../assets/gifs/standing-forward-fold.gif"),
+  14: require("../../assets/gifs/hamstring-stretch.gif"),
+  15: require("../../assets/gifs/hip-flexor-stretch.gif"),
+  16: require("../../assets/gifs/pigeon-pose.gif"),
+  17: require("../../assets/gifs/cat-cow-stretch.gif"),
+  18: require("../../assets/gifs/push-ups.gif"),
 };
 
 type WorkoutPlayerRouteProp = RouteProp<RootStackParamList, "WorkoutPlayer">;
