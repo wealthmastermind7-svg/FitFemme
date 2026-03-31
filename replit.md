@@ -99,6 +99,15 @@ scripts/          # Build scripts for Expo web
 
 ## Recent Changes
 
+### App Store Readiness - Cleanup (March 2026)
+- Simplified StatsScreen to remove hardcoded/non-functional content
+- Removed hardcoded charts (Calories Burned with fake data for Week/Month/Year)
+- Removed hardcoded Health Metrics section (Heart Rate, Sleep, Hydration alerts)
+- Removed period selector (Week/Month/Year buttons)
+- Kept only functional Milestones section for tracking achievements
+- Screen now shows "Achievements" header with editable milestone tracking
+- All fake data and placeholder UI removed for app store submission
+
 ### Exercise Media Enhancements (March 2026)
 - Integrated 21 exercise demonstration GIFs (720x720) across all workouts
 - Updated Exercise interface to support optional `gifUri` field for exercise demonstrations
