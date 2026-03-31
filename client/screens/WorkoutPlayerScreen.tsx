@@ -428,6 +428,7 @@ const styles = StyleSheet.create({
   exerciseInfo: {
     alignItems: "center",
     marginBottom: Spacing["3xl"],
+    width: "100%",
   },
   restBadge: {
     backgroundColor: Colors.success,
@@ -442,22 +443,21 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   exerciseName: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "800",
     color: Colors.white,
     textAlign: "center",
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
   setInfo: {
     fontSize: 16,
     color: Colors.white40,
   },
   gifContainer: {
-    width: 280,
-    height: 280,
-    marginBottom: Spacing.xl,
+    width: 240,
+    height: 240,
+    marginBottom: Spacing["2xl"],
     borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.backgroundDark,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: Spacing["3xl"],
+    marginBottom: Spacing["2xl"],
   },
   timerText: {
     fontSize: 56,
