@@ -191,7 +191,7 @@ export const sampleWorkouts: Workout[] = [
     exercises: [
       { id: "1", name: "Glute Bridge Walk", duration: 45, sets: 4, gifUri: 4 },
       { id: "2", name: "Basic to Cross Donkey Kick", duration: 45, sets: 4, gifUri: 5 },
-      { id: "3", name: "Fire Hydrants", duration: 45, sets: 4 },
+      { id: "3", name: "Resistance Band Lateral Walk", duration: 45, sets: 4, gifUri: 19 },
       { id: "4", name: "Bottle Weighted Sumo Squat", duration: 45, sets: 4, gifUri: 6 },
     ],
   },
@@ -209,7 +209,7 @@ export const sampleWorkouts: Workout[] = [
       { id: "1", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 7 },
       { id: "2", name: "Lying Leg Raise", duration: 45, sets: 4, gifUri: 8 },
       { id: "3", name: "Russian Twist", duration: 45, sets: 4, gifUri: 9 },
-      { id: "4", name: "Plank Hold", duration: 60, sets: 3 },
+      { id: "4", name: "Plank Jack", duration: 60, sets: 3, gifUri: 20 },
     ],
   },
   {
@@ -224,7 +224,7 @@ export const sampleWorkouts: Workout[] = [
     isNew: true,
     exercises: [
       { id: "1", name: "High Knee Tap", duration: 45, sets: 5, gifUri: 10 },
-      { id: "2", name: "Jump Rope", duration: 60, sets: 4 },
+      { id: "2", name: "High Knee Jump Rope", duration: 60, sets: 4, gifUri: 21 },
       { id: "3", name: "Jump Box", duration: 45, sets: 4, gifUri: 11 },
       { id: "4", name: "Suspender Sprinter", duration: 30, sets: 6, gifUri: 12 },
     ],
