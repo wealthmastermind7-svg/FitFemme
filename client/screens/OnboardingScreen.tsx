@@ -33,7 +33,7 @@ const slides = [
     title1: "CURATED",
     title2: "WORKOUT",
     title3: "LIBRARY",
-    subtitle: "Premium workouts with guided timers, not videos. Focus on your form while we count the reps.",
+    subtitle: "Premium workouts with guided timers and visual demos. Focus on your form while we count the reps.",
     image: require("../../assets/images/onboarding/slide1.png"),
     icon: "play-circle",
   },
