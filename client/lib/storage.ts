@@ -171,7 +171,7 @@ export const sampleWorkouts: Workout[] = [
     category: "HIIT",
     isNew: false,
     exercises: [
-      { id: "1", name: "Jump Squats", duration: 45, sets: 5 },
+      { id: "1", name: "Jump Squats", duration: 45, sets: 5, gifUri: 22 },
       { id: "2", name: "Burpees", duration: 45, sets: 5, gifUri: 1 },
       { id: "3", name: "Mountain Climber", duration: 45, sets: 5, gifUri: 2 },
       { id: "4", name: "Push-ups", duration: 45, sets: 5, gifUri: 18 },
