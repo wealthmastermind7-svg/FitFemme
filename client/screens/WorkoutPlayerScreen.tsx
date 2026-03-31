@@ -260,11 +260,13 @@ export default function WorkoutPlayerScreen() {
       <View style={styles.content}>
         <View style={styles.exerciseInfo}>
           {!isResting && currentExercise?.gifUri && exerciseGifs[currentExercise.gifUri] ? (
-            <Image
-              source={exerciseGifs[currentExercise.gifUri]}
-              style={styles.exerciseGif}
-              resizeMode="contain"
-            />
+            <View style={styles.gifContainer}>
+              <Image
+                source={exerciseGifs[currentExercise.gifUri]}
+                style={styles.exerciseGif}
+                resizeMode="contain"
+              />
+            </View>
           ) : null}
           {isResting ? (
             <View style={styles.restBadge}>
@@ -450,11 +452,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.white40,
   },
-  exerciseGif: {
+  gifContainer: {
     width: 280,
     height: 280,
     marginBottom: Spacing.xl,
     borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.backgroundDark,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  exerciseGif: {
+    width: "100%",
+    height: "100%",
   },
   timerContainer: {
     alignItems: "center",
