@@ -45,7 +45,7 @@ We implement industry-standard security measures to protect your personal inform
 You have the right to access, modify, or delete your personal data at any time through the app settings.
 
 5. CONTACT US
-If you have questions about this privacy policy, please contact us at privacy@fitfemme.com`;
+If you have questions about this privacy policy, please contact us at admin@cerolauto.com`;
 
 const TERMS_OF_SERVICE = `TERMS OF SERVICE
 

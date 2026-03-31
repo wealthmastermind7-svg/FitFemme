@@ -1,30 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
+import Svg, { Polygon, Text as SvgText } from "react-native-svg";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import { storage, sampleMilestones, Milestone } from "@/lib/storage";
+import { Colors, Spacing } from "@/constants/theme";
 
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
 
-  const [milestones, setMilestones] = useState<Milestone[]>(sampleMilestones);
-  const [expandedMilestones, setExpandedMilestones] = useState(false);
-
-  useEffect(() => {
-    loadMilestones();
-  }, []);
-
-  const loadMilestones = async () => {
-    const data = await storage.getMilestones();
-    if (data.length > 0) setMilestones(data);
+  const muscleData = {
+    Back: 65,
+    Chest: 45,
+    Arms: 55,
+    Legs: 70,
+    Core: 60,
   };
 
-  const visibleMilestones = expandedMilestones ? milestones : milestones.slice(0, 4);
+  const labels = Object.keys(muscleData);
+  const values = Object.values(muscleData);
+  const numSides = 5;
+  const center = 150;
+  const radius = 100;
+
+  const getPoint = (index: number, value: number) => {
+    const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+    const scaledRadius = (value / 100) * radius;
+    const x = center + scaledRadius * Math.cos(angle);
+    const y = center + scaledRadius * Math.sin(angle);
+    return { x, y };
+  };
+
+  const getGridPoint = (index: number, level: number) => {
+    const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+    const scaledRadius = (level / 100) * radius;
+    const x = center + scaledRadius * Math.cos(angle);
+    const y = center + scaledRadius * Math.sin(angle);
+    return { x, y };
+  };
+
+  const polygonPoints = values
+    .map((val, idx) => getPoint(idx, val))
+    .map((p) => `${p.x},${p.y}`)
+    .join(" ");
 
   return (
     <ScrollView
@@ -36,54 +56,57 @@ export default function StatsScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.header}>
-        <ThemedText style={styles.title}>Achievements</ThemedText>
-        <ThemedText style={styles.subtitle}>Track your milestones</ThemedText>
+        <ThemedText style={styles.title}>Muscle Distribution</ThemedText>
+        <ThemedText style={styles.subtitle}>Workout focus areas</ThemedText>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <ThemedText style={styles.sectionTitle}>Milestones</ThemedText>
-          <Pressable onPress={() => setExpandedMilestones(!expandedMilestones)}>
-            <ThemedText style={styles.viewAllLink}>
-              {expandedMilestones ? "Show less" : "View all"}
-            </ThemedText>
-          </Pressable>
-        </View>
-        <View style={styles.milestonesGrid}>
-          {visibleMilestones.map((milestone) => (
-            <Pressable
-              key={milestone.id}
-              style={[
-                styles.milestoneCard,
-                milestone.achieved && styles.milestoneAchieved,
-              ]}
-            >
-              <View
-                style={[
-                  styles.milestoneIcon,
-                  milestone.achieved && styles.milestoneIconAchieved,
-                ]}
+      <View style={styles.chartCard}>
+        <Svg width={300} height={340}>
+          {[20, 40, 60, 80, 100].map((level) => {
+            const gridPoints = Array.from({ length: numSides }, (_, i) =>
+              getGridPoint(i, level)
+            )
+              .map((p) => `${p.x},${p.y}`)
+              .join(" ");
+            return (
+              <Polygon
+                key={`grid-${level}`}
+                points={gridPoints}
+                fill="none"
+                stroke={Colors.white10}
+                strokeWidth="1"
+              />
+            );
+          })}
+
+          <Polygon
+            points={polygonPoints}
+            fill={Colors.primary + "30"}
+            stroke={Colors.primary}
+            strokeWidth="2.5"
+          />
+
+          {labels.map((label, idx) => {
+            const point = getPoint(idx, 110);
+            return (
+              <SvgText
+                key={`label-${idx}`}
+                x={point.x}
+                y={point.y}
+                fontSize="16"
+                fill={Colors.white60}
+                textAnchor="middle"
+                fontWeight="600"
               >
-                <Feather
-                  name={milestone.icon as any}
-                  size={24}
-                  color={milestone.achieved ? Colors.white : Colors.white40}
-                />
-              </View>
-              <ThemedText
-                style={[
-                  styles.milestoneTitle,
-                  milestone.achieved && styles.milestoneTitleAchieved,
-                ]}
-              >
-                {milestone.title}
-              </ThemedText>
-              {milestone.achieved && (
-                <Feather name="check-circle" size={16} color={Colors.success} />
-              )}
-            </Pressable>
-          ))}
-        </View>
+                {label}
+              </SvgText>
+            );
+          })}
+        </Svg>
+
+        <ThemedText style={styles.emptyState}>
+          NO WORKOUTS TRACKED YET THIS MONTH
+        </ThemedText>
       </View>
     </ScrollView>
   );
@@ -108,64 +131,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.white40,
   },
-  section: {
-    paddingHorizontal: Spacing["2xl"],
-    marginBottom: Spacing["2xl"],
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: Spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-  viewAllLink: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: Colors.primary,
-  },
-  milestonesGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: Spacing.md,
-  },
-  milestoneCard: {
-    width: "47%",
-    flexDirection: "row",
-    alignItems: "center",
+  chartCard: {
+    marginHorizontal: Spacing["2xl"],
     backgroundColor: Colors.backgroundLight,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.lg,
-    gap: Spacing.md,
+    borderRadius: 24,
+    padding: Spacing["2xl"],
     borderWidth: 1,
     borderColor: Colors.white05,
-  },
-  milestoneAchieved: {
-    borderColor: Colors.success + "40",
-    backgroundColor: Colors.success + "10",
-  },
-  milestoneIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.white10,
     alignItems: "center",
-    justifyContent: "center",
   },
-  milestoneIconAchieved: {
-    backgroundColor: Colors.primary,
-  },
-  milestoneTitle: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: "600",
-    color: Colors.white60,
-  },
-  milestoneTitleAchieved: {
-    color: Colors.white,
+  emptyState: {
+    fontSize: 13,
+    color: Colors.white40,
+    textAlign: "center",
+    marginTop: Spacing.xl,
+    fontStyle: "italic",
+    letterSpacing: 0.5,
   },
 });
