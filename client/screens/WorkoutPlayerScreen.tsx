@@ -375,15 +375,6 @@ export default function WorkoutPlayerScreen() {
           </Pressable>
         </View>
       </View>
-
-      <View style={[styles.footer, { paddingBottom: insets.bottom + Spacing.xl }]}>
-        <ThemedText style={styles.footerLabel}>NEXT UP</ThemedText>
-        <ThemedText style={styles.footerExercise}>
-          {currentExerciseIndex < exercises.length - 1
-            ? exercises[currentExerciseIndex + 1].name
-            : "Workout Complete!"}
-        </ThemedText>
-      </View>
     </View>
   );
 }
