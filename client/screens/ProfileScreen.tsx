@@ -100,9 +100,7 @@ export default function ProfileScreen() {
   const [editName, setEditName] = useState("");
   const [editAge, setEditAge] = useState("");
   const [editWeight, setEditWeight] = useState("");
-  const [editCaloriesGoal, setEditCaloriesGoal] = useState("");
   const [editDurationGoal, setEditDurationGoal] = useState("");
-  const [editStepsGoal, setEditStepsGoal] = useState("");
 
   useEffect(() => {
     loadProfile();
@@ -115,9 +113,7 @@ export default function ProfileScreen() {
       setEditName(data.name);
       setEditAge(data.age.toString());
       setEditWeight(data.weight.toString());
-      setEditCaloriesGoal(data.caloriesGoal.toString());
       setEditDurationGoal(data.durationGoal.toString());
-      setEditStepsGoal(data.stepsGoal.toString());
       if (data.units) {
         setUnits(data.units);
       }
@@ -140,9 +136,7 @@ export default function ProfileScreen() {
   const handleSaveGoals = async () => {
     const updated = {
       ...profile,
-      caloriesGoal: parseInt(editCaloriesGoal) || profile.caloriesGoal,
       durationGoal: parseInt(editDurationGoal) || profile.durationGoal,
-      stepsGoal: parseInt(editStepsGoal) || profile.stepsGoal,
       units: units, // Preserve units when saving goals
     };
     setProfile(updated);
@@ -380,18 +374,6 @@ export default function ProfileScreen() {
             </View>
             
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Daily Calories Goal</ThemedText>
-              <TextInput
-                style={styles.input}
-                placeholder="2000"
-                placeholderTextColor={Colors.white40}
-                keyboardType="numeric"
-                value={editCaloriesGoal}
-                onChangeText={setEditCaloriesGoal}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
               <ThemedText style={styles.inputLabel}>Daily Duration Goal (mins)</ThemedText>
               <TextInput
                 style={styles.input}
@@ -400,18 +382,6 @@ export default function ProfileScreen() {
                 keyboardType="numeric"
                 value={editDurationGoal}
                 onChangeText={setEditDurationGoal}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Daily Steps Goal</ThemedText>
-              <TextInput
-                style={styles.input}
-                placeholder="10000"
-                placeholderTextColor={Colors.white40}
-                keyboardType="numeric"
-                value={editStepsGoal}
-                onChangeText={setEditStepsGoal}
               />
             </View>
             
