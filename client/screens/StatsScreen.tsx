@@ -7,16 +7,7 @@ import Svg, { Polygon, Text as SvgText } from "react-native-svg";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing } from "@/constants/theme";
-import { storage, sampleWorkouts } from "@/lib/storage";
-
-const muscleGroups = {
-  "Full Body Burn": { Back: 15, Chest: 15, Arms: 15, Legs: 15, Core: 15 },
-  "Glute Gains": { Back: 10, Chest: 5, Arms: 5, Legs: 40, Core: 10 },
-  "Core Crusher": { Back: 10, Chest: 5, Arms: 5, Legs: 5, Core: 35 },
-  "Cardio Queen": { Back: 15, Chest: 15, Arms: 15, Legs: 30, Core: 10 },
-  "Flexibility Flow": { Back: 20, Chest: 20, Arms: 20, Legs: 20, Core: 20 },
-  "No-Equipment Abs": { Back: 5, Chest: 5, Arms: 5, Legs: 5, Core: 40 },
-};
+import { storage } from "@/lib/storage";
 
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
@@ -35,23 +26,72 @@ export default function StatsScreen() {
 
   const calculateMuscleProgress = async () => {
     try {
-      const dailyMetrics = await storage.getDailyMetrics();
+      const completedExercises = await storage.getCompletedExercises();
       
-      if (dailyMetrics && dailyMetrics.workoutsCompleted) {
-        const newMuscleData = { Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 };
+      if (completedExercises && completedExercises.length > 0) {
+        const newMuscleData: Record<string, number> = {
+          Back: 0,
+          Chest: 0,
+          Arms: 0,
+          Legs: 0,
+          Core: 0,
+        };
         
-        dailyMetrics.workoutsCompleted.forEach((workoutId) => {
-          const workout = sampleWorkouts.find(w => w.id === workoutId);
-          if (workout && muscleGroups[workout.title as keyof typeof muscleGroups]) {
-            const muscleContribution = muscleGroups[workout.title as keyof typeof muscleGroups];
-            Object.keys(newMuscleData).forEach(muscle => {
-              newMuscleData[muscle as keyof typeof newMuscleData] += 
-                muscleContribution[muscle as keyof typeof muscleContribution] || 0;
-            });
+        // Count occurrences of each muscle group
+        const muscleGroupCounts: Record<string, number> = {
+          Back: 0,
+          Chest: 0,
+          Arms: 0,
+          Legs: 0,
+          Core: 0,
+          Glutes: 0,
+          Quads: 0,
+          Hamstrings: 0,
+          Shoulders: 0,
+          Obliques: 0,
+          "Lower Abs": 0,
+          Hips: 0,
+          Cardio: 0,
+        };
+        
+        // Map other muscle groups to the pentagon's primary 5
+        const muscleMapping: Record<string, string> = {
+          Glutes: "Legs",
+          Quads: "Legs",
+          Hamstrings: "Legs",
+          Shoulders: "Arms",
+          Obliques: "Core",
+          "Lower Abs": "Core",
+          Abs: "Core",
+          Hips: "Legs",
+          Cardio: "Legs",
+        };
+        
+        completedExercises.forEach((exercise) => {
+          exercise.muscleGroups.forEach((muscle) => {
+            muscleGroupCounts[muscle] = (muscleGroupCounts[muscle] || 0) + 1;
+          });
+        });
+        
+        // Aggregate counts to pentagon muscles
+        Object.keys(muscleGroupCounts).forEach((muscle) => {
+          const mappedMuscle = muscleMapping[muscle] || muscle;
+          if (mappedMuscle in newMuscleData) {
+            newMuscleData[mappedMuscle] += muscleGroupCounts[muscle];
           }
         });
         
+        // Normalize to percentage scale (0-100)
+        const total = Object.values(newMuscleData).reduce((a, b) => a + b, 0);
+        if (total > 0) {
+          Object.keys(newMuscleData).forEach((muscle) => {
+            newMuscleData[muscle] = Math.round((newMuscleData[muscle] / total) * 100);
+          });
+        }
+        
         setMuscleData(newMuscleData);
+      } else {
+        setMuscleData({ Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 });
       }
     } catch (error) {
       console.log("Error calculating muscle progress:", error);

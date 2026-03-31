@@ -18,6 +18,8 @@ export interface DailyMetrics {
   hydrationOz: number;
   heartRateAvg: number;
   sleepHours: number;
+  completedExercises?: CompletedExercise[];
+  workoutsCompleted?: string[];
 }
 
 export interface Workout {
@@ -39,6 +41,16 @@ export interface Exercise {
   duration: number;
   sets: number;
   gifUri?: number;
+  muscleGroups?: string[];
+}
+
+export interface CompletedExercise {
+  workoutId: string;
+  workoutTitle: string;
+  exerciseId: string;
+  exerciseName: string;
+  muscleGroups: string[];
+  completedAt: string;
 }
 
 export interface Milestone {
@@ -57,6 +69,7 @@ const KEYS = {
   MILESTONES: "@milestones",
   STREAK: "@streak",
   WEEKLY_ACTIVITY: "@weeklyActivity",
+  COMPLETED_EXERCISES: "@completedExercises",
 };
 
 export const storage = {
@@ -133,6 +146,26 @@ export const storage = {
     await AsyncStorage.setItem(KEYS.MILESTONES, JSON.stringify(milestones));
   },
 
+  async addCompletedExercise(exercise: CompletedExercise): Promise<void> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.COMPLETED_EXERCISES);
+      const completed: CompletedExercise[] = json ? JSON.parse(json) : [];
+      completed.push(exercise);
+      await AsyncStorage.setItem(KEYS.COMPLETED_EXERCISES, JSON.stringify(completed));
+    } catch (error) {
+      console.log("Error adding completed exercise:", error);
+    }
+  },
+
+  async getCompletedExercises(): Promise<CompletedExercise[]> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.COMPLETED_EXERCISES);
+      return json ? JSON.parse(json) : [];
+    } catch {
+      return [];
+    }
+  },
+
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove(Object.values(KEYS));
   },
@@ -171,11 +204,11 @@ export const sampleWorkouts: Workout[] = [
     category: "HIIT",
     isNew: false,
     exercises: [
-      { id: "1", name: "Jump Squats", duration: 45, sets: 5, gifUri: 22 },
-      { id: "2", name: "Burpees", duration: 45, sets: 5, gifUri: 1 },
-      { id: "3", name: "Mountain Climber", duration: 45, sets: 5, gifUri: 2 },
-      { id: "4", name: "Push-ups", duration: 45, sets: 5, gifUri: 18 },
-      { id: "5", name: "Plank Jacks", duration: 45, sets: 5, gifUri: 3 },
+      { id: "1", name: "Jump Squats", duration: 45, sets: 5, gifUri: 22, muscleGroups: ["Legs", "Glutes", "Quads"] },
+      { id: "2", name: "Burpees", duration: 45, sets: 5, gifUri: 1, muscleGroups: ["Chest", "Arms", "Core", "Legs"] },
+      { id: "3", name: "Mountain Climber", duration: 45, sets: 5, gifUri: 2, muscleGroups: ["Core", "Chest", "Shoulders"] },
+      { id: "4", name: "Push-ups", duration: 45, sets: 5, gifUri: 18, muscleGroups: ["Chest", "Arms", "Shoulders"] },
+      { id: "5", name: "Plank Jacks", duration: 45, sets: 5, gifUri: 3, muscleGroups: ["Core", "Shoulders"] },
     ],
   },
   {
@@ -189,10 +222,10 @@ export const sampleWorkouts: Workout[] = [
     category: "Strength",
     isNew: true,
     exercises: [
-      { id: "1", name: "Glute Bridge Walk", duration: 45, sets: 4, gifUri: 4 },
-      { id: "2", name: "Basic to Cross Donkey Kick", duration: 45, sets: 4, gifUri: 5 },
-      { id: "3", name: "Resistance Band Lateral Walk", duration: 45, sets: 4, gifUri: 19 },
-      { id: "4", name: "Bottle Weighted Sumo Squat", duration: 45, sets: 4, gifUri: 6 },
+      { id: "1", name: "Glute Bridge Walk", duration: 45, sets: 4, gifUri: 4, muscleGroups: ["Glutes", "Legs", "Back"] },
+      { id: "2", name: "Basic to Cross Donkey Kick", duration: 45, sets: 4, gifUri: 5, muscleGroups: ["Glutes", "Legs"] },
+      { id: "3", name: "Resistance Band Lateral Walk", duration: 45, sets: 4, gifUri: 19, muscleGroups: ["Glutes", "Legs", "Core"] },
+      { id: "4", name: "Bottle Weighted Sumo Squat", duration: 45, sets: 4, gifUri: 6, muscleGroups: ["Legs", "Glutes", "Core"] },
     ],
   },
   {
@@ -206,10 +239,10 @@ export const sampleWorkouts: Workout[] = [
     category: "Core",
     isNew: false,
     exercises: [
-      { id: "1", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 7 },
-      { id: "2", name: "Lying Leg Raise", duration: 45, sets: 4, gifUri: 8 },
-      { id: "3", name: "Russian Twist", duration: 45, sets: 4, gifUri: 9 },
-      { id: "4", name: "Plank Jack", duration: 60, sets: 3, gifUri: 20 },
+      { id: "1", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 7, muscleGroups: ["Core", "Abs"] },
+      { id: "2", name: "Lying Leg Raise", duration: 45, sets: 4, gifUri: 8, muscleGroups: ["Core", "Abs", "Legs"] },
+      { id: "3", name: "Russian Twist", duration: 45, sets: 4, gifUri: 9, muscleGroups: ["Core", "Obliques"] },
+      { id: "4", name: "Plank Jack", duration: 60, sets: 3, gifUri: 20, muscleGroups: ["Core", "Shoulders"] },
     ],
   },
   {
@@ -223,10 +256,10 @@ export const sampleWorkouts: Workout[] = [
     category: "Cardio",
     isNew: true,
     exercises: [
-      { id: "1", name: "High Knee Tap", duration: 45, sets: 5, gifUri: 10 },
-      { id: "2", name: "High Knee Jump Rope", duration: 60, sets: 4, gifUri: 21 },
-      { id: "3", name: "Jump Box", duration: 45, sets: 4, gifUri: 11 },
-      { id: "4", name: "Suspender Sprinter", duration: 30, sets: 6, gifUri: 12 },
+      { id: "1", name: "High Knee Tap", duration: 45, sets: 5, gifUri: 10, muscleGroups: ["Legs", "Cardio"] },
+      { id: "2", name: "High Knee Jump Rope", duration: 60, sets: 4, gifUri: 21, muscleGroups: ["Legs", "Cardio", "Core"] },
+      { id: "3", name: "Jump Box", duration: 45, sets: 4, gifUri: 11, muscleGroups: ["Legs", "Glutes", "Cardio"] },
+      { id: "4", name: "Suspender Sprinter", duration: 30, sets: 6, gifUri: 12, muscleGroups: ["Legs", "Core", "Cardio"] },
     ],
   },
   {
@@ -240,11 +273,11 @@ export const sampleWorkouts: Workout[] = [
     category: "Stretch",
     isNew: false,
     exercises: [
-      { id: "1", name: "Standing Forward Bend Uttanasana", duration: 60, sets: 2, gifUri: 13 },
-      { id: "2", name: "Seated Hamstring Stretch with Chair", duration: 45, sets: 3, gifUri: 14 },
-      { id: "3", name: "Kneeling Hip Flexor Stretch", duration: 45, sets: 3, gifUri: 15 },
-      { id: "4", name: "Double Pigeon Pose", duration: 60, sets: 2, gifUri: 16 },
-      { id: "5", name: "Cow Yoga Pose Bitilasana", duration: 45, sets: 3, gifUri: 17 },
+      { id: "1", name: "Standing Forward Bend Uttanasana", duration: 60, sets: 2, gifUri: 13, muscleGroups: ["Back", "Legs", "Hamstrings"] },
+      { id: "2", name: "Seated Hamstring Stretch with Chair", duration: 45, sets: 3, gifUri: 14, muscleGroups: ["Legs", "Hamstrings"] },
+      { id: "3", name: "Kneeling Hip Flexor Stretch", duration: 45, sets: 3, gifUri: 15, muscleGroups: ["Legs", "Hips"] },
+      { id: "4", name: "Double Pigeon Pose", duration: 60, sets: 2, gifUri: 16, muscleGroups: ["Legs", "Hips", "Glutes"] },
+      { id: "5", name: "Cow Yoga Pose Bitilasana", duration: 45, sets: 3, gifUri: 17, muscleGroups: ["Back", "Chest", "Core"] },
     ],
   },
   {
@@ -258,11 +291,11 @@ export const sampleWorkouts: Workout[] = [
     category: "Core",
     isNew: true,
     exercises: [
-      { id: "1", name: "Jack Split Crunches", duration: 45, sets: 4, gifUri: 23 },
-      { id: "2", name: "Reverse Crunch", duration: 45, sets: 4, gifUri: 24 },
-      { id: "3", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 25 },
-      { id: "4", name: "Dead Bug", duration: 45, sets: 4, gifUri: 26 },
-      { id: "5", name: "Hollow Hold", duration: 45, sets: 3, gifUri: 27 },
+      { id: "1", name: "Jack Split Crunches", duration: 45, sets: 4, gifUri: 23, muscleGroups: ["Core", "Abs"] },
+      { id: "2", name: "Reverse Crunch", duration: 45, sets: 4, gifUri: 24, muscleGroups: ["Core", "Abs", "Lower Abs"] },
+      { id: "3", name: "Bicycle Crunch", duration: 45, sets: 4, gifUri: 25, muscleGroups: ["Core", "Abs", "Obliques"] },
+      { id: "4", name: "Dead Bug", duration: 45, sets: 4, gifUri: 26, muscleGroups: ["Core", "Abs"] },
+      { id: "5", name: "Hollow Hold", duration: 45, sets: 3, gifUri: 27, muscleGroups: ["Core", "Abs", "Shoulders"] },
     ],
   },
 ];

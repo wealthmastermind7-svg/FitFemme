@@ -21,7 +21,7 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { CircularProgress } from "@/components/CircularProgress";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { sampleWorkouts, Exercise, storage } from "@/lib/storage";
+import { sampleWorkouts, Exercise, storage, CompletedExercise } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 
 const { width } = Dimensions.get("window");
@@ -183,7 +183,7 @@ export default function WorkoutPlayerScreen() {
     }
   }, [timeRemaining, isPlaying, workoutComplete]);
 
-  const handleExerciseComplete = () => {
+  const handleExerciseComplete = async () => {
     if (vibrationEnabled) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
@@ -201,6 +201,9 @@ export default function WorkoutPlayerScreen() {
       setCurrentSet((prev) => prev + 1);
       showEncouragement();
     } else if (currentExerciseIndex < exercises.length - 1) {
+      // Exercise is complete, save it to tracking
+      await saveCompletedExercise(currentExercise);
+      
       const nextIndex = currentExerciseIndex + 1;
       setCurrentExerciseIndex(nextIndex);
       setCurrentSet(1);
@@ -208,11 +211,30 @@ export default function WorkoutPlayerScreen() {
       setIsResting(false);
       showEncouragement();
     } else {
+      // Last exercise complete, save it
+      await saveCompletedExercise(currentExercise);
+      
       setIsPlaying(false);
       setWorkoutComplete(true);
       if (vibrationEnabled) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
+    }
+  };
+
+  const saveCompletedExercise = async (exercise: Exercise) => {
+    try {
+      const completed: CompletedExercise = {
+        workoutId: workout.id,
+        workoutTitle: workout.title,
+        exerciseId: exercise.id,
+        exerciseName: exercise.name,
+        muscleGroups: exercise.muscleGroups || [],
+        completedAt: new Date().toISOString(),
+      };
+      await storage.addCompletedExercise(completed);
+    } catch (error) {
+      console.log("Error saving completed exercise:", error);
     }
   };
 
