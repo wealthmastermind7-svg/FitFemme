@@ -146,6 +146,15 @@ All subscriptions can be managed through device settings (iOS: Settings → Subs
 
 ## Recent Changes
 
+### Multi-Language Support (April 2026)
+- Added i18n system in `client/lib/i18n.ts` with support for English, Spanish (Español), and Portuguese (Português)
+- Comprehensive translation library with 50+ keys covering onboarding, workouts, stats, profile, paywall, and common UI elements
+- Async language persistence via AsyncStorage with `initializeLanguage()` on app startup
+- `useLanguage()` hook for reactive language switching with automatic UI refresh
+- Language selector added to Profile screen under App Settings (Language option)
+- Translations persist across app sessions
+- ReadinessNote: Text strings in current screens not yet updated to use i18n keys - implementation available for future UI text updates
+
 ### Monetization Implementation (April 2026)
 - Full RevenueCat integration with 3 products: monthly_pro ($1.99), annual_pro ($14.99), lifetime_pro ($49.99)
 - Entitlement "pro" with offering "default" seeded via scripts/seedRevenueCat.ts

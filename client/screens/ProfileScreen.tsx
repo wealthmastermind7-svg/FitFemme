@@ -13,6 +13,7 @@ import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { storage, UserProfile, sampleUserProfile } from "@/lib/storage";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
+import { useLanguage, Language } from "@/lib/i18n";
 
 interface SettingItem {
   id: string;
@@ -87,6 +88,7 @@ export default function ProfileScreen() {
   const tabBarHeight = useBottomTabBarHeight();
 
   const { isSubscribed, customerInfo } = useSubscription();
+  const { language, setLanguage } = useLanguage();
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -97,6 +99,7 @@ export default function ProfileScreen() {
   const [personalInfoModalVisible, setPersonalInfoModalVisible] = useState(false);
   const [goalsModalVisible, setGoalsModalVisible] = useState(false);
   const [unitsModalVisible, setUnitsModalVisible] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [legalModalVisible, setLegalModalVisible] = useState(false);
   const [legalContent, setLegalContent] = useState<"privacy" | "terms">("privacy");
 
@@ -170,6 +173,9 @@ export default function ProfileScreen() {
       case "units":
         setUnitsModalVisible(true);
         break;
+      case "language":
+        setLanguageModalVisible(true);
+        break;
     }
   };
 
@@ -213,6 +219,7 @@ export default function ProfileScreen() {
   const appSettings: SettingItem[] = [
     { id: "notifications", icon: "bell", title: "Notifications", type: "toggle", value: notificationsEnabled },
     { id: "vibration", icon: "smartphone", title: "Haptic Feedback", type: "toggle", value: vibrationEnabled },
+    { id: "language", icon: "globe", title: "Language", type: "value", value: language === "en" ? "English" : language === "es" ? "Español" : "Português" },
   ];
 
   const supportSettings: SettingItem[] = [
@@ -465,6 +472,34 @@ export default function ProfileScreen() {
               >
                 <ThemedText style={[styles.unitOptionText, units === unit && styles.unitOptionTextSelected]}>
                   {unit}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Language Modal */}
+      <Modal visible={languageModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>Language</ThemedText>
+              <Pressable onPress={() => setLanguageModalVisible(false)}>
+                <Feather name="x" size={24} color={Colors.white} />
+              </Pressable>
+            </View>
+            {(["en", "es", "pt"] as Language[]).map((lang) => (
+              <Pressable
+                key={lang}
+                style={[styles.unitOption, language === lang && styles.unitOptionSelected]}
+                onPress={() => {
+                  setLanguage(lang);
+                  setLanguageModalVisible(false);
+                }}
+              >
+                <ThemedText style={[styles.unitOptionText, language === lang && styles.unitOptionTextSelected]}>
+                  {lang === "en" ? "English" : lang === "es" ? "Español" : "Português"}
                 </ThemedText>
               </Pressable>
             ))}
