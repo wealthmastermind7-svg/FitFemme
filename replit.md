@@ -97,7 +97,61 @@ scripts/          # Build scripts for Expo web
 - **eslint-config-expo**: Linting rules
 - **prettier**: Code formatting
 
+## Monetization & Feature Tiers
+
+### Free Plan
+Users can access:
+- **1 sample workout per day** - Full Body Burn only (for daily commitment without overwhelming)
+- **Basic workout experience** - Exercise timers and GIF demonstrations
+- **Limited progress** - Basic completion tracking
+- **No advanced features** - No custom workouts, no detailed stats
+- **Limited history** - Can't review past workouts
+
+### Paid Plans (All Subscription Tiers Unlock the Same Features)
+All three payment options unlock:
+- **All 6 workouts unlocked** - Full Body Burn, Glute Gains, Core Crusher, Cardio Queen, Flexibility Flow, No-Equipment Abs
+- **Unlimited daily workouts** - No daily restrictions
+- **Full progress tracking** - Visual muscle distribution pentagon chart, detailed metrics
+- **Workout history** - View all completed workouts with dates and performance
+- **Streak system** - Track consecutive workout days with calendar visualization
+- **Custom workout builder** - Create personalized routines
+- **Advanced stats** - Comprehensive progress analytics and insights
+- **Premium experience** - Priority feature access in future updates
+
+### Three Subscription Tier Options
+
+All three tier options unlock the **same premium features**. The difference is pricing and commitment:
+
+1. **Monthly Pro - $1.99/month**
+   - Recurring monthly charge
+   - Best for: Testing the premium experience
+   - **Value**: Entry-level price point for users to try
+   - Easiest to cancel if unsatisfied
+
+2. **Annual Pro - $14.99/year** ⭐ **Most Popular**
+   - Recurring yearly charge
+   - ~$3.33/month (saves 37% vs monthly)
+   - Best for: Committed users
+   - **Value**: Best savings with yearly commitment
+   - Most cost-effective option
+
+3. **Lifetime Pro - $49.99 one-time**
+   - Non-consumable, permanent unlock
+   - No recurring charges
+   - Best for: Power users and completionists
+   - **Value**: Highest upfront cost but infinite long-term value
+   - Preferred by users who commit long-term
+
+All subscriptions can be managed through device settings (iOS: Settings → Subscriptions, Android: Google Play → Manage Subscriptions).
+
 ## Recent Changes
+
+### Monetization Setup (April 2026)
+- Defined free vs paid feature tiers for freemium model
+- Three subscription tier options (Monthly, Annual, Lifetime)
+- Free users limited to 1 workout per day (Full Body Burn only)
+- Paid users unlock all 6 workouts, unlimited access, full stats, custom builder
+- Feature gates and paywall triggers planned via Replit-RevenueCat native integration
 
 ### App Store Readiness - Cleanup (March 2026)
 - Simplified StatsScreen to remove hardcoded/non-functional content
