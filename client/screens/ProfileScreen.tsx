@@ -241,6 +241,8 @@ export default function ProfileScreen() {
             handleAccountSettingPress(item.id);
           } else if (isSupportSetting) {
             handleSupportPress(item.id);
+          } else if (item.id === "language") {
+            setLanguageModalVisible(true);
           }
         }
       }}
