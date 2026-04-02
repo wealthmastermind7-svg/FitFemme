@@ -12,11 +12,16 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
+import { useSubscription } from "@/lib/revenuecat";
+import Paywall from "@/components/Paywall";
+
+const FREE_WORKOUT_IDS = ["1"];
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -32,11 +37,20 @@ export default function WorkoutsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isSubscribed } = useSubscription();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
+  const [paywallVisible, setPaywallVisible] = useState(false);
+
+  const isWorkoutLocked = (workoutId: string) =>
+    !isSubscribed && !FREE_WORKOUT_IDS.includes(workoutId);
 
   const handleWorkoutPress = (workoutId: string) => {
-    navigation.navigate("WorkoutPreview", { workoutId });
+    if (isWorkoutLocked(workoutId)) {
+      setPaywallVisible(true);
+    } else {
+      navigation.navigate("WorkoutPreview", { workoutId });
+    }
   };
 
   const getFilteredWorkouts = (): Workout[] => {
@@ -196,11 +210,13 @@ export default function WorkoutsScreen() {
               workout={workout}
               onPress={() => handleWorkoutPress(workout.id)}
               index={index}
+              locked={isWorkoutLocked(workout.id)}
             />
           ))
         )}
       </View>
     </ScrollView>
+    <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </>
   );
 }
@@ -208,14 +224,15 @@ export default function WorkoutsScreen() {
 interface WorkoutListItemProps {
   workout: Workout;
   onPress: () => void;
+  locked?: boolean;
   index: number;
 }
 
-function WorkoutListItem({ workout, onPress, index }: WorkoutListItemProps) {
+function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemProps) {
   const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
 
   return (
-    <Pressable style={styles.listItem} onPress={onPress}>
+    <Pressable style={[styles.listItem, locked && styles.listItemLocked]} onPress={onPress}>
       <ImageBackground
         source={imageSource}
         style={styles.listItemImage}
@@ -225,6 +242,11 @@ function WorkoutListItem({ workout, onPress, index }: WorkoutListItemProps) {
           colors={["transparent", "rgba(0,0,0,0.6)"]}
           style={styles.listItemGradient}
         />
+        {locked ? (
+          <View style={styles.lockOverlay}>
+            <Feather name="lock" size={28} color={Colors.primary} />
+          </View>
+        ) : null}
       </ImageBackground>
       <View style={styles.listItemContent}>
         <ThemedText style={styles.listItemTitle}>{workout.title}</ThemedText>
@@ -491,5 +513,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: Colors.white,
+  },
+  listItemLocked: {
+    opacity: 0.7,
+  },
+  lockOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.35)",
   },
 });

@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import Svg, { Polygon, Text as SvgText } from "react-native-svg";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing } from "@/constants/theme";
+import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { storage } from "@/lib/storage";
+import { useSubscription } from "@/lib/revenuecat";
+import Paywall from "@/components/Paywall";
 
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
+  const { isSubscribed } = useSubscription();
+  const [paywallVisible, setPaywallVisible] = useState(false);
   const [muscleData, setMuscleData] = useState({ Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 });
 
   useEffect(() => {
@@ -125,6 +130,30 @@ export default function StatsScreen() {
     .map((p) => `${p.x},${p.y}`)
     .join(" ");
 
+  if (!isSubscribed) {
+    return (
+      <View
+        style={[
+          styles.container,
+          styles.lockedContainer,
+          { paddingTop: headerHeight + Spacing.xl, paddingBottom: tabBarHeight + Spacing.xl },
+        ]}
+      >
+        <View style={styles.lockIcon}>
+          <Feather name="lock" size={40} color={Colors.primary} />
+        </View>
+        <ThemedText style={styles.lockTitle}>Stats are a Pro Feature</ThemedText>
+        <ThemedText style={styles.lockDescription}>
+          Track your muscle distribution, progress, and workout streaks with a Pro subscription.
+        </ThemedText>
+        <Pressable style={styles.unlockButton} onPress={() => setPaywallVisible(true)}>
+          <ThemedText style={styles.unlockButtonText}>Unlock Pro</ThemedText>
+        </Pressable>
+        <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.container}
@@ -226,5 +255,45 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
     fontStyle: "italic",
     letterSpacing: 0.5,
+  },
+  lockedContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: Spacing["2xl"],
+  },
+  lockIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "rgba(212,17,115,0.15)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: Spacing.lg,
+  },
+  lockTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: Colors.white,
+    textAlign: "center",
+    marginBottom: Spacing.md,
+  },
+  lockDescription: {
+    fontSize: 15,
+    color: Colors.white60,
+    textAlign: "center",
+    lineHeight: 22,
+    marginBottom: Spacing["2xl"],
+  },
+  unlockButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing["2xl"],
+    borderRadius: BorderRadius.md,
+  },
+  unlockButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.white,
   },
 });

@@ -146,12 +146,15 @@ All subscriptions can be managed through device settings (iOS: Settings → Subs
 
 ## Recent Changes
 
-### Monetization Setup (April 2026)
-- Defined free vs paid feature tiers for freemium model
-- Three subscription tier options (Monthly, Annual, Lifetime)
-- Free users limited to 1 workout per day (Full Body Burn only)
-- Paid users unlock all 6 workouts, unlimited access, full stats, custom builder
-- Feature gates and paywall triggers planned via Replit-RevenueCat native integration
+### Monetization Implementation (April 2026)
+- Full RevenueCat integration with 3 products: monthly_pro ($1.99), annual_pro ($14.99), lifetime_pro ($49.99)
+- Entitlement "pro" with offering "default" seeded via scripts/seedRevenueCat.ts
+- SubscriptionProvider wraps entire app (client/lib/revenuecat.tsx) with useSubscription hook
+- Paywall component (client/components/Paywall.tsx) - gradient modal, 3 plan cards, restore purchases
+- WorkoutsScreen: workouts 2-6 locked with lock icon overlay; tapping opens Paywall
+- StatsScreen: fully gated behind paywall for non-subscribers, shows "Unlock Pro" locked UI
+- ProfileScreen: "Subscription" section shows Pro badge (subscribers) or "Upgrade to Pro" card (free)
+- Environment variables: REVENUECAT_PROJECT_ID, EXPO_PUBLIC_REVENUECAT_IOS_API_KEY, EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY, EXPO_PUBLIC_REVENUECAT_TEST_API_KEY
 
 ### App Store Readiness - Cleanup (March 2026)
 - Simplified StatsScreen to remove hardcoded/non-functional content

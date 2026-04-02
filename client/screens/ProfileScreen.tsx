@@ -11,6 +11,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { storage, UserProfile, sampleUserProfile } from "@/lib/storage";
+import { useSubscription } from "@/lib/revenuecat";
+import Paywall from "@/components/Paywall";
 
 interface SettingItem {
   id: string;
@@ -84,6 +86,8 @@ export default function ProfileScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
 
+  const { isSubscribed, customerInfo } = useSubscription();
+  const [paywallVisible, setPaywallVisible] = useState(false);
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -285,6 +289,55 @@ export default function ProfileScreen() {
         </View>
       </View>
 
+      {/* Subscription Section */}
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>Subscription</ThemedText>
+        {isSubscribed ? (
+          <GlassCard style={styles.subscriptionCard}>
+            <LinearGradient
+              colors={["rgba(212,17,115,0.2)", "transparent"]}
+              style={StyleSheet.absoluteFillObject}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            />
+            <View style={styles.subscriptionActive}>
+              <View style={styles.subscriptionActiveBadge}>
+                <Feather name="award" size={16} color={Colors.primary} />
+                <ThemedText style={styles.subscriptionActiveTitle}>Pro Member</ThemedText>
+              </View>
+              <ThemedText style={styles.subscriptionActiveText}>
+                You have full access to all workouts and features.
+              </ThemedText>
+              <ThemedText style={styles.subscriptionManageText}>
+                Manage your subscription in your device settings.
+              </ThemedText>
+            </View>
+          </GlassCard>
+        ) : (
+          <Pressable onPress={() => setPaywallVisible(true)}>
+            <GlassCard style={styles.subscriptionCard}>
+              <LinearGradient
+                colors={["rgba(212,17,115,0.15)", "transparent"]}
+                style={StyleSheet.absoluteFillObject}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              />
+              <View style={styles.subscriptionUpgrade}>
+                <View style={styles.subscriptionUpgradeLeft}>
+                  <ThemedText style={styles.subscriptionUpgradeTitle}>Upgrade to Pro</ThemedText>
+                  <ThemedText style={styles.subscriptionUpgradeText}>
+                    Unlock all 6 workouts, stats, history & more
+                  </ThemedText>
+                </View>
+                <View style={styles.subscriptionUpgradeButton}>
+                  <ThemedText style={styles.subscriptionUpgradeButtonText}>View Plans</ThemedText>
+                </View>
+              </View>
+            </GlassCard>
+          </Pressable>
+        )}
+      </View>
+
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Account</ThemedText>
         <GlassCard style={styles.settingsCard}>
@@ -308,6 +361,8 @@ export default function ProfileScreen() {
           {supportSettings.map((item) => renderSettingItem(item, false, true))}
         </GlassCard>
       </View>
+
+      <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
 
       {/* Personal Info Modal */}
       <Modal visible={personalInfoModalVisible} transparent animationType="slide">
@@ -646,5 +701,62 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.white60,
     lineHeight: 20,
+  },
+  subscriptionCard: {
+    overflow: "hidden",
+    padding: Spacing.lg,
+  },
+  subscriptionActive: {
+    gap: Spacing.sm,
+  },
+  subscriptionActiveBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+    marginBottom: Spacing.xs,
+  },
+  subscriptionActiveTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.primary,
+  },
+  subscriptionActiveText: {
+    fontSize: 14,
+    color: Colors.white,
+  },
+  subscriptionManageText: {
+    fontSize: 12,
+    color: Colors.white60,
+    marginTop: Spacing.xs,
+  },
+  subscriptionUpgrade: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: Spacing.md,
+  },
+  subscriptionUpgradeLeft: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  subscriptionUpgradeTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: Colors.white,
+  },
+  subscriptionUpgradeText: {
+    fontSize: 13,
+    color: Colors.white60,
+  },
+  subscriptionUpgradeButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.sm,
+  },
+  subscriptionUpgradeButtonText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: Colors.white,
   },
 });

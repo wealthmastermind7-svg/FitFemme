@@ -26,6 +26,7 @@ PORT = "5000"
 
 [agent]
 stack = "EXPO"
+integrations = ["revenuecat:1.0.0"]
 
 [workflows]
 runButton = "Project"
@@ -54,3 +55,14 @@ task = "shell.exec"
 args = "npm run expo:dev"
 waitForPort = 8081
 ensurePreviewReachable = "/status"
+
+[userenv]
+
+[userenv.shared]
+REVENUECAT_PROJECT_ID = "proj70400504"
+REVENUECAT_TEST_STORE_APP_ID = "app2e9257619e"
+REVENUECAT_APPLE_APP_STORE_APP_ID = "app71e5afffab"
+REVENUECAT_GOOGLE_PLAY_STORE_APP_ID = "app2ecfa2f279"
+EXPO_PUBLIC_REVENUECAT_TEST_API_KEY = "test_OVixwiSPKOPhIluJMpmGtlhHlOY"
+EXPO_PUBLIC_REVENUECAT_IOS_API_KEY = "appl_nMVCwOEWgnfaFkTaigwXqcnXHJF"
+EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY = "goog_OIWtIhtwyEDdpVTZCBOiTxckQZM"
