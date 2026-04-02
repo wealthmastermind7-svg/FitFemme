@@ -5,6 +5,7 @@ import {
   ScrollView,
   Pressable,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -17,6 +18,9 @@ import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
+import { useSubscriptionContext } from "@/context/SubscriptionContext";
+import Paywall from "@/components/Paywall";
+import { isWorkoutLocked } from "@/lib/featureGating";
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -32,12 +36,18 @@ export default function WorkoutsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isProSubscriber } = useSubscriptionContext();
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
+  const [paywallVisible, setPaywallVisible] = useState(false);
 
   const handleWorkoutPress = (workoutId: string) => {
-    navigation.navigate("WorkoutPreview", { workoutId });
+    if (isWorkoutLocked(workoutId, isProSubscriber)) {
+      setPaywallVisible(true);
+    } else {
+      navigation.navigate("WorkoutPreview", { workoutId });
+    }
   };
 
   const getFilteredWorkouts = (): Workout[] => {
@@ -68,14 +78,15 @@ export default function WorkoutsScreen() {
   const filteredWorkouts = getFilteredWorkouts();
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{
-        paddingTop: headerHeight + Spacing.lg,
-        paddingBottom: tabBarHeight + Spacing.xl,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
+    <>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{
+          paddingTop: headerHeight + Spacing.lg,
+          paddingBottom: tabBarHeight + Spacing.xl,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
       <View style={styles.header}>
         <ThemedText style={styles.title}>Workout Library</ThemedText>
         <ThemedText style={styles.subtitle}>
@@ -201,6 +212,8 @@ export default function WorkoutsScreen() {
         )}
       </View>
     </ScrollView>
+    <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
+    </>
   );
 }
 
@@ -208,13 +221,20 @@ interface WorkoutListItemProps {
   workout: Workout;
   onPress: () => void;
   index: number;
+  isLocked?: boolean;
 }
 
-function WorkoutListItem({ workout, onPress, index }: WorkoutListItemProps) {
+function WorkoutListItem({ workout, onPress, index, isLocked }: WorkoutListItemProps) {
   const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
+  const { isProSubscriber } = useSubscriptionContext();
+  const locked = isLocked !== undefined ? isLocked : isWorkoutLocked(workout.id, isProSubscriber);
 
   return (
-    <Pressable style={styles.listItem} onPress={onPress}>
+    <Pressable 
+      style={[styles.listItem, locked && styles.listItemLocked]} 
+      onPress={onPress}
+      disabled={locked}
+    >
       <ImageBackground
         source={imageSource}
         style={styles.listItemImage}
@@ -224,6 +244,11 @@ function WorkoutListItem({ workout, onPress, index }: WorkoutListItemProps) {
           colors={["transparent", "rgba(0,0,0,0.6)"]}
           style={styles.listItemGradient}
         />
+        {locked && (
+          <View style={styles.lockOverlay}>
+            <Feather name="lock" size={32} color={Colors.accentPink} />
+          </View>
+        )}
       </ImageBackground>
       <View style={styles.listItemContent}>
         <ThemedText style={styles.listItemTitle}>{workout.title}</ThemedText>
@@ -490,5 +515,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: Colors.white,
+  },
+  listItemLocked: {
+    opacity: 0.6,
+  },
+  lockOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
 });
