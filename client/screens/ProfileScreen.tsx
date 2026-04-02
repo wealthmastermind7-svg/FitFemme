@@ -117,10 +117,10 @@ export default function ProfileScreen() {
     const data = await storage.getUserProfile();
     if (data) {
       setProfile(data);
-      setEditName(data.name);
-      setEditAge(data.age.toString());
-      setEditWeight(data.weight.toString());
-      setEditDurationGoal(data.durationGoal.toString());
+      setEditName(data.name || "");
+      setEditAge(data.age ? data.age.toString() : "");
+      setEditWeight(data.weight ? data.weight.toString() : "");
+      setEditDurationGoal(data.durationGoal ? data.durationGoal.toString() : "");
       if (data.units) {
         setUnits(data.units);
       }
@@ -357,7 +357,8 @@ export default function ProfileScreen() {
         <GlassCard style={styles.settingsCard}>
           {appSettings.map((item) => renderSettingItem({ ...item, value: 
             item.id === "notifications" ? notificationsEnabled :
-            vibrationEnabled
+            item.id === "vibration" ? vibrationEnabled :
+            language === "en" ? "English" : language === "es" ? "Español" : "Português"
           }, false, false))}
         </GlassCard>
       </View>
