@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -11,29 +11,21 @@ import { queryClient } from "@/lib/query-client";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { SubscriptionProvider } from "@/context/SubscriptionContext";
-import { initRevenueCat } from "@/lib/revenueCat";
 
 export default function App() {
-  useEffect(() => {
-    initRevenueCat();
-  }, []);
-
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <SubscriptionProvider>
-          <SafeAreaProvider>
-            <GestureHandlerRootView style={styles.root}>
-              <KeyboardProvider>
-                <NavigationContainer>
-                  <RootStackNavigator />
-                </NavigationContainer>
-                <StatusBar style="auto" />
-              </KeyboardProvider>
-            </GestureHandlerRootView>
-          </SafeAreaProvider>
-        </SubscriptionProvider>
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={styles.root}>
+            <KeyboardProvider>
+              <NavigationContainer>
+                <RootStackNavigator />
+              </NavigationContainer>
+              <StatusBar style="auto" />
+            </KeyboardProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );
