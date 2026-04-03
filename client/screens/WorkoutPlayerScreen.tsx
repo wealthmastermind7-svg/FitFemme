@@ -23,7 +23,7 @@ import { CircularProgress } from "@/components/CircularProgress";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts, Exercise, storage, CompletedExercise } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage, getExerciseTranslationKey } from "@/lib/i18n";
 
 const { width } = Dimensions.get("window");
 
@@ -349,7 +349,7 @@ export default function WorkoutPlayerScreen() {
             </View>
           ) : null}
           <ThemedText style={styles.exerciseName}>
-            {isResting ? t("workout.getReady") : currentExercise?.name}
+            {isResting ? t("workout.getReady") : t(getExerciseTranslationKey(currentExercise?.name || "")) || currentExercise?.name}
           </ThemedText>
           <ThemedText style={styles.setInfo}>
             {t("workout.setOf")} {currentSet} {t("workout.of")} {currentExercise?.sets}

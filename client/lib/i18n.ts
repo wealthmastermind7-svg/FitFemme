@@ -172,6 +172,30 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.cardioQueen": "Cardio Queen",
     "workout.flexibilityFlow": "Flexibility Flow",
     "workout.noEquipmentAbs": "No-Equipment Abs",
+
+    // Exercise names
+    "exercise.jumpSquats": "Jump Squats",
+    "exercise.burpees": "Burpees",
+    "exercise.mountainClimber": "Mountain Climber",
+    "exercise.pushUps": "Push-ups",
+    "exercise.plankJacks": "Plank Jacks",
+    "exercise.gluteBridgeWalk": "Glute Bridge Walk",
+    "exercise.donkeyKick": "Basic to Cross Donkey Kick",
+    "exercise.lateralWalk": "Resistance Band Lateral Walk",
+    "exercise.sumoSquat": "Bottle Weighted Sumo Squat",
+    "exercise.bicycleCrunch": "Bicycle Crunch",
+    "exercise.lyingLegRaise": "Lying Leg Raise",
+    "exercise.russianTwist": "Russian Twist",
+    "exercise.plankJack": "Plank Jack",
+    "exercise.highKneeTap": "High Knee Tap",
+    "exercise.highKneeJumpRope": "High Knee Jump Rope",
+    "exercise.jumpBox": "Jump Box",
+    "exercise.suspenderSprinter": "Suspender Sprinter",
+    "exercise.standingForwardBend": "Standing Forward Bend Uttanasana",
+    "exercise.seatedHamstringStretch": "Seated Hamstring Stretch with Chair",
+    "exercise.kneelingHipFlexor": "Kneeling Hip Flexor Stretch",
+    "exercise.doublePigeonPose": "Double Pigeon Pose",
+    "exercise.cowYogaPose": "Cow Yoga Pose Bitilasana",
   },
   es: {
     // Onboarding
@@ -341,6 +365,30 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.cardioQueen": "Reina del Cardio",
     "workout.flexibilityFlow": "Flujo de Flexibilidad",
     "workout.noEquipmentAbs": "Abdominales Sin Equipo",
+
+    // Exercise names
+    "exercise.jumpSquats": "Sentadillas Saltadas",
+    "exercise.burpees": "Burpees",
+    "exercise.mountainClimber": "Escalador de Montaña",
+    "exercise.pushUps": "Flexiones",
+    "exercise.plankJacks": "Planchas Saltadas",
+    "exercise.gluteBridgeWalk": "Puente de Glúteos Caminando",
+    "exercise.donkeyKick": "Patada de Burro Cruzada",
+    "exercise.lateralWalk": "Caminata Lateral con Banda",
+    "exercise.sumoSquat": "Sentadilla Sumo con Peso",
+    "exercise.bicycleCrunch": "Abdominales de Bicicleta",
+    "exercise.lyingLegRaise": "Levantamiento de Piernas Acostado",
+    "exercise.russianTwist": "Giro Ruso",
+    "exercise.plankJack": "Plancha Saltada",
+    "exercise.highKneeTap": "Rodilla Alta Tocando",
+    "exercise.highKneeJumpRope": "Saltar Cuerda Rodilla Alta",
+    "exercise.jumpBox": "Salto a Caja",
+    "exercise.suspenderSprinter": "Sprinter con Suspensores",
+    "exercise.standingForwardBend": "Doblez Forward Standing Uttanasana",
+    "exercise.seatedHamstringStretch": "Estiramiento Isquiotibial Sentado",
+    "exercise.kneelingHipFlexor": "Estiramiento de Flexor de Cadera",
+    "exercise.doublePigeonPose": "Doble Pose de Paloma",
+    "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
   },
   pt: {
     // Onboarding
@@ -510,6 +558,30 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.cardioQueen": "Rainha do Cardio",
     "workout.flexibilityFlow": "Fluxo de Flexibilidade",
     "workout.noEquipmentAbs": "Abdominais Sem Equipamento",
+
+    // Exercise names
+    "exercise.jumpSquats": "Agachamentos Saltados",
+    "exercise.burpees": "Burpees",
+    "exercise.mountainClimber": "Escalador de Montanha",
+    "exercise.pushUps": "Flexões",
+    "exercise.plankJacks": "Prancha Saltada",
+    "exercise.gluteBridgeWalk": "Ponte de Glúteos Caminhando",
+    "exercise.donkeyKick": "Chute de Burro Cruzado",
+    "exercise.lateralWalk": "Caminhada Lateral com Fita",
+    "exercise.sumoSquat": "Agachamento Sumo com Peso",
+    "exercise.bicycleCrunch": "Abdominal de Bicicleta",
+    "exercise.lyingLegRaise": "Elevação de Pernas Deitado",
+    "exercise.russianTwist": "Rotação Russa",
+    "exercise.plankJack": "Prancha Saltada",
+    "exercise.highKneeTap": "Joelho Alto Tocando",
+    "exercise.highKneeJumpRope": "Pular Corda Joelho Alto",
+    "exercise.jumpBox": "Salto em Caixa",
+    "exercise.suspenderSprinter": "Sprinter com Suspensórios",
+    "exercise.standingForwardBend": "Flexão para Frente em Pé Uttanasana",
+    "exercise.seatedHamstringStretch": "Alongamento de Isquiotibial Sentado",
+    "exercise.kneelingHipFlexor": "Alongamento de Flexor do Quadril",
+    "exercise.doublePigeonPose": "Pose Dupla do Pombo",
+    "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
   },
 };
 
@@ -555,6 +627,35 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   return useContext(LanguageContext);
+}
+
+// Helper to translate exercise names based on English name
+export function getExerciseTranslationKey(exerciseName: string): string {
+  const nameMap: Record<string, string> = {
+    "Jump Squats": "exercise.jumpSquats",
+    "Burpees": "exercise.burpees",
+    "Mountain Climber": "exercise.mountainClimber",
+    "Push-ups": "exercise.pushUps",
+    "Plank Jacks": "exercise.plankJacks",
+    "Glute Bridge Walk": "exercise.gluteBridgeWalk",
+    "Basic to Cross Donkey Kick": "exercise.donkeyKick",
+    "Resistance Band Lateral Walk": "exercise.lateralWalk",
+    "Bottle Weighted Sumo Squat": "exercise.sumoSquat",
+    "Bicycle Crunch": "exercise.bicycleCrunch",
+    "Lying Leg Raise": "exercise.lyingLegRaise",
+    "Russian Twist": "exercise.russianTwist",
+    "Plank Jack": "exercise.plankJack",
+    "High Knee Tap": "exercise.highKneeTap",
+    "High Knee Jump Rope": "exercise.highKneeJumpRope",
+    "Jump Box": "exercise.jumpBox",
+    "Suspender Sprinter": "exercise.suspenderSprinter",
+    "Standing Forward Bend Uttanasana": "exercise.standingForwardBend",
+    "Seated Hamstring Stretch with Chair": "exercise.seatedHamstringStretch",
+    "Kneeling Hip Flexor Stretch": "exercise.kneelingHipFlexor",
+    "Double Pigeon Pose": "exercise.doublePigeonPose",
+    "Cow Yoga Pose Bitilasana": "exercise.cowYogaPose",
+  };
+  return nameMap[exerciseName] || exerciseName;
 }
 
 export function t(key: string): string {

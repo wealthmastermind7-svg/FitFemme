@@ -21,7 +21,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage, getExerciseTranslationKey } from "@/lib/i18n";
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -187,7 +187,7 @@ export default function WorkoutPreviewScreen() {
               </View>
               <View style={styles.exerciseInfo}>
                 <ThemedText style={styles.exerciseName}>
-                  {exercise.name}
+                  {t(getExerciseTranslationKey(exercise.name)) || exercise.name}
                 </ThemedText>
                 <ThemedText style={styles.exerciseMeta}>
                   {exercise.sets} {t("workout.sets")} {exercise.duration}s {t("workout.each")}
