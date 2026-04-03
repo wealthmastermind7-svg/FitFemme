@@ -132,6 +132,22 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "One-time, keep forever",
     "paywall.noResults": "No workouts found",
     "paywall.legal": "Subscriptions auto-renew unless cancelled. Manage in device settings.",
+
+    // Workout Preview & Player
+    "workout.preview": "Workout Preview",
+    "workout.exercises": "Exercises",
+    "workout.description": "Here is what you will be doing",
+    "workout.intensity": "Intensity",
+    "workout.equipment": "Equipment",
+    "workout.start": "START WORKOUT",
+    "workout.sets": "sets",
+    "workout.each": "each",
+    "workout.min": "min",
+    "workout.remaining": "REMAINING",
+    "workout.rest": "REST",
+    "workout.getReady": "Get Ready",
+    "workout.setOf": "Set",
+    "workout.of": "of",
   },
   es: {
     // Onboarding
@@ -261,6 +277,22 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "Pago único, acceso para siempre",
     "paywall.noResults": "No se encontraron entrenamientos",
     "paywall.legal": "Las suscripciones se renuevan automáticamente. Gestionar en ajustes del dispositivo.",
+
+    // Workout Preview & Player
+    "workout.preview": "Vista Previa de Entrenamiento",
+    "workout.exercises": "Ejercicios",
+    "workout.description": "Esto es lo que harás",
+    "workout.intensity": "Intensidad",
+    "workout.equipment": "Equipamiento",
+    "workout.start": "COMENZAR ENTRENAMIENTO",
+    "workout.sets": "series",
+    "workout.each": "cada",
+    "workout.min": "min",
+    "workout.remaining": "RESTANTE",
+    "workout.rest": "DESCANSO",
+    "workout.getReady": "Prepárate",
+    "workout.setOf": "Serie",
+    "workout.of": "de",
   },
   pt: {
     // Onboarding
@@ -390,6 +422,22 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "Pagamento único, acesso para sempre",
     "paywall.noResults": "Nenhum treino encontrado",
     "paywall.legal": "As assinaturas são renovadas automaticamente. Gerencie nas configurações do dispositivo.",
+
+    // Workout Preview & Player
+    "workout.preview": "Visualização do Treino",
+    "workout.exercises": "Exercícios",
+    "workout.description": "Isto é o que você fará",
+    "workout.intensity": "Intensidade",
+    "workout.equipment": "Equipamento",
+    "workout.start": "INICIAR TREINO",
+    "workout.sets": "séries",
+    "workout.each": "cada",
+    "workout.min": "min",
+    "workout.remaining": "RESTANTE",
+    "workout.rest": "DESCANSO",
+    "workout.getReady": "Prepare-se",
+    "workout.setOf": "Série",
+    "workout.of": "de",
   },
 };
 

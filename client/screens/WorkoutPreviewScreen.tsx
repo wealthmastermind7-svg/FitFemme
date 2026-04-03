@@ -21,6 +21,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
+import { useLanguage } from "@/lib/i18n";
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -37,6 +38,7 @@ export default function WorkoutPreviewScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<WorkoutPreviewRouteProp>();
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
@@ -103,7 +105,7 @@ export default function WorkoutPreviewScreen() {
         <Pressable style={styles.closeButton} onPress={handleClose}>
           <Feather name="x" size={24} color={Colors.white} />
         </Pressable>
-        <ThemedText style={styles.headerTitle}>Workout Preview</ThemedText>
+        <ThemedText style={styles.headerTitle}>{t("workout.preview")}</ThemedText>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -121,25 +123,25 @@ export default function WorkoutPreviewScreen() {
           <View style={styles.statItem}>
             <Feather name="clock" size={18} color={Colors.primary} />
             <ThemedText style={styles.statValue}>{workout.duration}</ThemedText>
-            <ThemedText style={styles.statLabel}>min</ThemedText>
+            <ThemedText style={styles.statLabel}>{t("workout.min")}</ThemedText>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Feather name="activity" size={18} color={Colors.primary} />
             <ThemedText style={styles.statValue}>{totalExercises}</ThemedText>
-            <ThemedText style={styles.statLabel}>exercises</ThemedText>
+            <ThemedText style={styles.statLabel}>{t("workouts.exercises")}</ThemedText>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Feather name="repeat" size={18} color={Colors.primary} />
             <ThemedText style={styles.statValue}>{totalSets}</ThemedText>
-            <ThemedText style={styles.statLabel}>sets</ThemedText>
+            <ThemedText style={styles.statLabel}>{t("workout.sets")}</ThemedText>
           </View>
         </View>
 
         <View style={styles.infoRow}>
           <View style={styles.infoItem}>
-            <ThemedText style={styles.infoLabel}>Intensity</ThemedText>
+            <ThemedText style={styles.infoLabel}>{t("workout.intensity")}</ThemedText>
             <View style={styles.intensityBadge}>
               <View
                 style={[
@@ -151,7 +153,7 @@ export default function WorkoutPreviewScreen() {
             </View>
           </View>
           <View style={styles.infoItem}>
-            <ThemedText style={styles.infoLabel}>Equipment</ThemedText>
+            <ThemedText style={styles.infoLabel}>{t("workout.equipment")}</ThemedText>
             <ThemedText style={styles.infoValue}>
               {workout.equipment.join(", ")}
             </ThemedText>
@@ -159,9 +161,9 @@ export default function WorkoutPreviewScreen() {
         </View>
 
         <View style={styles.exercisesSection}>
-          <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t("workout.exercises")}</ThemedText>
           <ThemedText style={styles.sectionSubtitle}>
-            Here is what you will be doing
+            {t("workout.description")}
           </ThemedText>
 
           {workout.exercises.map((exercise, index) => (
@@ -204,7 +206,7 @@ export default function WorkoutPreviewScreen() {
           style={[styles.startButton, animatedButtonStyle]}
         >
           <View style={styles.buttonContent}>
-            <ThemedText style={styles.buttonText}>Start Workout</ThemedText>
+            <ThemedText style={styles.buttonText}>{t("workout.start")}</ThemedText>
           </View>
           <View style={styles.buttonIcon}>
             <Feather name="play" size={24} color={Colors.white} />

@@ -23,6 +23,7 @@ import { CircularProgress } from "@/components/CircularProgress";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { sampleWorkouts, Exercise, storage, CompletedExercise } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
+import { useLanguage } from "@/lib/i18n";
 
 const { width } = Dimensions.get("window");
 
@@ -69,6 +70,7 @@ export default function WorkoutPlayerScreen() {
   const navigation = useNavigation();
   const route = useRoute<WorkoutPlayerRouteProp>();
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
@@ -320,7 +322,7 @@ export default function WorkoutPlayerScreen() {
         <View style={styles.headerInfo}>
           <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
           <ThemedText style={styles.workoutMeta}>
-            {currentExerciseIndex + 1} / {exercises.length} exercises
+            {currentExerciseIndex + 1} / {exercises.length} {t("workouts.exercises")}
           </ThemedText>
         </View>
         <View style={styles.headerSpacer} />
@@ -343,14 +345,14 @@ export default function WorkoutPlayerScreen() {
           ) : null}
           {isResting ? (
             <View style={styles.restBadge}>
-              <ThemedText style={styles.restText}>REST</ThemedText>
+              <ThemedText style={styles.restText}>{t("workout.rest")}</ThemedText>
             </View>
           ) : null}
           <ThemedText style={styles.exerciseName}>
-            {isResting ? "Get Ready" : currentExercise?.name}
+            {isResting ? t("workout.getReady") : currentExercise?.name}
           </ThemedText>
           <ThemedText style={styles.setInfo}>
-            Set {currentSet} of {currentExercise?.sets}
+            {t("workout.setOf")} {currentSet} {t("workout.of")} {currentExercise?.sets}
           </ThemedText>
         </View>
 
@@ -365,7 +367,7 @@ export default function WorkoutPlayerScreen() {
               {formatTime(timeRemaining)}
             </ThemedText>
             <ThemedText style={styles.timerLabel}>
-              {isResting ? "REST" : "REMAINING"}
+              {isResting ? t("workout.rest") : t("workout.remaining")}
             </ThemedText>
           </CircularProgress>
         </View>
