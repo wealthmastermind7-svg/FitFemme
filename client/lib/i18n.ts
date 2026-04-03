@@ -148,6 +148,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.getReady": "Get Ready",
     "workout.setOf": "Set",
     "workout.of": "of",
+    "workout.intensityHigh": "High",
+    "workout.intensityMedium": "Medium",
+    "workout.intensityLow": "Low",
+    "workout.noEquipment": "No Equipment",
   },
   es: {
     // Onboarding
@@ -293,6 +297,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.getReady": "Prepárate",
     "workout.setOf": "Serie",
     "workout.of": "de",
+    "workout.intensityHigh": "Alto",
+    "workout.intensityMedium": "Medio",
+    "workout.intensityLow": "Bajo",
+    "workout.noEquipment": "Sin Equipamiento",
   },
   pt: {
     // Onboarding
@@ -438,6 +446,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.getReady": "Prepare-se",
     "workout.setOf": "Série",
     "workout.of": "de",
+    "workout.intensityHigh": "Alto",
+    "workout.intensityMedium": "Médio",
+    "workout.intensityLow": "Baixo",
+    "workout.noEquipment": "Sem Equipamento",
   },
 };
 

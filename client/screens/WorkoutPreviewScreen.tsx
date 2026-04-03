@@ -83,6 +83,18 @@ export default function WorkoutPreviewScreen() {
     }
   };
 
+  const translateIntensity = (intensity: string) => {
+    const key = `workout.intensity${intensity}`;
+    return t(key) || intensity;
+  };
+
+  const translateEquipment = (equipment: string[]) => {
+    if (equipment.length === 0 || (equipment.length === 1 && equipment[0] === "")) {
+      return t("workout.noEquipment") || "No Equipment";
+    }
+    return equipment.join(", ");
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -149,13 +161,13 @@ export default function WorkoutPreviewScreen() {
                   { backgroundColor: getIntensityColor(workout.intensity) },
                 ]}
               />
-              <ThemedText style={styles.infoValue}>{workout.intensity}</ThemedText>
+              <ThemedText style={styles.infoValue}>{translateIntensity(workout.intensity)}</ThemedText>
             </View>
           </View>
           <View style={styles.infoItem}>
             <ThemedText style={styles.infoLabel}>{t("workout.equipment")}</ThemedText>
             <ThemedText style={styles.infoValue}>
-              {workout.equipment.join(", ")}
+              {translateEquipment(workout.equipment)}
             </ThemedText>
           </View>
         </View>
@@ -178,7 +190,7 @@ export default function WorkoutPreviewScreen() {
                   {exercise.name}
                 </ThemedText>
                 <ThemedText style={styles.exerciseMeta}>
-                  {exercise.sets} sets  {exercise.duration}s each
+                  {exercise.sets} {t("workout.sets")} {exercise.duration}s {t("workout.each")}
                 </ThemedText>
               </View>
               <Feather name="check-circle" size={20} color={Colors.white20} />
