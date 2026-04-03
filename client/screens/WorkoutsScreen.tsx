@@ -20,8 +20,25 @@ import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
+import { useLanguage } from "@/lib/i18n";
 
 const FREE_WORKOUT_IDS = ["1"];
+
+const CATEGORY_KEYS: Record<string, string> = {
+  "All": "workouts.categories.all",
+  "HIIT": "workouts.categories.hiit",
+  "Strength": "workouts.categories.strength",
+  "Cardio": "workouts.categories.cardio",
+  "Core": "workouts.categories.core",
+  "Stretch": "workouts.categories.stretch",
+};
+
+const FILTER_KEYS: Record<string, string> = {
+  "Popular": "workouts.filters.popular",
+  "Short": "workouts.filters.short",
+  "No Equipment": "workouts.filters.noEquipment",
+  "New": "workouts.filters.new",
+};
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -38,6 +55,7 @@ export default function WorkoutsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed } = useSubscription();
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -91,9 +109,9 @@ export default function WorkoutsScreen() {
         showsVerticalScrollIndicator={false}
       >
       <View style={styles.header}>
-        <ThemedText style={styles.title}>Workout Library</ThemedText>
+        <ThemedText style={styles.title}>{t("workouts.title")}</ThemedText>
         <ThemedText style={styles.subtitle}>
-          Find your perfect workout
+          {t("home.continueJourney")}
         </ThemedText>
       </View>
 
@@ -118,7 +136,7 @@ export default function WorkoutsScreen() {
                 selectedCategory === category && styles.categoryTextActive,
               ]}
             >
-              {category}
+              {t(CATEGORY_KEYS[category]) || category}
             </ThemedText>
           </Pressable>
         ))}
@@ -144,14 +162,14 @@ export default function WorkoutsScreen() {
                 selectedFilter === filter && styles.filterTextActive,
               ]}
             >
-              {filter}
+              {t(FILTER_KEYS[filter]) || filter}
             </ThemedText>
           </Pressable>
         ))}
       </ScrollView>
 
       <View style={styles.featuredSection}>
-        <ThemedText style={styles.sectionTitle}>Featured Workout</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t("home.todaysWorkout")}</ThemedText>
         <Pressable
           style={styles.featuredCard}
           onPress={() => handleWorkoutPress("1")}
@@ -191,7 +209,7 @@ export default function WorkoutsScreen() {
           <View style={styles.emptyState}>
             <Feather name="inbox" size={48} color={Colors.white20} />
             <ThemedText style={styles.emptyStateText}>
-              No workouts found for this filter
+              {t("workouts.noResults")}
             </ThemedText>
             <Pressable
               style={styles.clearFilterButton}
@@ -200,7 +218,7 @@ export default function WorkoutsScreen() {
                 setSelectedFilter("Popular");
               }}
             >
-              <ThemedText style={styles.clearFilterText}>Clear Filters</ThemedText>
+              <ThemedText style={styles.clearFilterText}>{t("workouts.clearFilters")}</ThemedText>
             </Pressable>
           </View>
         ) : (

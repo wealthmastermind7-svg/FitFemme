@@ -16,47 +16,49 @@ import { PurchasesPackage } from "react-native-purchases";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { useSubscription } from "@/lib/revenuecat";
+import { useLanguage } from "@/lib/i18n";
 
 interface PaywallProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
-const FEATURES = [
-  { icon: "unlock", text: "All 6 workouts unlocked" },
-  { icon: "trending-up", text: "Full progress tracking & muscle chart" },
-  { icon: "calendar", text: "Workout history & streak calendar" },
-  { icon: "star", text: "Custom workout builder" },
-  { icon: "zap", text: "Unlimited daily workouts" },
+const FEATURE_KEYS = [
+  { icon: "unlock", key: "paywall.feature.workouts" },
+  { icon: "trending-up", key: "paywall.feature.tracking" },
+  { icon: "calendar", key: "paywall.feature.history" },
+  { icon: "star", key: "paywall.feature.builder" },
+  { icon: "zap", key: "paywall.feature.unlimited" },
 ];
-
-function getPackageLabel(pkg: PurchasesPackage): string {
-  const id = pkg.packageType;
-  if (id === "MONTHLY") return "Monthly";
-  if (id === "ANNUAL") return "Annual";
-  if (id === "LIFETIME") return "Lifetime";
-  return pkg.product.title || "Pro";
-}
-
-function getPackageBadge(pkg: PurchasesPackage): string | null {
-  const id = pkg.packageType;
-  if (id === "ANNUAL") return "Most Popular";
-  if (id === "LIFETIME") return "Best Value";
-  return null;
-}
-
-function getPackageSubtitle(pkg: PurchasesPackage): string {
-  const id = pkg.packageType;
-  if (id === "ANNUAL") return "~$1.25/month, save 37%";
-  if (id === "LIFETIME") return "One-time, keep forever";
-  if (id === "MONTHLY") return "Cancel anytime";
-  return "";
-}
 
 export default function Paywall({ isVisible, onClose }: PaywallProps) {
   const { offerings, purchase, restore, isPurchasing, isRestoring } = useSubscription();
+  const { t } = useLanguage();
   const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
+
+  const getPackageLabel = (pkg: PurchasesPackage): string => {
+    const id = pkg.packageType;
+    if (id === "MONTHLY") return t("paywall.monthly.label");
+    if (id === "ANNUAL") return t("paywall.annual.label");
+    if (id === "LIFETIME") return t("paywall.lifetime.label");
+    return pkg.product.title || "Pro";
+  };
+
+  const getPackageBadge = (pkg: PurchasesPackage): string | null => {
+    const id = pkg.packageType;
+    if (id === "ANNUAL") return t("paywall.badge.popular");
+    if (id === "LIFETIME") return t("paywall.badge.value");
+    return null;
+  };
+
+  const getPackageSubtitle = (pkg: PurchasesPackage): string => {
+    const id = pkg.packageType;
+    if (id === "ANNUAL") return t("paywall.sub.annual");
+    if (id === "LIFETIME") return t("paywall.sub.lifetime");
+    if (id === "MONTHLY") return t("paywall.sub.monthly");
+    return "";
+  };
 
   const packages = offerings?.current?.availablePackages ?? [];
 
@@ -114,19 +116,19 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
             showsVerticalScrollIndicator={false}
           >
             {/* Title */}
-            <ThemedText style={styles.title}>Unlock Your Full{"\n"}Potential</ThemedText>
+            <ThemedText style={styles.title}>{t("paywall.headline")}</ThemedText>
             <ThemedText style={styles.subtitle}>
-              Join thousands of women transforming their fitness journey
+              {t("paywall.joinThousands")}
             </ThemedText>
 
             {/* Features */}
             <View style={styles.features}>
-              {FEATURES.map((f, i) => (
+              {FEATURE_KEYS.map((f, i) => (
                 <View key={i} style={styles.featureRow}>
                   <View style={styles.featureIcon}>
                     <Feather name={f.icon as any} size={16} color={Colors.primary} />
                   </View>
-                  <ThemedText style={styles.featureText}>{f.text}</ThemedText>
+                  <ThemedText style={styles.featureText}>{t(f.key)}</ThemedText>
                 </View>
               ))}
             </View>
@@ -187,12 +189,12 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
               {isRestoring ? (
                 <ActivityIndicator color={Colors.white40} size="small" />
               ) : (
-                <ThemedText style={styles.restoreText}>Restore Purchases</ThemedText>
+                <ThemedText style={styles.restoreText}>{t("paywall.restore")}</ThemedText>
               )}
             </Pressable>
 
             <ThemedText style={styles.legal}>
-              Subscriptions auto-renew unless cancelled. Manage in device settings.
+              {t("paywall.legal")}
             </ThemedText>
           </ScrollView>
         </View>
@@ -202,17 +204,16 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
       <Modal visible={confirmVisible} animationType="fade" transparent presentationStyle="overFullScreen">
         <View style={styles.confirmOverlay}>
           <View style={styles.confirmBox}>
-            <ThemedText style={styles.confirmTitle}>Confirm Purchase</ThemedText>
+            <ThemedText style={styles.confirmTitle}>{t("paywall.subscribe")}</ThemedText>
             <ThemedText style={styles.confirmText}>
-              Purchase {selectedPackage ? getPackageLabel(selectedPackage) : ""} for{" "}
-              {selectedPackage?.product.priceString}?
+              {selectedPackage ? getPackageLabel(selectedPackage) : ""} — {selectedPackage?.product.priceString}
             </ThemedText>
             <View style={styles.confirmButtons}>
               <Pressable
                 style={[styles.confirmBtn, styles.confirmBtnCancel]}
                 onPress={() => setConfirmVisible(false)}
               >
-                <ThemedText style={styles.confirmBtnCancelText}>Cancel</ThemedText>
+                <ThemedText style={styles.confirmBtnCancelText}>{t("common.cancel")}</ThemedText>
               </Pressable>
               <Pressable
                 style={[styles.confirmBtn, styles.confirmBtnConfirm]}
@@ -222,7 +223,7 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
                 {isPurchasing ? (
                   <ActivityIndicator color={Colors.white} size="small" />
                 ) : (
-                  <ThemedText style={styles.confirmBtnConfirmText}>Purchase</ThemedText>
+                  <ThemedText style={styles.confirmBtnConfirmText}>{t("paywall.purchase")}</ThemedText>
                 )}
               </Pressable>
             </View>

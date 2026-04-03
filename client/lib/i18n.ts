@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Language = "en" | "es" | "pt";
@@ -76,12 +76,62 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature5": "Streak system",
     "paywall.feature6": "Custom workout builder",
 
+    // Profile modal fields
+    "profile.name": "Name",
+    "profile.age": "Age",
+    "profile.weight": "Weight",
+    "profile.workoutDuration": "Daily Workout Goal (min)",
+    "profile.saveChanges": "Save Changes",
+    "profile.minGoal": "Min Goal",
+    "profile.fitnessGoals": "Fitness Goals",
+    "profile.unitsAndMeasurements": "Units & Measurements",
+    "profile.helpCenter": "Help Center",
+    "profile.sendFeedback": "Send Feedback",
+
+    // Workouts screen
+    "workouts.preview": "Preview",
+    "workouts.min": "min",
+    "workouts.exercises": "exercises",
+
+    // Home screen
+    "home.goodMorning": "Good morning",
+    "home.goodAfternoon": "Good afternoon",
+    "home.goodEvening": "Good evening",
+    "home.todaysWorkout": "Today's Workout",
+    "home.continueJourney": "Continue your fitness journey",
+    "home.startWorkout": "Start Workout",
+    "home.weeklyProgress": "Weekly Progress",
+    "home.workoutsCompleted": "workouts completed",
+    "home.quickStats": "Quick Stats",
+
     // Buttons & Common
     "common.close": "Close",
     "common.cancel": "Cancel",
     "common.save": "Save",
     "common.back": "Back",
     "common.next": "Next",
+    "common.viewAll": "View All",
+    "common.today": "Today",
+    "common.details": "Details",
+
+    // Paywall
+    "paywall.headline": "Unlock Your Full\nPotential",
+    "paywall.joinThousands": "Join thousands of women transforming their fitness journey",
+    "paywall.feature.workouts": "All 6 workouts unlocked",
+    "paywall.feature.tracking": "Full progress tracking & muscle chart",
+    "paywall.feature.history": "Workout history & streak calendar",
+    "paywall.feature.builder": "Custom workout builder",
+    "paywall.feature.unlimited": "Unlimited daily workouts",
+    "paywall.monthly.label": "Monthly",
+    "paywall.annual.label": "Annual",
+    "paywall.lifetime.label": "Lifetime",
+    "paywall.badge.popular": "Most Popular",
+    "paywall.badge.value": "Best Value",
+    "paywall.sub.monthly": "Cancel anytime",
+    "paywall.sub.annual": "~$1.25/month, save 37%",
+    "paywall.sub.lifetime": "One-time, keep forever",
+    "paywall.noResults": "No workouts found",
+    "paywall.legal": "Subscriptions auto-renew unless cancelled. Manage in device settings.",
   },
   es: {
     // Onboarding
@@ -155,12 +205,62 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature5": "Sistema de racha",
     "paywall.feature6": "Constructor de entrenamiento personalizado",
 
+    // Profile modal fields
+    "profile.name": "Nombre",
+    "profile.age": "Edad",
+    "profile.weight": "Peso",
+    "profile.workoutDuration": "Meta Diaria de Entrenamiento (min)",
+    "profile.saveChanges": "Guardar Cambios",
+    "profile.minGoal": "Meta Min",
+    "profile.fitnessGoals": "Objetivos de Fitness",
+    "profile.unitsAndMeasurements": "Unidades y Medidas",
+    "profile.helpCenter": "Centro de Ayuda",
+    "profile.sendFeedback": "Enviar Comentarios",
+
+    // Workouts screen
+    "workouts.preview": "Vista Previa",
+    "workouts.min": "min",
+    "workouts.exercises": "ejercicios",
+
+    // Home screen
+    "home.goodMorning": "Buenos días",
+    "home.goodAfternoon": "Buenas tardes",
+    "home.goodEvening": "Buenas noches",
+    "home.todaysWorkout": "Entrenamiento de Hoy",
+    "home.continueJourney": "Continúa tu viaje de fitness",
+    "home.startWorkout": "Comenzar Entrenamiento",
+    "home.weeklyProgress": "Progreso Semanal",
+    "home.workoutsCompleted": "entrenamientos completados",
+    "home.quickStats": "Estadísticas Rápidas",
+
     // Buttons & Common
     "common.close": "Cerrar",
     "common.cancel": "Cancelar",
     "common.save": "Guardar",
     "common.back": "Atrás",
     "common.next": "Siguiente",
+    "common.viewAll": "Ver Todo",
+    "common.today": "Hoy",
+    "common.details": "Detalles",
+
+    // Paywall
+    "paywall.headline": "Desbloquea Todo\ntu Potencial",
+    "paywall.joinThousands": "Únete a miles de mujeres que transforman su viaje de fitness",
+    "paywall.feature.workouts": "Los 6 entrenamientos desbloqueados",
+    "paywall.feature.tracking": "Seguimiento completo del progreso y gráfico muscular",
+    "paywall.feature.history": "Historial de entrenamientos y calendario de rachas",
+    "paywall.feature.builder": "Constructor de entrenamiento personalizado",
+    "paywall.feature.unlimited": "Entrenamientos diarios ilimitados",
+    "paywall.monthly.label": "Mensual",
+    "paywall.annual.label": "Anual",
+    "paywall.lifetime.label": "Vitalicio",
+    "paywall.badge.popular": "Más Popular",
+    "paywall.badge.value": "Mejor Valor",
+    "paywall.sub.monthly": "Cancela cuando quieras",
+    "paywall.sub.annual": "~$1.25/mes, ahorra 37%",
+    "paywall.sub.lifetime": "Pago único, acceso para siempre",
+    "paywall.noResults": "No se encontraron entrenamientos",
+    "paywall.legal": "Las suscripciones se renuevan automáticamente. Gestionar en ajustes del dispositivo.",
   },
   pt: {
     // Onboarding
@@ -234,51 +334,119 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature5": "Sistema de sequência",
     "paywall.feature6": "Construtor de treino personalizado",
 
+    // Profile modal fields
+    "profile.name": "Nome",
+    "profile.age": "Idade",
+    "profile.weight": "Peso",
+    "profile.workoutDuration": "Meta Diária de Treino (min)",
+    "profile.saveChanges": "Salvar Alterações",
+    "profile.minGoal": "Meta Min",
+    "profile.fitnessGoals": "Objetivos de Fitness",
+    "profile.unitsAndMeasurements": "Unidades e Medidas",
+    "profile.helpCenter": "Central de Ajuda",
+    "profile.sendFeedback": "Enviar Feedback",
+
+    // Workouts screen
+    "workouts.preview": "Visualizar",
+    "workouts.min": "min",
+    "workouts.exercises": "exercícios",
+
+    // Home screen
+    "home.goodMorning": "Bom dia",
+    "home.goodAfternoon": "Boa tarde",
+    "home.goodEvening": "Boa noite",
+    "home.todaysWorkout": "Treino de Hoje",
+    "home.continueJourney": "Continue sua jornada fitness",
+    "home.startWorkout": "Começar Treino",
+    "home.weeklyProgress": "Progresso Semanal",
+    "home.workoutsCompleted": "treinos concluídos",
+    "home.quickStats": "Estatísticas Rápidas",
+
     // Buttons & Common
     "common.close": "Fechar",
     "common.cancel": "Cancelar",
     "common.save": "Salvar",
     "common.back": "Voltar",
     "common.next": "Próximo",
+    "common.viewAll": "Ver Tudo",
+    "common.today": "Hoje",
+    "common.details": "Detalhes",
+
+    // Paywall
+    "paywall.headline": "Desbloqueie Todo\no seu Potencial",
+    "paywall.joinThousands": "Junte-se a milhares de mulheres transformando sua jornada fitness",
+    "paywall.feature.workouts": "Todos os 6 treinos desbloqueados",
+    "paywall.feature.tracking": "Rastreamento completo de progresso e gráfico muscular",
+    "paywall.feature.history": "Histórico de treinos e calendário de sequências",
+    "paywall.feature.builder": "Construtor de treino personalizado",
+    "paywall.feature.unlimited": "Treinos diários ilimitados",
+    "paywall.monthly.label": "Mensal",
+    "paywall.annual.label": "Anual",
+    "paywall.lifetime.label": "Vitalício",
+    "paywall.badge.popular": "Mais Popular",
+    "paywall.badge.value": "Melhor Valor",
+    "paywall.sub.monthly": "Cancele quando quiser",
+    "paywall.sub.annual": "~$1.25/mês, economize 37%",
+    "paywall.sub.lifetime": "Pagamento único, acesso para sempre",
+    "paywall.noResults": "Nenhum treino encontrado",
+    "paywall.legal": "As assinaturas são renovadas automaticamente. Gerencie nas configurações do dispositivo.",
   },
 };
 
 const LANGUAGE_STORAGE_KEY = "@fitfemme_language";
 
-let currentLanguage: Language = "en";
-
-export async function initializeLanguage() {
-  try {
-    const saved = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (saved && (saved === "en" || saved === "es" || saved === "pt")) {
-      currentLanguage = saved;
-    }
-  } catch (error) {
-    console.log("Error loading language preference:", error);
-  }
+interface LanguageContextValue {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
 }
 
-export function setLanguage(lang: Language) {
-  currentLanguage = lang;
-  AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-}
+const LanguageContext = createContext<LanguageContextValue>({
+  language: "en",
+  setLanguage: () => {},
+  t: (key: string) => translations.en[key] || key,
+});
 
-export function getLanguage(): Language {
-  return currentLanguage;
-}
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLangState] = useState<Language>("en");
 
-export function t(key: string): string {
-  const lang = currentLanguage;
-  return translations[lang][key] || translations.en[key] || key;
+  useEffect(() => {
+    AsyncStorage.getItem(LANGUAGE_STORAGE_KEY).then((saved) => {
+      if (saved === "en" || saved === "es" || saved === "pt") {
+        setLangState(saved);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const setLanguage = (lang: Language) => {
+    setLangState(lang);
+    AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang).catch(() => {});
+  };
+
+  const t = (key: string) =>
+    translations[language][key] || translations.en[key] || key;
+
+  return React.createElement(
+    LanguageContext.Provider,
+    { value: { language, setLanguage, t } },
+    children
+  );
 }
 
 export function useLanguage() {
-  const [lang, setLang] = useState<Language>(currentLanguage);
+  return useContext(LanguageContext);
+}
 
-  const changeLang = (newLang: Language) => {
-    setLanguage(newLang);
-    setLang(newLang);
-  };
+export function t(key: string): string {
+  return translations.en[key] || key;
+}
 
-  return { language: lang, setLanguage: changeLang, t: (key: string) => translations[lang][key] || translations.en[key] || key };
+export async function initializeLanguage() {}
+
+export function setLanguage(lang: Language) {
+  AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang).catch(() => {});
+}
+
+export function getLanguage(): Language {
+  return "en";
 }

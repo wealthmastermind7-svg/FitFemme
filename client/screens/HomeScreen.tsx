@@ -28,11 +28,13 @@ import {
   initializeSampleData,
 } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
+import { useLanguage } from "@/lib/i18n";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t } = useLanguage();
 
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
@@ -58,9 +60,9 @@ export default function HomeScreen() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return t("home.goodMorning");
+    if (hour < 17) return t("home.goodAfternoon");
+    return t("home.goodEvening");
   };
 
   const getFormattedDate = () => {
@@ -133,9 +135,9 @@ export default function HomeScreen() {
       <View style={styles.progressSection}>
         <GlassCard>
           <View style={styles.progressHeader}>
-            <ThemedText style={styles.sectionTitle}>Daily Progress</ThemedText>
+            <ThemedText style={styles.sectionTitle}>{t("home.weeklyProgress")}</ThemedText>
             <Pressable>
-              <ThemedText style={styles.detailsLink}>Details</ThemedText>
+              <ThemedText style={styles.detailsLink}>{t("common.next")}</ThemedText>
             </Pressable>
           </View>
 
@@ -158,9 +160,9 @@ export default function HomeScreen() {
 
       <View style={styles.workoutsSection}>
         <View style={styles.workoutsHeader}>
-          <ThemedText style={styles.sectionTitle}>Today's Grind</ThemedText>
+          <ThemedText style={styles.sectionTitle}>{t("home.todaysWorkout")}</ThemedText>
           <Pressable>
-            <ThemedText style={styles.detailsLink}>View all</ThemedText>
+            <ThemedText style={styles.detailsLink}>{t("common.viewAll")}</ThemedText>
           </Pressable>
         </View>
         <ScrollView

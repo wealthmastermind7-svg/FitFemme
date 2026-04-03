@@ -88,7 +88,7 @@ export default function ProfileScreen() {
   const tabBarHeight = useBottomTabBarHeight();
 
   const { isSubscribed, customerInfo } = useSubscription();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -211,22 +211,22 @@ export default function ProfileScreen() {
   };
 
   const accountSettings: SettingItem[] = [
-    { id: "personal", icon: "user", title: "Personal Info", type: "link" },
-    { id: "goals", icon: "target", title: "Fitness Goals", type: "link" },
-    { id: "units", icon: "sliders", title: "Units & Measurements", type: "value", value: units },
+    { id: "personal", icon: "user", title: t("profile.personalInfo"), type: "link" },
+    { id: "goals", icon: "target", title: t("profile.goals"), type: "link" },
+    { id: "units", icon: "sliders", title: t("profile.units"), type: "value", value: units },
   ];
 
   const appSettings: SettingItem[] = [
-    { id: "notifications", icon: "bell", title: "Notifications", type: "toggle", value: notificationsEnabled },
-    { id: "vibration", icon: "smartphone", title: "Haptic Feedback", type: "toggle", value: vibrationEnabled },
-    { id: "language", icon: "globe", title: "Language", type: "value", value: language === "en" ? "English" : language === "es" ? "Español" : "Português" },
+    { id: "notifications", icon: "bell", title: t("profile.notifications"), type: "toggle", value: notificationsEnabled },
+    { id: "vibration", icon: "smartphone", title: t("profile.vibration"), type: "toggle", value: vibrationEnabled },
+    { id: "language", icon: "globe", title: t("profile.language"), type: "value", value: language === "en" ? "English" : language === "es" ? "Español" : "Português" },
   ];
 
   const supportSettings: SettingItem[] = [
-    { id: "help", icon: "help-circle", title: "Help Center", type: "link" },
-    { id: "feedback", icon: "message-square", title: "Send Feedback", type: "link" },
-    { id: "privacy", icon: "shield", title: "Privacy Policy", type: "link" },
-    { id: "terms", icon: "file-text", title: "Terms of Service", type: "link" },
+    { id: "help", icon: "help-circle", title: t("profile.support"), type: "link" },
+    { id: "feedback", icon: "message-square", title: t("profile.contact"), type: "link" },
+    { id: "privacy", icon: "shield", title: t("profile.privacyPolicy"), type: "link" },
+    { id: "terms", icon: "file-text", title: t("profile.termsOfService"), type: "link" },
   ];
 
   const renderSettingItem = (item: SettingItem, isAccountSetting = false, isSupportSetting = false) => (
@@ -288,7 +288,7 @@ export default function ProfileScreen() {
           </ThemedText>
         </LinearGradient>
         <ThemedText style={styles.profileName}>{profile.name}</ThemedText>
-        <ThemedText style={styles.profileSubtitle}>Fit Femme Member</ThemedText>
+        <ThemedText style={styles.profileSubtitle}>{t("profile.title")}</ThemedText>
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
@@ -300,7 +300,7 @@ export default function ProfileScreen() {
 
       {/* Subscription Section */}
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Subscription</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t("profile.subscription")}</ThemedText>
         {isSubscribed ? (
           <GlassCard style={styles.subscriptionCard}>
             <LinearGradient
@@ -312,13 +312,13 @@ export default function ProfileScreen() {
             <View style={styles.subscriptionActive}>
               <View style={styles.subscriptionActiveBadge}>
                 <Feather name="award" size={16} color={Colors.primary} />
-                <ThemedText style={styles.subscriptionActiveTitle}>Pro Member</ThemedText>
+                <ThemedText style={styles.subscriptionActiveTitle}>{t("profile.proMember")}</ThemedText>
               </View>
               <ThemedText style={styles.subscriptionActiveText}>
-                You have full access to all workouts and features.
+                {t("profile.proAccess")}
               </ThemedText>
               <ThemedText style={styles.subscriptionManageText}>
-                Manage your subscription in your device settings.
+                {t("profile.manageSubscription")}
               </ThemedText>
             </View>
           </GlassCard>
@@ -333,13 +333,13 @@ export default function ProfileScreen() {
               />
               <View style={styles.subscriptionUpgrade}>
                 <View style={styles.subscriptionUpgradeLeft}>
-                  <ThemedText style={styles.subscriptionUpgradeTitle}>Upgrade to Pro</ThemedText>
+                  <ThemedText style={styles.subscriptionUpgradeTitle}>{t("profile.upgradeToPro")}</ThemedText>
                   <ThemedText style={styles.subscriptionUpgradeText}>
-                    Unlock all 6 workouts, stats, history & more
+                    {t("profile.unlockFeatures")}
                   </ThemedText>
                 </View>
                 <View style={styles.subscriptionUpgradeButton}>
-                  <ThemedText style={styles.subscriptionUpgradeButtonText}>View Plans</ThemedText>
+                  <ThemedText style={styles.subscriptionUpgradeButtonText}>{t("profile.viewPlans")}</ThemedText>
                 </View>
               </View>
             </GlassCard>
@@ -348,14 +348,14 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Account</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t("profile.account")}</ThemedText>
         <GlassCard style={styles.settingsCard}>
           {accountSettings.map((item) => renderSettingItem(item, true, false))}
         </GlassCard>
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>App Settings</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t("profile.appSettings")}</ThemedText>
         <GlassCard style={styles.settingsCard}>
           {appSettings.map((item) => renderSettingItem({ ...item, value: 
             item.id === "notifications" ? notificationsEnabled :
@@ -366,7 +366,7 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Support</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t("profile.support")}</ThemedText>
         <GlassCard style={styles.settingsCard}>
           {supportSettings.map((item) => renderSettingItem(item, false, true))}
         </GlassCard>
@@ -379,14 +379,14 @@ export default function ProfileScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Personal Info</ThemedText>
+              <ThemedText style={styles.modalTitle}>{t("profile.personalInfo")}</ThemedText>
               <Pressable onPress={() => setPersonalInfoModalVisible(false)}>
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>
             </View>
             
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Name</ThemedText>
+              <ThemedText style={styles.inputLabel}>{t("profile.name")}</ThemedText>
               <TextInput
                 style={styles.input}
                 placeholder="Name"
@@ -397,10 +397,10 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Age</ThemedText>
+              <ThemedText style={styles.inputLabel}>{t("profile.age")}</ThemedText>
               <TextInput
                 style={styles.input}
-                placeholder="Age"
+                placeholder={t("profile.age")}
                 placeholderTextColor={Colors.white40}
                 keyboardType="numeric"
                 value={editAge}
@@ -409,7 +409,7 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Weight ({units === "Metric" ? "kg" : "lbs"})</ThemedText>
+              <ThemedText style={styles.inputLabel}>{t("profile.weight")} ({units === "Metric" ? "kg" : "lbs"})</ThemedText>
               <TextInput
                 style={styles.input}
                 placeholder={units === "Metric" ? "65" : "140"}
@@ -421,7 +421,7 @@ export default function ProfileScreen() {
             </View>
 
             <Pressable style={styles.saveButton} onPress={handleSavePersonalInfo}>
-              <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+              <ThemedText style={styles.saveButtonText}>{t("common.save")}</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -432,14 +432,14 @@ export default function ProfileScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Fitness Goals</ThemedText>
+              <ThemedText style={styles.modalTitle}>{t("profile.fitnessGoals")}</ThemedText>
               <Pressable onPress={() => setGoalsModalVisible(false)}>
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>
             </View>
             
             <View style={styles.inputGroup}>
-              <ThemedText style={styles.inputLabel}>Daily Duration Goal (mins)</ThemedText>
+              <ThemedText style={styles.inputLabel}>{t("profile.workoutDuration")}</ThemedText>
               <TextInput
                 style={styles.input}
                 placeholder="45"
@@ -451,7 +451,7 @@ export default function ProfileScreen() {
             </View>
             
             <Pressable style={styles.saveButton} onPress={handleSaveGoals}>
-              <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+              <ThemedText style={styles.saveButtonText}>{t("common.save")}</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -462,7 +462,7 @@ export default function ProfileScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Units & Measurements</ThemedText>
+              <ThemedText style={styles.modalTitle}>{t("profile.unitsAndMeasurements")}</ThemedText>
               <Pressable onPress={() => setUnitsModalVisible(false)}>
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>
@@ -487,7 +487,7 @@ export default function ProfileScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Language</ThemedText>
+              <ThemedText style={styles.modalTitle}>{t("profile.language")}</ThemedText>
               <Pressable onPress={() => setLanguageModalVisible(false)}>
                 <Feather name="x" size={24} color={Colors.white} />
               </Pressable>

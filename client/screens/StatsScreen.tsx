@@ -11,11 +11,13 @@ import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { storage } from "@/lib/storage";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
+import { useLanguage } from "@/lib/i18n";
 
 export default function StatsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { isSubscribed } = useSubscription();
+  const { t } = useLanguage();
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [muscleData, setMuscleData] = useState({ Back: 0, Chest: 0, Arms: 0, Legs: 0, Core: 0 });
 
@@ -142,12 +144,12 @@ export default function StatsScreen() {
         <View style={styles.lockIcon}>
           <Feather name="lock" size={40} color={Colors.primary} />
         </View>
-        <ThemedText style={styles.lockTitle}>Stats are a Pro Feature</ThemedText>
+        <ThemedText style={styles.lockTitle}>{t("stats.locked")}</ThemedText>
         <ThemedText style={styles.lockDescription}>
-          Track your muscle distribution, progress, and workout streaks with a Pro subscription.
+          {t("stats.lockedDesc")}
         </ThemedText>
         <Pressable style={styles.unlockButton} onPress={() => setPaywallVisible(true)}>
-          <ThemedText style={styles.unlockButtonText}>Unlock Pro</ThemedText>
+          <ThemedText style={styles.unlockButtonText}>{t("stats.unlockPro")}</ThemedText>
         </Pressable>
         <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
       </View>
@@ -164,8 +166,8 @@ export default function StatsScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.header}>
-        <ThemedText style={styles.title}>Muscle Distribution</ThemedText>
-        <ThemedText style={styles.subtitle}>Workout focus areas</ThemedText>
+        <ThemedText style={styles.title}>{t("stats.title")}</ThemedText>
+        <ThemedText style={styles.subtitle}>{t("stats.subtitle")}</ThemedText>
       </View>
 
       <View style={styles.chartCard}>
