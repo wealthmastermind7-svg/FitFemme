@@ -152,6 +152,26 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Medium",
     "workout.intensityLow": "Low",
     "workout.noEquipment": "No Equipment",
+
+    // Bottom navigation tabs
+    "nav.home": "Home",
+    "nav.workouts": "Workouts",
+    "nav.stats": "Stats",
+    "nav.profile": "Profile",
+
+    // WorkoutsScreen
+    "workouts.allWorkouts": "All Workouts",
+    "workouts.featuredBadge": "Editor's Pick",
+    "workouts.startNow": "Start Now",
+    "workouts.featured": "Featured Workout",
+
+    // Workout titles (from sample data)
+    "workout.fullBodyBurn": "Full Body Burn",
+    "workout.gluteGains": "Glute Gains",
+    "workout.coreCrusher": "Core Crusher",
+    "workout.cardioQueen": "Cardio Queen",
+    "workout.flexibilityFlow": "Flexibility Flow",
+    "workout.noEquipmentAbs": "No-Equipment Abs",
   },
   es: {
     // Onboarding
@@ -301,6 +321,26 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Medio",
     "workout.intensityLow": "Bajo",
     "workout.noEquipment": "Sin Equipamiento",
+
+    // Bottom navigation tabs
+    "nav.home": "Inicio",
+    "nav.workouts": "Entrenamientos",
+    "nav.stats": "Estadísticas",
+    "nav.profile": "Perfil",
+
+    // WorkoutsScreen
+    "workouts.allWorkouts": "Todos los Entrenamientos",
+    "workouts.featuredBadge": "Selección del Editor",
+    "workouts.startNow": "Comenzar Ahora",
+    "workouts.featured": "Entrenamiento Destacado",
+
+    // Workout titles (from sample data)
+    "workout.fullBodyBurn": "Quema Todo el Cuerpo",
+    "workout.gluteGains": "Ganancias de Glúteos",
+    "workout.coreCrusher": "Aplastador de Núcleo",
+    "workout.cardioQueen": "Reina del Cardio",
+    "workout.flexibilityFlow": "Flujo de Flexibilidad",
+    "workout.noEquipmentAbs": "Abdominales Sin Equipo",
   },
   pt: {
     // Onboarding
@@ -450,6 +490,26 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Médio",
     "workout.intensityLow": "Baixo",
     "workout.noEquipment": "Sem Equipamento",
+
+    // Bottom navigation tabs
+    "nav.home": "Início",
+    "nav.workouts": "Treinos",
+    "nav.stats": "Estatísticas",
+    "nav.profile": "Perfil",
+
+    // WorkoutsScreen
+    "workouts.allWorkouts": "Todos os Treinos",
+    "workouts.featuredBadge": "Escolha do Editor",
+    "workouts.startNow": "Começar Agora",
+    "workouts.featured": "Treino em Destaque",
+
+    // Workout titles (from sample data)
+    "workout.fullBodyBurn": "Queima Corporal Total",
+    "workout.gluteGains": "Ganhos de Glúteos",
+    "workout.coreCrusher": "Esmagador de Núcleo",
+    "workout.cardioQueen": "Rainha do Cardio",
+    "workout.flexibilityFlow": "Fluxo de Flexibilidade",
+    "workout.noEquipmentAbs": "Abdominais Sem Equipamento",
   },
 };
 

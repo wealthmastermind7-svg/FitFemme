@@ -63,6 +63,11 @@ export default function WorkoutsScreen() {
   const isWorkoutLocked = (workoutId: string) =>
     !isSubscribed && !FREE_WORKOUT_IDS.includes(workoutId);
 
+  const translateIntensity = (intensity: string) => {
+    const key = `workout.intensity${intensity}`;
+    return t(key) || intensity;
+  };
+
   const handleWorkoutPress = (workoutId: string) => {
     if (isWorkoutLocked(workoutId)) {
       setPaywallVisible(true);
@@ -185,16 +190,16 @@ export default function WorkoutsScreen() {
             />
             <View style={styles.featuredBadge}>
               <Feather name="zap" size={12} color={Colors.white} />
-              <ThemedText style={styles.featuredBadgeText}>Editor's Pick</ThemedText>
+              <ThemedText style={styles.featuredBadgeText}>{t("workouts.featuredBadge")}</ThemedText>
             </View>
             <View style={styles.featuredContent}>
-              <ThemedText style={styles.featuredTitle}>Full Body Burn</ThemedText>
+              <ThemedText style={styles.featuredTitle}>{sampleWorkouts[0].title}</ThemedText>
               <ThemedText style={styles.featuredMeta}>
-                30 min · High Intensity · No Equipment
+                {sampleWorkouts[0].duration} {t("workout.min")} · {translateIntensity(sampleWorkouts[0].intensity)} · {sampleWorkouts[0].equipment.join(", ") || t("workout.noEquipment")}
               </ThemedText>
               <View style={styles.startButton}>
                 <Feather name="play" size={18} color={Colors.white} />
-                <ThemedText style={styles.startButtonText}>Start Now</ThemedText>
+                <ThemedText style={styles.startButtonText}>{t("workouts.startNow")}</ThemedText>
               </View>
             </View>
           </ImageBackground>
@@ -203,7 +208,7 @@ export default function WorkoutsScreen() {
 
       <View style={styles.workoutList}>
         <ThemedText style={styles.sectionTitle}>
-          {selectedCategory === "All" ? "All Workouts" : `${selectedCategory} Workouts`}
+          {selectedCategory === "All" ? t("workouts.allWorkouts") : `${selectedCategory} ${t("workouts.title")}`}
         </ThemedText>
         {filteredWorkouts.length === 0 ? (
           <View style={styles.emptyState}>

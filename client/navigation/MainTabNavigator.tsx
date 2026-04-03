@@ -11,6 +11,7 @@ import WorkoutsStackNavigator from "@/navigation/WorkoutsStackNavigator";
 import StatsStackNavigator from "@/navigation/StatsStackNavigator";
 import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
 import { Colors, Spacing, Shadows } from "@/constants/theme";
+import { useLanguage } from "@/lib/i18n";
 
 export type MainTabParamList = {
   HomeTab: undefined;
@@ -28,6 +29,7 @@ function AddPlaceholder() {
 
 export default function MainTabNavigator() {
   const insets = useSafeAreaInsets();
+  const { t } = useLanguage();
 
   return (
     <Tab.Navigator
@@ -68,7 +70,7 @@ export default function MainTabNavigator() {
         name="HomeTab"
         component={HomeStackNavigator}
         options={{
-          title: "Home",
+          title: t("nav.home"),
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),
@@ -78,7 +80,7 @@ export default function MainTabNavigator() {
         name="WorkoutsTab"
         component={WorkoutsStackNavigator}
         options={{
-          title: "Workouts",
+          title: t("nav.workouts"),
           tabBarIcon: ({ color, size }) => (
             <Feather name="grid" size={size} color={color} />
           ),
@@ -111,7 +113,7 @@ export default function MainTabNavigator() {
         name="StatsTab"
         component={StatsStackNavigator}
         options={{
-          title: "Stats",
+          title: t("nav.stats"),
           tabBarIcon: ({ color, size }) => (
             <Feather name="bar-chart-2" size={size} color={color} />
           ),
@@ -121,7 +123,7 @@ export default function MainTabNavigator() {
         name="ProfileTab"
         component={ProfileStackNavigator}
         options={{
-          title: "Profile",
+          title: t("nav.profile"),
           tabBarIcon: ({ color, size }) => (
             <Feather name="user" size={size} color={color} />
           ),
