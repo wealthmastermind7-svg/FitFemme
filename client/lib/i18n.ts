@@ -196,6 +196,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Kneeling Hip Flexor Stretch",
     "exercise.doublePigeonPose": "Double Pigeon Pose",
     "exercise.cowYogaPose": "Cow Yoga Pose Bitilasana",
+
+    // How it works section
+    "workout.howItWorks": "How it works",
+    "workout.howItWorksDesc": "The guided timer will count down each exercise. Focus on your form while we track the time. Rest periods are built in between sets.",
   },
   es: {
     // Onboarding
@@ -389,6 +393,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Estiramiento de Flexor de Cadera",
     "exercise.doublePigeonPose": "Doble Pose de Paloma",
     "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
+
+    // How it works section
+    "workout.howItWorks": "Cómo funciona",
+    "workout.howItWorksDesc": "El temporizador guiado contará hacia atrás cada ejercicio. Enfócate en tu forma mientras rastreamos el tiempo. Los períodos de descanso están integrados entre series.",
   },
   pt: {
     // Onboarding
@@ -582,6 +590,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Alongamento de Flexor do Quadril",
     "exercise.doublePigeonPose": "Pose Dupla do Pombo",
     "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
+
+    // How it works section
+    "workout.howItWorks": "Como funciona",
+    "workout.howItWorksDesc": "O cronômetro guiado contará cada exercício. Concentre-se em sua forma enquanto rastreamos o tempo. Os períodos de descanso estão incorporados entre as séries.",
   },
 };
 

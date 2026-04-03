@@ -201,10 +201,9 @@ export default function WorkoutPreviewScreen() {
         <View style={styles.tipCard}>
           <Feather name="info" size={20} color={Colors.primary} />
           <View style={styles.tipContent}>
-            <ThemedText style={styles.tipTitle}>How it works</ThemedText>
+            <ThemedText style={styles.tipTitle}>{t("workout.howItWorks")}</ThemedText>
             <ThemedText style={styles.tipText}>
-              The guided timer will count down each exercise. Focus on your form
-              while we track the time. Rest periods are built in between sets.
+              {t("workout.howItWorksDesc")}
             </ThemedText>
           </View>
         </View>
