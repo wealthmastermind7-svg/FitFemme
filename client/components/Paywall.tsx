@@ -27,7 +27,6 @@ const FEATURE_KEYS = [
   { icon: "unlock", key: "paywall.feature.workouts" },
   { icon: "trending-up", key: "paywall.feature.tracking" },
   { icon: "calendar", key: "paywall.feature.history" },
-  { icon: "star", key: "paywall.feature.builder" },
   { icon: "zap", key: "paywall.feature.unlimited" },
 ];
 
