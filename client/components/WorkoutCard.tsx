@@ -11,7 +11,6 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { Workout } from "@/lib/storage";
-import { useLanguage, getWorkoutTranslationKey } from "@/lib/i18n";
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -28,7 +27,6 @@ interface WorkoutCardProps {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
-  const { t } = useLanguage();
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -66,7 +64,7 @@ export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
         </View>
         <View style={styles.content}>
           <ThemedText style={styles.title} numberOfLines={2}>
-            {t(getWorkoutTranslationKey(workout.title))}
+            {workout.title}
           </ThemedText>
           <View style={styles.meta}>
             <ThemedText style={styles.metaText}>

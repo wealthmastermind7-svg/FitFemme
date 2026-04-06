@@ -20,7 +20,7 @@ import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
-import { useLanguage, getWorkoutTranslationKey } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 
 const FREE_WORKOUT_IDS = ["1"];
 
@@ -55,8 +55,7 @@ export default function WorkoutsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed } = useSubscription();
-  const langContext = useLanguage();
-  const { t } = langContext || { t: (key: string) => key };
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
   const [paywallVisible, setPaywallVisible] = useState(false);

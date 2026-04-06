@@ -38,8 +38,7 @@ export default function WorkoutPreviewScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<WorkoutPreviewRouteProp>();
   const insets = useSafeAreaInsets();
-  const langContext = useLanguage();
-  const { t } = langContext || { t: (key: string) => key };
+  const { t } = useLanguage();
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
@@ -128,7 +127,7 @@ export default function WorkoutPreviewScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.workoutHeader}>
-          <ThemedText style={styles.workoutTitle}>{t(getWorkoutTranslationKey(workout.title))}</ThemedText>
+          <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
           <ThemedText style={styles.workoutCategory}>{workout.category}</ThemedText>
         </View>
 
