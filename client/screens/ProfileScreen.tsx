@@ -23,65 +23,6 @@ interface SettingItem {
   value?: string | boolean;
 }
 
-const PRIVACY_POLICY = `PRIVACY POLICY
-
-Last Updated: March 2026
-
-Fit Femme respects your privacy. This policy explains how we collect, use, and protect your information.
-
-1. INFORMATION WE COLLECT
-- Profile information (name, age, weight)
-- Fitness goals and preferences
-- Workout history and performance data
-- App usage analytics
-
-2. HOW WE USE YOUR DATA
-- To personalize your fitness experience
-- To track your progress and achievements
-- To improve our app and services
-- To provide customer support
-
-3. DATA PROTECTION
-We implement industry-standard security measures to protect your personal information. Your data is stored locally on your device and never shared with third parties.
-
-4. YOUR RIGHTS
-You have the right to access, modify, or delete your personal data at any time through the app settings.
-
-5. CONTACT US
-If you have questions about this privacy policy, please contact us at admin@cerolauto.com`;
-
-const TERMS_OF_SERVICE = `TERMS OF SERVICE
-
-Last Updated: March 2026
-
-1. ACCEPTANCE OF TERMS
-By using Fit Femme, you agree to these terms and conditions. If you do not agree, please do not use the app.
-
-2. LICENSE GRANT
-We grant you a limited, non-exclusive license to use this app for personal fitness purposes.
-
-3. USER RESPONSIBILITIES
-- You agree to use the app lawfully and in accordance with all applicable laws
-- You are responsible for your own fitness and health decisions
-- Consult a healthcare provider before starting a new fitness program
-- You assume all risks associated with your use of the app
-
-4. LIMITATIONS OF LIABILITY
-Fit Femme is provided "as-is" without warranties. We are not liable for any injuries or damages resulting from your use of the app or workout programs.
-
-5. INTELLECTUAL PROPERTY
-All content, design, and functionality of Fit Femme are owned by or licensed to Fit Femme and protected by copyright laws.
-
-6. TERMINATION
-We may terminate your access to the app at any time for violation of these terms.
-
-7. CHANGES TO TERMS
-We may update these terms at any time. Continued use of the app constitutes acceptance of changes.
-
-8. GOVERNING LAW
-These terms are governed by applicable laws. Any disputes shall be resolved in appropriate courts.`;
-
-
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
@@ -524,7 +465,7 @@ export default function ProfileScreen() {
             </View>
             <ScrollView style={styles.legalContent} showsVerticalScrollIndicator={false}>
               <ThemedText style={styles.legalText}>
-                {legalContent === "privacy" ? PRIVACY_POLICY : TERMS_OF_SERVICE}
+                {legalContent === "privacy" ? t("legal.privacyPolicy") : t("legal.termsOfService")}
               </ThemedText>
             </ScrollView>
           </View>
