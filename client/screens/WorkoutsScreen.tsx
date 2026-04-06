@@ -234,6 +234,7 @@ export default function WorkoutsScreen() {
               onPress={() => handleWorkoutPress(workout.id)}
               index={index}
               locked={isWorkoutLocked(workout.id)}
+              t={t}
             />
           ))
         )}
@@ -249,9 +250,10 @@ interface WorkoutListItemProps {
   onPress: () => void;
   locked?: boolean;
   index: number;
+  t: (key: string) => string;
 }
 
-function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemProps) {
+function WorkoutListItem({ workout, onPress, index, locked, t }: WorkoutListItemProps) {
   const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
 
   return (
