@@ -55,7 +55,8 @@ export default function WorkoutsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed } = useSubscription();
-  const { t } = useLanguage() || { t: (key: string) => key };
+  const langContext = useLanguage();
+  const { t } = langContext || { t: (key: string) => key };
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -234,7 +235,6 @@ export default function WorkoutsScreen() {
               onPress={() => handleWorkoutPress(workout.id)}
               index={index}
               locked={isWorkoutLocked(workout.id)}
-              t={t}
             />
           ))
         )}
@@ -250,10 +250,9 @@ interface WorkoutListItemProps {
   onPress: () => void;
   locked?: boolean;
   index: number;
-  t: (key: string) => string;
 }
 
-function WorkoutListItem({ workout, onPress, index, locked, t }: WorkoutListItemProps) {
+function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemProps) {
   const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
 
   return (
@@ -274,7 +273,7 @@ function WorkoutListItem({ workout, onPress, index, locked, t }: WorkoutListItem
         ) : null}
       </ImageBackground>
       <View style={styles.listItemContent}>
-        <ThemedText style={styles.listItemTitle}>{t(getWorkoutTranslationKey(workout.title))}</ThemedText>
+        <ThemedText style={styles.listItemTitle}>{workout.title}</ThemedText>
         <View style={styles.listItemMeta}>
           <View style={styles.listItemMetaItem}>
             <Feather name="clock" size={12} color={Colors.white40} />

@@ -38,7 +38,8 @@ export default function WorkoutPreviewScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<WorkoutPreviewRouteProp>();
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage() || { t: (key: string) => key };
+  const langContext = useLanguage();
+  const { t } = langContext || { t: (key: string) => key };
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
