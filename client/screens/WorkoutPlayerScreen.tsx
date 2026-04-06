@@ -320,7 +320,7 @@ export default function WorkoutPlayerScreen() {
           <Feather name="x" size={24} color={Colors.white} />
         </Pressable>
         <View style={styles.headerInfo}>
-          <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
+          <ThemedText style={styles.workoutTitle}>{t(getWorkoutTranslationKey(workout.title))}</ThemedText>
           <ThemedText style={styles.workoutMeta}>
             {currentExerciseIndex + 1} / {exercises.length} {t("workouts.exercises")}
           </ThemedText>

@@ -127,7 +127,7 @@ export default function WorkoutPreviewScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.workoutHeader}>
-          <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
+          <ThemedText style={styles.workoutTitle}>{t(getWorkoutTranslationKey(workout.title))}</ThemedText>
           <ThemedText style={styles.workoutCategory}>{workout.category}</ThemedText>
         </View>
 

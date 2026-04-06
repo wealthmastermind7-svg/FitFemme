@@ -200,6 +200,14 @@ const translations: Record<Language, Record<string, string>> = {
     // How it works section
     "workout.howItWorks": "How it works",
     "workout.howItWorksDesc": "The guided timer will count down each exercise. Focus on your form while we track the time. Rest periods are built in between sets.",
+
+    // Workout names
+    "workout.fullBodyBurn": "Full Body Burn",
+    "workout.gluteGains": "Glute Gains",
+    "workout.coreCrusher": "Core Crusher",
+    "workout.cardioQueen": "Cardio Queen",
+    "workout.flexibilityFlow": "Flexibility Flow",
+    "workout.noEquipmentAbs": "No-Equipment Abs",
   },
   es: {
     // Onboarding
@@ -397,6 +405,14 @@ const translations: Record<Language, Record<string, string>> = {
     // How it works section
     "workout.howItWorks": "Cómo funciona",
     "workout.howItWorksDesc": "El temporizador guiado contará hacia atrás cada ejercicio. Enfócate en tu forma mientras rastreamos el tiempo. Los períodos de descanso están integrados entre series.",
+
+    // Workout names
+    "workout.fullBodyBurn": "Quema Total",
+    "workout.gluteGains": "Ganancias de Glúteos",
+    "workout.coreCrusher": "Aplastador de Core",
+    "workout.cardioQueen": "Reina del Cardio",
+    "workout.flexibilityFlow": "Flujo de Flexibilidad",
+    "workout.noEquipmentAbs": "Abdominales Sin Equipo",
   },
   pt: {
     // Onboarding
@@ -594,6 +610,14 @@ const translations: Record<Language, Record<string, string>> = {
     // How it works section
     "workout.howItWorks": "Como funciona",
     "workout.howItWorksDesc": "O cronômetro guiado contará cada exercício. Concentre-se em sua forma enquanto rastreamos o tempo. Os períodos de descanso estão incorporados entre as séries.",
+
+    // Workout names
+    "workout.fullBodyBurn": "Queima Total",
+    "workout.gluteGains": "Ganhos de Glúteos",
+    "workout.coreCrusher": "Esmagador de Core",
+    "workout.cardioQueen": "Rainha do Cardio",
+    "workout.flexibilityFlow": "Fluxo de Flexibilidade",
+    "workout.noEquipmentAbs": "Abdominais Sem Equipamento",
   },
 };
 
@@ -639,6 +663,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   return useContext(LanguageContext);
+}
+
+// Helper to translate workout names based on English name
+export function getWorkoutTranslationKey(workoutTitle: string): string {
+  const keyMap: Record<string, string> = {
+    "Full Body Burn": "workout.fullBodyBurn",
+    "Glute Gains": "workout.gluteGains",
+    "Core Crusher": "workout.coreCrusher",
+    "Cardio Queen": "workout.cardioQueen",
+    "Flexibility Flow": "workout.flexibilityFlow",
+    "No-Equipment Abs": "workout.noEquipmentAbs",
+  };
+  return keyMap[workoutTitle] || workoutTitle;
 }
 
 // Helper to translate exercise names based on English name

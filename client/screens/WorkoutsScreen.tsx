@@ -20,7 +20,7 @@ import { sampleWorkouts, Workout } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage, getWorkoutTranslationKey } from "@/lib/i18n";
 
 const FREE_WORKOUT_IDS = ["1"];
 
@@ -272,7 +272,7 @@ function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemPro
         ) : null}
       </ImageBackground>
       <View style={styles.listItemContent}>
-        <ThemedText style={styles.listItemTitle}>{workout.title}</ThemedText>
+        <ThemedText style={styles.listItemTitle}>{t(getWorkoutTranslationKey(workout.title))}</ThemedText>
         <View style={styles.listItemMeta}>
           <View style={styles.listItemMetaItem}>
             <Feather name="clock" size={12} color={Colors.white40} />
