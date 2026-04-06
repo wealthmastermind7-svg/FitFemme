@@ -55,7 +55,7 @@ export default function WorkoutsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed } = useSubscription();
-  const { t } = useLanguage();
+  const { t } = useLanguage() || { t: (key: string) => key };
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
   const [paywallVisible, setPaywallVisible] = useState(false);
