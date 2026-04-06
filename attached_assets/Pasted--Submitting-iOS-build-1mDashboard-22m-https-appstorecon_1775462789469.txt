@@ -1,0 +1,48 @@
+⌛️ Submitting iOS build...
+- [1mDashboard[22m:    https://appstoreconnect.apple.com/apps/6757249898/distribution
+- [1mApp[22m:          Fit Femme (com.cerolauto.fitfemme)
+- [1mBuild number[22m: 9
+- [1mBinary path[22m:  ./ios/build/FitFemme.ipa
+[32m-------------------[0m
+[32m--- Step: pilot ---[0m
+[32m-------------------[0m
+Creating authorization token for App Store Connect API
+[32mReady to upload new build to TestFlight (App: 6757249898)...[0m
+Going to upload updated app to App Store Connect
+[32mThis might take a few minutes. Please don't interrupt the script.[0m
+[33m[altool] Running altool at path '/Applications/Xcode.app/Contents/SharedFrameworks/ContentDeliveryServices.framework/Frameworks/AppStoreService.framework/Support/altool'...
+[0m
+[33m[altool] 
+[0m
+[33m[altool] 2026-04-05 00:47:48.613 [1m[31mERROR: [altool.600000A68140] [ContentDelivery.Uploader.600000A68140] 
+[0m
+[33m[altool] =======================================
+[0m
+[33m[altool] UPLOAD FAILED with 1 error
+[0m
+[33m[altool] =======================================[0m
+[0m
+[33m[altool] 2026-04-05 00:47:48.616 [1m[31mERROR: [altool.600000A68140] Error uploading '/var/folders/5_/4knlryn57n39p2c_jw8567z00000gn/T/9ea5d64f-252e-4135-8d37-d83bc8afa50e.ipa'.[0m
+[0m
+[33m[altool] 2026-04-05 00:47:48.616 [1m[31mERROR: [altool.600000A68140] Validation failed This bundle does not support one or more of the devices supported by the previous app version. Your app update must continue to support all devices previously supported. You declare supported devices in Xcode with the Targeted Device Family build setting. Refer to QA1623 for additional information: https://developer.apple.com/library/ios/#qa/qa1623/_index.html (ID: e82bd869-90ae-41d4-8265-679f1be5743a) (409)
+[0m
+[33m[altool]  {
+[0m
+[33m[altool]     NSLocalizedDescription = "Validation failed";
+[0m
+[33m[altool]     NSLocalizedFailureReason = "This bundle does not support one or more of the devices supported by the previous app version. Your app update must continue to support all devices previously supported. You declare supported devices in Xcode with the Targeted Device Family build setting. Refer to QA1623 for additional information: https://developer.apple.com/library/ios/#qa/qa1623/_index.html (ID: e82bd869-90ae-41d4-8265-679f1be5743a)";
+[0m
+[33m[altool]     NSUnderlyingError = "Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=This bundle does not support one or more of the devices supported by the previous app version. Your app update must continue to support all devices previously supported. You declare supported devices in Xcode with the Targeted Device Family build setting. Refer to QA1623 for additional information: https://developer.apple.com/library/ios/#qa/qa1623/_index.html, id=e82bd869-90ae-41d4-8265-679f1be5743a, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=This bundle does not support one or more of the devices supported by the previous app version. Your app update must continue to support all devices previously supported. You declare supported devices in Xcode with the Targeted Device Family build setting. Refer to QA1623 for additional information: https://developer.apple.com/library/ios/#qa/qa1623/_index.html, NSLocalizedDescription=Validation failed}";
+[0m
+[33m[altool]     "iris-code" = "STATE_ERROR.VALIDATION_ERROR";
+[0m
+[33m[altool] }[0m
+[0m
+Application Loader output above ^
+[31mThe call to the altool completed with a non-zero exit status: 1. This indicates a failure.[0m
+[31mCould not download/upload from App Store Connect![0m
+[31m
+[!] Error uploading ipa file: 
+ [Application Loader Error Output]: The call to the altool completed with a non-zero exit status: 1. This indicates a failure.[0m
+[31mError: fastlane run pilot ipa:app-30ff90a5-c750-406d-ab77-326ec3106ed7.ipa apple_id:6757249898 skip_waiting_for_build_processing:true api_key_path:asc_api_key-c178c31a-ccc6-40e9-a4b1-d786d6da2398.json exited with non-zero code: 1[39m
+/bin/bash -eo pipefail /var/folders/5_/4knlryn57n39p2c_jw8567z00000gn/T/eas-build/9a575b46-267a-41a4-b0c0-6cff27f1545f/steps/step-018/scripts/6f25d12b-472e-4b15-aef2-559ad1856431.sh exited with non-zero code: 1
