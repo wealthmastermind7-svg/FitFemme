@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { NativeModules, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Localization from "expo-localization";
 
 export type Language = "en" | "es" | "pt";
 
@@ -8,9 +8,14 @@ const DEFAULT_LANGUAGE: Language = process.env.EXPO_PUBLIC_DEFAULT_LANGUAGE === 
 const LANGUAGE_STORAGE_KEY = "@fitfemme_language";
 
 function getDeviceLanguage(): Language {
-  const locale = Localization.getLocales()[0]?.languageTag?.toLowerCase() ?? "";
-  if (locale.startsWith("pt-br") || locale.startsWith("pt")) return "pt";
-  if (locale.startsWith("es-mx") || locale.startsWith("es")) return "es";
+  const locale =
+    Platform.OS === "ios"
+      ? NativeModules.SettingsManager?.settings?.AppleLocale ||
+        NativeModules.SettingsManager?.settings?.AppleLanguages?.[0]
+      : NativeModules.I18nManager?.localeIdentifier;
+  const value = (locale ?? "").toLowerCase().replace("_", "-");
+  if (value.startsWith("pt-br") || value.startsWith("pt")) return "pt";
+  if (value.startsWith("es-mx") || value.startsWith("es")) return "es";
   return DEFAULT_LANGUAGE;
 }
 
