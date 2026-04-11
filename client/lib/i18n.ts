@@ -1,7 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Localization from "expo-localization";
 
 export type Language = "en" | "es" | "pt";
+
+const DEFAULT_LANGUAGE: Language = process.env.EXPO_PUBLIC_DEFAULT_LANGUAGE === "pt" ? "pt" : process.env.EXPO_PUBLIC_DEFAULT_LANGUAGE === "es" ? "es" : "en";
+const LANGUAGE_STORAGE_KEY = "@fitfemme_language";
+
+function getDeviceLanguage(): Language {
+  const locale = Localization.getLocales()[0]?.languageTag?.toLowerCase() ?? "";
+  if (locale.startsWith("pt-br") || locale.startsWith("pt")) return "pt";
+  if (locale.startsWith("es-mx") || locale.startsWith("es")) return "es";
+  return DEFAULT_LANGUAGE;
+}
 
 const translations: Record<Language, Record<string, string>> = {
   en: {
@@ -74,7 +85,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature3": "Full progress tracking",
     "paywall.feature4": "Workout history",
     "paywall.feature5": "Streak system",
-    "paywall.feature6": "Custom workout builder",
 
     // Profile modal fields
     "profile.name": "Name",
@@ -120,7 +130,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature.workouts": "All 6 workouts unlocked",
     "paywall.feature.tracking": "Full progress tracking & muscle chart",
     "paywall.feature.history": "Workout history & streak calendar",
-    "paywall.feature.builder": "Custom workout builder",
     "paywall.feature.unlimited": "Unlimited daily workouts",
     "paywall.monthly.label": "Monthly",
     "paywall.annual.label": "Annual",
@@ -271,7 +280,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature3": "Seguimiento completo del progreso",
     "paywall.feature4": "Historial de entrenamientos",
     "paywall.feature5": "Sistema de racha",
-    "paywall.feature6": "Constructor de entrenamiento personalizado",
 
     // Profile modal fields
     "profile.name": "Nombre",
@@ -317,7 +325,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature.workouts": "Los 6 entrenamientos desbloqueados",
     "paywall.feature.tracking": "Seguimiento completo del progreso y gráfico muscular",
     "paywall.feature.history": "Historial de entrenamientos y calendario de rachas",
-    "paywall.feature.builder": "Constructor de entrenamiento personalizado",
     "paywall.feature.unlimited": "Entrenamientos diarios ilimitados",
     "paywall.monthly.label": "Mensual",
     "paywall.annual.label": "Anual",
@@ -468,7 +475,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature3": "Rastreamento completo de progresso",
     "paywall.feature4": "Histórico de treinos",
     "paywall.feature5": "Sistema de sequência",
-    "paywall.feature6": "Construtor de treino personalizado",
 
     // Profile modal fields
     "profile.name": "Nome",
@@ -514,7 +520,6 @@ const translations: Record<Language, Record<string, string>> = {
     "paywall.feature.workouts": "Todos os 6 treinos desbloqueados",
     "paywall.feature.tracking": "Rastreamento completo de progresso e gráfico muscular",
     "paywall.feature.history": "Histórico de treinos e calendário de sequências",
-    "paywall.feature.builder": "Construtor de treino personalizado",
     "paywall.feature.unlimited": "Treinos diários ilimitados",
     "paywall.monthly.label": "Mensal",
     "paywall.annual.label": "Anual",
@@ -597,8 +602,6 @@ const translations: Record<Language, Record<string, string>> = {
   },
 };
 
-const LANGUAGE_STORAGE_KEY = "@fitfemme_language";
-
 interface LanguageContextValue {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -606,20 +609,26 @@ interface LanguageContextValue {
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
-  language: "en",
+  language: DEFAULT_LANGUAGE,
   setLanguage: () => {},
   t: (key: string) => translations.en[key] || key,
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLangState] = useState<Language>("en");
+  const [language, setLangState] = useState<Language>(getDeviceLanguage());
 
   useEffect(() => {
-    AsyncStorage.getItem(LANGUAGE_STORAGE_KEY).then((saved) => {
-      if (saved === "en" || saved === "es" || saved === "pt") {
-        setLangState(saved);
-      }
-    }).catch(() => {});
+    AsyncStorage.getItem(LANGUAGE_STORAGE_KEY)
+      .then((saved) => {
+        if (saved === "en" || saved === "es" || saved === "pt") {
+          setLangState(saved);
+          return;
+        }
+        setLangState(getDeviceLanguage());
+      })
+      .catch(() => {
+        setLangState(getDeviceLanguage());
+      });
   }, []);
 
   const setLanguage = (lang: Language) => {
@@ -627,21 +636,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang).catch(() => {});
   };
 
-  const t = (key: string) =>
-    translations[language][key] || translations.en[key] || key;
+  const t = (key: string) => translations[language][key] || translations.en[key] || key;
 
-  return React.createElement(
-    LanguageContext.Provider,
-    { value: { language, setLanguage, t } },
-    children
-  );
+  return React.createElement(LanguageContext.Provider, { value: { language, setLanguage, t } }, children);
 }
 
 export function useLanguage() {
   return useContext(LanguageContext);
 }
 
-// Helper to translate exercise names based on English name
 export function getExerciseTranslationKey(exerciseName: string): string {
   const nameMap: Record<string, string> = {
     "Jump Squats": "exercise.jumpSquats",
@@ -676,10 +679,4 @@ export function t(key: string): string {
 
 export async function initializeLanguage() {}
 
-export function setLanguage(lang: Language) {
-  AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang).catch(() => {});
-}
-
-export function getLanguage(): Language {
-  return "en";
-}
+export function setLanguage(lang: Language) {}
