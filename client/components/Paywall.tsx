@@ -183,6 +183,24 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
               )}
             </View>
 
+            <Pressable
+              style={styles.primaryCta}
+              onPress={() => {
+                if (packages[0]) {
+                  handlePurchasePress(packages[0]);
+                }
+              }}
+              disabled={isPurchasing || packages.length === 0}
+            >
+              {isPurchasing ? (
+                <ActivityIndicator color={Colors.white} size="small" />
+              ) : (
+                <ThemedText style={styles.primaryCtaText}>
+                  {t("paywall.subscribe")}
+                </ThemedText>
+              )}
+            </Pressable>
+
             {/* Restore */}
             <Pressable onPress={handleRestore} style={styles.restoreButton} disabled={isRestoring}>
               {isRestoring ? (
@@ -371,6 +389,20 @@ const styles = StyleSheet.create({
   packagePeriod: {
     fontSize: 13,
     color: "rgba(255,255,255,0.7)",
+  },
+  primaryCta: {
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.full,
+    paddingVertical: Spacing.md,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: Spacing.lg,
+    minHeight: 52,
+  },
+  primaryCtaText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: Colors.white,
   },
   restoreButton: {
     alignItems: "center",
