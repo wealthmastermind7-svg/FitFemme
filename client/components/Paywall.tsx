@@ -92,11 +92,12 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
   return (
     <>
       <Modal visible={isVisible} animationType="slide" transparent presentationStyle="overFullScreen">
-        <BlurView intensity={30} style={StyleSheet.absoluteFillObject} />
+        <BlurView pointerEvents="none" intensity={30} style={StyleSheet.absoluteFillObject} />
         <View style={styles.container}>
           <LinearGradient
             colors={["#3d0a24", "#221019", "#1a0d14"]}
             style={StyleSheet.absoluteFillObject}
+            pointerEvents="none"
           />
 
           {/* Header */}
@@ -113,6 +114,7 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
           <ScrollView
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
             {/* Title */}
             <ThemedText style={styles.title}>{t("paywall.headline")}</ThemedText>
@@ -183,6 +185,21 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
               )}
             </View>
 
+            {/* Restore */}
+            <Pressable onPress={handleRestore} style={styles.restoreButton} disabled={isRestoring}>
+              {isRestoring ? (
+                <ActivityIndicator color={Colors.white40} size="small" />
+              ) : (
+                <ThemedText style={styles.restoreText}>{t("paywall.restore")}</ThemedText>
+              )}
+            </Pressable>
+
+            <ThemedText style={styles.legal}>
+              {t("paywall.legal")}
+            </ThemedText>
+          </ScrollView>
+
+          <View style={styles.footer}>
             <Pressable
               style={styles.primaryCta}
               onPress={() => {
@@ -200,20 +217,7 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
                 </ThemedText>
               )}
             </Pressable>
-
-            {/* Restore */}
-            <Pressable onPress={handleRestore} style={styles.restoreButton} disabled={isRestoring}>
-              {isRestoring ? (
-                <ActivityIndicator color={Colors.white40} size="small" />
-              ) : (
-                <ThemedText style={styles.restoreText}>{t("paywall.restore")}</ThemedText>
-              )}
-            </Pressable>
-
-            <ThemedText style={styles.legal}>
-              {t("paywall.legal")}
-            </ThemedText>
-          </ScrollView>
+          </View>
         </View>
       </Modal>
 
