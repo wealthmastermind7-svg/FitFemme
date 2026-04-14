@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as WebBrowser from "expo-web-browser";
+import * as MailComposer from "expo-mail-composer";
 
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
@@ -179,14 +180,34 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleSupportPress = (id: string) => {
+  const handleSupportPress = async (id: string) => {
     switch (id) {
-      case "help":
-        Alert.alert("Help Center", "Visit our help center for tutorials and FAQs.");
+      case "help": {
+        const available = await MailComposer.isAvailableAsync();
+        if (available) {
+          await MailComposer.composeAsync({
+            recipients: ["wealthmastermind7@gmail.com"],
+            subject: "Help Request – Fit Femme",
+            body: "Hi Fit Femme team,\n\nI need help with:\n\n",
+          });
+        } else {
+          Alert.alert("Help Center", "Please email us at wealthmastermind7@gmail.com");
+        }
         break;
-      case "feedback":
-        Alert.alert("Send Feedback", "Thank you for helping us improve Fit Femme!");
+      }
+      case "feedback": {
+        const available = await MailComposer.isAvailableAsync();
+        if (available) {
+          await MailComposer.composeAsync({
+            recipients: ["wealthmastermind7@gmail.com"],
+            subject: "Feedback – Fit Femme",
+            body: "Hi Fit Femme team,\n\nHere is my feedback:\n\n",
+          });
+        } else {
+          Alert.alert("Send Feedback", "Please email us at wealthmastermind7@gmail.com");
+        }
         break;
+      }
       case "privacy":
         setLegalContent("privacy");
         setLegalModalVisible(true);
