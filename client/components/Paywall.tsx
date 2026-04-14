@@ -33,9 +33,6 @@ const FEATURE_KEYS = [
 export default function Paywall({ isVisible, onClose }: PaywallProps) {
   const { offerings, purchase, restore, isPurchasing, isRestoring } = useSubscription();
   const { t } = useLanguage();
-  const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
-  const [confirmVisible, setConfirmVisible] = useState(false);
-
   const getPackageLabel = (pkg: PurchasesPackage): string => {
     const id = pkg.packageType;
     if (id === "MONTHLY") return t("paywall.monthly.label");
@@ -61,16 +58,9 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
 
   const packages = offerings?.current?.availablePackages ?? [];
 
-  const handlePurchasePress = (pkg: PurchasesPackage) => {
-    setSelectedPackage(pkg);
-    setConfirmVisible(true);
-  };
-
-  const handleConfirmPurchase = async () => {
-    if (!selectedPackage) return;
-    setConfirmVisible(false);
+  const handlePurchasePress = async (pkg: PurchasesPackage) => {
     try {
-      await purchase(selectedPackage);
+      await purchase(pkg);
       onClose();
     } catch (err: any) {
       if (!err?.userCancelled) {
@@ -148,6 +138,7 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
                       style={[styles.packageCard, isAnnual && styles.packageCardHighlighted]}
                       onPress={() => handlePurchasePress(pkg)}
                       disabled={isPurchasing}
+                      accessibilityRole="button"
                     >
                       {isAnnual && (
                         <LinearGradient
@@ -205,9 +196,12 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
               onPress={() => {
                 if (packages[0]) {
                   handlePurchasePress(packages[0]);
+                } else {
+                  Alert.alert("No plans available", "Please try again in a moment.");
                 }
               }}
-              disabled={isPurchasing || packages.length === 0}
+              disabled={isPurchasing}
+              accessibilityRole="button"
             >
               {isPurchasing ? (
                 <ActivityIndicator color={Colors.white} size="small" />
@@ -217,37 +211,6 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
                 </ThemedText>
               )}
             </Pressable>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Purchase Confirmation Modal */}
-      <Modal visible={confirmVisible} animationType="fade" transparent presentationStyle="overFullScreen">
-        <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <ThemedText style={styles.confirmTitle}>{t("paywall.subscribe")}</ThemedText>
-            <ThemedText style={styles.confirmText}>
-              {selectedPackage ? getPackageLabel(selectedPackage) : ""} — {selectedPackage?.product.priceString}
-            </ThemedText>
-            <View style={styles.confirmButtons}>
-              <Pressable
-                style={[styles.confirmBtn, styles.confirmBtnCancel]}
-                onPress={() => setConfirmVisible(false)}
-              >
-                <ThemedText style={styles.confirmBtnCancelText}>{t("common.cancel")}</ThemedText>
-              </Pressable>
-              <Pressable
-                style={[styles.confirmBtn, styles.confirmBtnConfirm]}
-                onPress={handleConfirmPurchase}
-                disabled={isPurchasing}
-              >
-                {isPurchasing ? (
-                  <ActivityIndicator color={Colors.white} size="small" />
-                ) : (
-                  <ThemedText style={styles.confirmBtnConfirmText}>{t("paywall.purchase")}</ThemedText>
-                )}
-              </Pressable>
-            </View>
           </View>
         </View>
       </Modal>
@@ -423,58 +386,5 @@ const styles = StyleSheet.create({
     color: Colors.white40,
     textAlign: "center",
     lineHeight: 16,
-  },
-  confirmOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: Spacing["2xl"],
-  },
-  confirmBox: {
-    backgroundColor: "#2d1020",
-    borderRadius: BorderRadius.lg,
-    padding: Spacing["2xl"],
-    width: "100%",
-    borderWidth: 1,
-    borderColor: Colors.white10,
-    gap: Spacing.md,
-  },
-  confirmTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-  confirmText: {
-    fontSize: 15,
-    color: Colors.white60,
-    lineHeight: 22,
-  },
-  confirmButtons: {
-    flexDirection: "row",
-    gap: Spacing.md,
-    marginTop: Spacing.sm,
-  },
-  confirmBtn: {
-    flex: 1,
-    paddingVertical: Spacing.md,
-    borderRadius: BorderRadius.sm,
-    alignItems: "center",
-  },
-  confirmBtnCancel: {
-    backgroundColor: Colors.white10,
-  },
-  confirmBtnCancelText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: Colors.white60,
-  },
-  confirmBtnConfirm: {
-    backgroundColor: Colors.primary,
-  },
-  confirmBtnConfirmText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.white,
   },
 });
