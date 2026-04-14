@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,64 +7,117 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  ImageBackground,
+  Platform,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { PurchasesPackage } from "react-native-purchases";
+import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useSubscription } from "@/lib/revenuecat";
 import { useLanguage } from "@/lib/i18n";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface PaywallProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
-const FEATURE_KEYS = [
-  { icon: "unlock", key: "paywall.feature.workouts" },
-  { icon: "trending-up", key: "paywall.feature.tracking" },
-  { icon: "calendar", key: "paywall.feature.history" },
-  { icon: "zap", key: "paywall.feature.unlimited" },
+export default function Paywall({ isVisible, onClose }: PaywallProps) {
+  const queryClient = useQueryClient();
+  const presenting = useRef(false);
+
+  useEffect(() => {
+    if (!isVisible || Platform.OS === "web") return;
+    if (presenting.current) return;
+
+    presenting.current = true;
+
+    RevenueCatUI.presentPaywall({ displayCloseButton: true })
+      .then((result) => {
+        if (
+          result === PAYWALL_RESULT.PURCHASED ||
+          result === PAYWALL_RESULT.RESTORED
+        ) {
+          queryClient.invalidateQueries({
+            queryKey: ["revenuecat", "customer-info"],
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        presenting.current = false;
+        onClose();
+      });
+  }, [isVisible]);
+
+  if (Platform.OS !== "web") {
+    return null;
+  }
+
+  return <WebPaywallFallback isVisible={isVisible} onClose={onClose} />;
+}
+
+const FEATURES = [
+  "All 6 workouts unlocked",
+  "Full progress tracking & muscle chart",
+  "Workout history & streak calendar",
 ];
 
-export default function Paywall({ isVisible, onClose }: PaywallProps) {
-  const { offerings, purchase, restore, isPurchasing, isRestoring } = useSubscription();
+const BACKGROUND_IMAGE = require("../../assets/images/workouts/workout3.png");
+
+function WebPaywallFallback({ isVisible, onClose }: PaywallProps) {
+  const { offerings, purchase, restore, isPurchasing, isRestoring } =
+    useSubscription();
   const { t } = useLanguage();
+  const insets = useSafeAreaInsets();
+
+  const packages = offerings?.current?.availablePackages ?? [];
+  const annualPkg = packages.find((p) => p.packageType === "ANNUAL");
+  const [selectedPkg, setSelectedPkg] = useState<PurchasesPackage | null>(
+    null
+  );
+
+  const getSelected = (): PurchasesPackage | null =>
+    selectedPkg ?? annualPkg ?? packages[0] ?? null;
+
   const getPackageLabel = (pkg: PurchasesPackage): string => {
-    const id = pkg.packageType;
-    if (id === "MONTHLY") return t("paywall.monthly.label");
-    if (id === "ANNUAL") return t("paywall.annual.label");
-    if (id === "LIFETIME") return t("paywall.lifetime.label");
+    if (pkg.packageType === "MONTHLY") return t("paywall.monthly.label");
+    if (pkg.packageType === "ANNUAL") return t("paywall.annual.label");
+    if (pkg.packageType === "LIFETIME") return t("paywall.lifetime.label");
     return pkg.product.title || "Pro";
   };
 
-  const getPackageBadge = (pkg: PurchasesPackage): string | null => {
-    const id = pkg.packageType;
-    if (id === "ANNUAL") return t("paywall.badge.popular");
-    if (id === "LIFETIME") return t("paywall.badge.value");
+  const getPackagePeriod = (pkg: PurchasesPackage): string => {
+    if (pkg.packageType === "LIFETIME") return "once";
+    if (pkg.packageType === "ANNUAL") return "/yr";
+    return "/mo";
+  };
+
+  const getPackageDiscount = (pkg: PurchasesPackage): string | null => {
+    if (pkg.packageType === "ANNUAL") return "37% OFF";
     return null;
   };
 
-  const getPackageSubtitle = (pkg: PurchasesPackage): string => {
-    const id = pkg.packageType;
-    if (id === "ANNUAL") return t("paywall.sub.annual");
-    if (id === "LIFETIME") return t("paywall.sub.lifetime");
-    if (id === "MONTHLY") return t("paywall.sub.monthly");
-    return "";
-  };
-
-  const packages = offerings?.current?.availablePackages ?? [];
-
-  const handlePurchasePress = async (pkg: PurchasesPackage) => {
+  const handleContinue = async () => {
+    const pkg = getSelected();
+    if (!pkg) {
+      Alert.alert("No plans available", "Please try again in a moment.");
+      return;
+    }
     try {
       await purchase(pkg);
       onClose();
     } catch (err: any) {
       if (!err?.userCancelled) {
-        Alert.alert("Purchase failed", err?.message ?? "Something went wrong. Please try again.");
+        Alert.alert(
+          "Purchase failed",
+          err?.message ?? "Something went wrong. Please try again."
+        );
       }
     }
   };
@@ -75,316 +128,319 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
       Alert.alert("Restored", "Your purchases have been restored.");
       onClose();
     } catch {
-      Alert.alert("Restore failed", "Could not restore purchases. Please try again.");
+      Alert.alert(
+        "Restore failed",
+        "Could not restore purchases. Please try again."
+      );
     }
   };
 
-  return (
-    <>
-      <Modal visible={isVisible} animationType="slide" transparent presentationStyle="overFullScreen">
-        <BlurView pointerEvents="none" intensity={30} style={StyleSheet.absoluteFillObject} />
-        <View style={styles.container}>
-          <LinearGradient
-            colors={["#3d0a24", "#221019", "#1a0d14"]}
-            style={StyleSheet.absoluteFillObject}
-            pointerEvents="none"
-          />
+  const selectedPackage = getSelected();
 
-          {/* Header */}
-          <View style={styles.header}>
-            <Pressable onPress={onClose} style={styles.closeButton} hitSlop={12}>
-              <Feather name="x" size={22} color={Colors.white60} />
-            </Pressable>
-            <View style={styles.badge}>
-              <Feather name="award" size={14} color={Colors.white} />
-              <ThemedText style={styles.badgeText}>Fit Femme Pro</ThemedText>
-            </View>
+  return (
+    <Modal
+      visible={isVisible}
+      animationType="slide"
+      transparent
+      presentationStyle="overFullScreen"
+    >
+      <View style={styles.overlay}>
+        <ImageBackground
+          source={BACKGROUND_IMAGE}
+          style={styles.heroImage}
+          resizeMode="cover"
+        >
+          <LinearGradient
+            colors={["transparent", "rgba(0,0,0,0.35)", "rgba(255,255,255,1)"]}
+            locations={[0, 0.6, 1]}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <Pressable
+            onPress={onClose}
+            style={[styles.closeBtn, { top: insets.top + 12 }]}
+            hitSlop={16}
+          >
+            <Feather name="x" size={18} color="#fff" />
+          </Pressable>
+        </ImageBackground>
+
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+          <ThemedText style={styles.title}>Begin your journey</ThemedText>
+          <ThemedText style={styles.subtitle}>
+            Unlock the full Fit Femme experience
+          </ThemedText>
+
+          <View style={styles.features}>
+            {FEATURES.map((f, i) => (
+              <View key={i} style={styles.featureRow}>
+                <View style={styles.checkCircle}>
+                  <Feather name="check" size={12} color="#fff" />
+                </View>
+                <ThemedText style={styles.featureText}>{f}</ThemedText>
+              </View>
+            ))}
           </View>
 
-          <ScrollView
-            contentContainerStyle={styles.content}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
+          {packages.length === 0 ? (
+            <ActivityIndicator
+              color={Colors.primary}
+              size="large"
+              style={styles.loader}
+            />
+          ) : (
+            <View style={styles.planRow}>
+              {packages.map((pkg) => {
+                const isSelected =
+                  getSelected()?.identifier === pkg.identifier;
+                const discount = getPackageDiscount(pkg);
+                return (
+                  <Pressable
+                    key={pkg.identifier}
+                    style={[
+                      styles.planCard,
+                      isSelected && styles.planCardSelected,
+                    ]}
+                    onPress={() => setSelectedPkg(pkg)}
+                    disabled={isPurchasing}
+                  >
+                    {discount ? (
+                      <View style={styles.discountBadgeWrap}>
+                        <ThemedText style={styles.discountText}>
+                          {discount}
+                        </ThemedText>
+                      </View>
+                    ) : null}
+
+                    <View style={styles.radioRow}>
+                      <ThemedText style={styles.planLabel}>
+                        {getPackageLabel(pkg)}
+                      </ThemedText>
+                      <View
+                        style={[
+                          styles.radio,
+                          isSelected && styles.radioSelected,
+                        ]}
+                      >
+                        {isSelected ? (
+                          <Feather name="check" size={10} color="#fff" />
+                        ) : null}
+                      </View>
+                    </View>
+
+                    <ThemedText style={styles.planPrice}>
+                      {pkg.product.priceString}
+                    </ThemedText>
+                    <ThemedText style={styles.planPeriod}>
+                      {getPackagePeriod(pkg)}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+
+          <Pressable
+            style={[
+              styles.continueBtn,
+              isPurchasing && styles.continueBtnDisabled,
+            ]}
+            onPress={handleContinue}
+            disabled={isPurchasing || packages.length === 0}
           >
-            {/* Title */}
-            <ThemedText style={styles.title}>{t("paywall.headline")}</ThemedText>
-            <ThemedText style={styles.subtitle}>
-              {t("paywall.joinThousands")}
-            </ThemedText>
+            {isPurchasing ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <ThemedText style={styles.continueBtnText}>Continue</ThemedText>
+            )}
+          </Pressable>
 
-            {/* Features */}
-            <View style={styles.features}>
-              {FEATURE_KEYS.map((f, i) => (
-                <View key={i} style={styles.featureRow}>
-                  <View style={styles.featureIcon}>
-                    <Feather name={f.icon as any} size={16} color={Colors.primary} />
-                  </View>
-                  <ThemedText style={styles.featureText}>{t(f.key)}</ThemedText>
-                </View>
-              ))}
-            </View>
-
-            {/* Packages */}
-            <View style={styles.packages}>
-              {packages.length === 0 ? (
-                <ActivityIndicator color={Colors.primary} size="large" />
-              ) : (
-                packages.map((pkg) => {
-                  const badge = getPackageBadge(pkg);
-                  const isAnnual = pkg.packageType === "ANNUAL";
-                  return (
-                    <Pressable
-                      key={pkg.identifier}
-                      style={[styles.packageCard, isAnnual && styles.packageCardHighlighted]}
-                      onPress={() => handlePurchasePress(pkg)}
-                      disabled={isPurchasing}
-                      accessibilityRole="button"
-                    >
-                      {isAnnual && (
-                        <LinearGradient
-                          colors={[Colors.primary, "#9c0d54"]}
-                          style={StyleSheet.absoluteFillObject}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
-                        />
-                      )}
-                      {badge ? (
-                        <View style={styles.packageBadge}>
-                          <ThemedText style={styles.packageBadgeText}>{badge}</ThemedText>
-                        </View>
-                      ) : null}
-                      <View style={styles.packageInfo}>
-                        <ThemedText style={styles.packageLabel}>
-                          {getPackageLabel(pkg)}
-                        </ThemedText>
-                        <ThemedText style={styles.packageSubtitle}>
-                          {getPackageSubtitle(pkg)}
-                        </ThemedText>
-                      </View>
-                      <View style={styles.packagePriceBox}>
-                        <ThemedText style={styles.packagePrice}>
-                          {pkg.product.priceString}
-                        </ThemedText>
-                        <ThemedText style={styles.packagePeriod}>
-                          {pkg.packageType === "LIFETIME" ? "once" :
-                           pkg.packageType === "ANNUAL" ? "/yr" : "/mo"}
-                        </ThemedText>
-                      </View>
-                    </Pressable>
-                  );
-                })
-              )}
-            </View>
-
-            {/* Restore */}
-            <Pressable onPress={handleRestore} style={styles.restoreButton} disabled={isRestoring}>
+          <View style={styles.footerLinks}>
+            <Pressable onPress={handleRestore} disabled={isRestoring}>
               {isRestoring ? (
                 <ActivityIndicator color={Colors.white40} size="small" />
               ) : (
-                <ThemedText style={styles.restoreText}>{t("paywall.restore")}</ThemedText>
+                <ThemedText style={styles.footerLink}>Restore</ThemedText>
               )}
             </Pressable>
-
-            <ThemedText style={styles.legal}>
-              {t("paywall.legal")}
-            </ThemedText>
-          </ScrollView>
-
-          <View style={styles.footer}>
-            <Pressable
-              style={styles.primaryCta}
-              onPress={() => {
-                if (packages[0]) {
-                  handlePurchasePress(packages[0]);
-                } else {
-                  Alert.alert("No plans available", "Please try again in a moment.");
-                }
-              }}
-              disabled={isPurchasing}
-              accessibilityRole="button"
-            >
-              {isPurchasing ? (
-                <ActivityIndicator color={Colors.white} size="small" />
-              ) : (
-                <ThemedText style={styles.primaryCtaText}>
-                  {t("paywall.subscribe")}
-                </ThemedText>
-              )}
-            </Pressable>
+            <ThemedText style={styles.footerDot}>•</ThemedText>
+            <ThemedText style={styles.footerLink}>Terms</ThemedText>
+            <ThemedText style={styles.footerDot}>•</ThemedText>
+            <ThemedText style={styles.footerLink}>Privacy policy</ThemedText>
           </View>
         </View>
-      </Modal>
-    </>
+      </View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
     flex: 1,
-    backgroundColor: "#221019",
+    backgroundColor: "#000",
+    justifyContent: "flex-end",
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing["2xl"],
-    paddingTop: Spacing["3xl"] + 20,
-    paddingBottom: Spacing.lg,
+  heroImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "58%",
   },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.white10,
+  closeBtn: {
+    position: "absolute",
+    left: 16,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "rgba(0,0,0,0.35)",
     justifyContent: "center",
     alignItems: "center",
   },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    backgroundColor: Colors.primary,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: BorderRadius.full,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: Colors.white,
-  },
-  content: {
-    paddingHorizontal: Spacing["2xl"],
-    paddingBottom: Spacing["3xl"],
+  sheet: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    minHeight: "52%",
   },
   title: {
-    fontSize: 32,
-    fontWeight: "800",
-    color: Colors.white,
-    lineHeight: 40,
-    marginBottom: Spacing.sm,
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#111",
+    textAlign: "center",
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 15,
-    color: Colors.white60,
-    marginBottom: Spacing["2xl"],
+    fontSize: 14,
+    color: "#888",
+    textAlign: "center",
+    marginBottom: 18,
   },
   features: {
-    gap: Spacing.md,
-    marginBottom: Spacing["2xl"],
+    gap: 10,
+    marginBottom: 22,
   },
   featureRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.md,
+    gap: 10,
   },
-  featureIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(212, 17, 115, 0.15)",
+  checkCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: Colors.primary,
     justifyContent: "center",
     alignItems: "center",
   },
   featureText: {
-    fontSize: 15,
-    color: Colors.white,
-    fontWeight: "500",
+    fontSize: 14,
+    color: "#222",
     flex: 1,
   },
-  packages: {
-    gap: Spacing.md,
-    marginBottom: Spacing.xl,
+  loader: {
+    marginVertical: 24,
   },
-  packageCard: {
+  planRow: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.white10,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: Colors.white10,
-    minHeight: 72,
+    gap: 8,
+    marginBottom: 28,
   },
-  packageCardHighlighted: {
+  planCard: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: "#e0e0e0",
+    borderRadius: 12,
+    padding: 10,
+    alignItems: "flex-start",
+    backgroundColor: "#fafafa",
+    minHeight: 90,
+  },
+  planCardSelected: {
     borderColor: Colors.primary,
-    ...Shadows.medium,
+    backgroundColor: "#fff0f6",
   },
-  packageBadge: {
-    position: "absolute",
-    top: 0,
-    right: 12,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    paddingHorizontal: Spacing.sm,
+  discountBadgeWrap: {
+    backgroundColor: "#f0c040",
+    borderRadius: 6,
+    paddingHorizontal: 6,
     paddingVertical: 2,
-    borderBottomLeftRadius: BorderRadius.sm,
-    borderBottomRightRadius: BorderRadius.sm,
+    marginBottom: 4,
+    alignSelf: "flex-start",
   },
-  packageBadgeText: {
-    fontSize: 10,
+  discountText: {
+    color: "#000",
+    fontSize: 9,
     fontWeight: "700",
-    color: Colors.white,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
   },
-  packageInfo: {
-    flex: 1,
-    paddingTop: 4,
-  },
-  packageLabel: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: Colors.white,
-    marginBottom: 2,
-  },
-  packageSubtitle: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.7)",
-  },
-  packagePriceBox: {
+  radioRow: {
     flexDirection: "row",
-    alignItems: "baseline",
-    gap: 2,
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 4,
   },
-  packagePrice: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: Colors.white,
-  },
-  packagePeriod: {
+  planLabel: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.7)",
+    fontWeight: "700",
+    color: "#111",
   },
-  primaryCta: {
+  radio: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 1.5,
+    borderColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  radioSelected: {
     backgroundColor: Colors.primary,
-    borderRadius: BorderRadius.full,
-    paddingVertical: Spacing.md,
+    borderColor: Colors.primary,
+  },
+  planPrice: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#111",
+    marginTop: 2,
+  },
+  planPeriod: {
+    fontSize: 11,
+    color: "#999",
+    marginTop: 1,
+  },
+  continueBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: 50,
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: Spacing.lg,
+    marginBottom: 14,
     minHeight: 52,
   },
-  primaryCtaText: {
+  continueBtnDisabled: {
+    opacity: 0.6,
+  },
+  continueBtnText: {
+    color: "#fff",
     fontSize: 16,
-    fontWeight: "800",
-    color: Colors.white,
+    fontWeight: "700",
   },
-  restoreButton: {
+  footerLinks: {
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    paddingVertical: Spacing.md,
-    marginBottom: Spacing.sm,
+    gap: 8,
+    paddingBottom: 4,
   },
-  restoreText: {
-    fontSize: 14,
-    color: Colors.white40,
-    textDecorationLine: "underline",
+  footerLink: {
+    fontSize: 12,
+    color: "#999",
   },
-  legal: {
-    fontSize: 11,
-    color: Colors.white40,
-    textAlign: "center",
-    lineHeight: 16,
+  footerDot: {
+    fontSize: 12,
+    color: "#ccc",
   },
 });
