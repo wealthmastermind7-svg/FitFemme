@@ -22,10 +22,13 @@ import {
   storage,
   UserProfile,
   DailyMetrics,
+  ScannedMeal,
   sampleUserProfile,
   sampleDailyMetrics,
   sampleWorkouts,
   initializeSampleData,
+  GOAL_CONFIG,
+  computeGoalStatus,
 } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage } from "@/lib/i18n";
@@ -38,6 +41,7 @@ export default function HomeScreen() {
 
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
+  const [todaysMeals, setTodaysMeals] = useState<ScannedMeal[]>([]);
 
   useEffect(() => {
     loadData();
@@ -53,9 +57,11 @@ export default function HomeScreen() {
     await initializeSampleData();
     const userProfile = await storage.getUserProfile();
     const dailyMetrics = await storage.getDailyMetrics();
+    const meals = await storage.getTodaysMeals();
 
     if (userProfile) setProfile(userProfile);
     if (dailyMetrics) setMetrics(dailyMetrics);
+    setTodaysMeals(meals);
   };
 
   const getGreeting = () => {
@@ -133,29 +139,87 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.progressSection}>
-        <GlassCard>
-          <View style={styles.progressHeader}>
-            <ThemedText style={styles.sectionTitle}>{t("home.weeklyProgress")}</ThemedText>
-            <Pressable>
-              <ThemedText style={styles.detailsLink}>{t("common.next")}</ThemedText>
-            </Pressable>
-          </View>
+        {profile.bodyGoal ? (() => {
+          const cfg = GOAL_CONFIG[profile.bodyGoal];
+          const calories = todaysMeals.reduce((s, m) => s + (m.calories || 0), 0);
+          const protein = todaysMeals.reduce((s, m) => s + (m.protein || 0), 0);
+          const status = computeGoalStatus(profile.bodyGoal, calories);
+          const calPct = Math.min(100, Math.round((calories / cfg.caloriesTarget) * 100));
+          const proPct = Math.min(100, Math.round((protein / cfg.proteinTarget) * 100));
+          const statusColor =
+            status.tone === "warn" ? "#f0a55a" : status.tone === "good" ? Colors.success : Colors.white60;
+          return (
+            <GlassCard>
+              <View style={styles.goalHeader}>
+                <View style={styles.goalHeaderLeft}>
+                  <ThemedText style={styles.goalCardTitle}>{t("goalStatus.cardTitle")}</ThemedText>
+                  <View style={styles.goalNameRow}>
+                    <View style={[styles.goalDot, { backgroundColor: cfg.color }]} />
+                    <ThemedText style={styles.goalName}>{t(cfg.titleKey)}</ThemedText>
+                  </View>
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate("GoalSetup", { mode: "edit" })}
+                  hitSlop={10}
+                  style={styles.goalEditBtn}
+                >
+                  <Feather name="edit-2" size={14} color={Colors.white60} />
+                </Pressable>
+              </View>
 
-          <View style={styles.progressRings}>
-            <View style={styles.ringContainer}>
-              <CircularProgress
-                size={96}
-                strokeWidth={5}
-                progress={durationProgress}
-                color={Colors.success}
-              >
-                <ThemedText style={styles.durationValue}>{metrics.durationMinutes}</ThemedText>
-                <ThemedText style={styles.durationUnit}>min</ThemedText>
-              </CircularProgress>
-              <ThemedText style={styles.ringValue}>Today</ThemedText>
-            </View>
-          </View>
-        </GlassCard>
+              <ThemedText style={[styles.goalStatusText, { color: statusColor }]}>
+                {t(status.statusKey)}
+              </ThemedText>
+
+              <View style={styles.goalBarRow}>
+                <View style={styles.goalBarLabelRow}>
+                  <ThemedText style={styles.goalBarLabel}>{t("goalStatus.calories")}</ThemedText>
+                  <ThemedText style={styles.goalBarValue}>
+                    {Math.round(calories)} / {cfg.caloriesTarget}
+                  </ThemedText>
+                </View>
+                <View style={styles.goalBarTrack}>
+                  <View style={[styles.goalBarFill, { width: `${calPct}%`, backgroundColor: cfg.color }]} />
+                </View>
+              </View>
+
+              <View style={styles.goalBarRow}>
+                <View style={styles.goalBarLabelRow}>
+                  <ThemedText style={styles.goalBarLabel}>{t("goalStatus.protein")}</ThemedText>
+                  <ThemedText style={styles.goalBarValue}>
+                    {Math.round(protein)}g / {cfg.proteinTarget}g
+                  </ThemedText>
+                </View>
+                <View style={styles.goalBarTrack}>
+                  <View style={[styles.goalBarFill, { width: `${proPct}%`, backgroundColor: "#4fc3f7" }]} />
+                </View>
+              </View>
+
+              {todaysMeals.length === 0 && (
+                <Pressable
+                  style={styles.goalScanCta}
+                  onPress={() => navigation.navigate("FoodScanner")}
+                >
+                  <Feather name="camera" size={14} color={Colors.primary} />
+                  <ThemedText style={styles.goalScanCtaText}>{t("goalStatus.scanCta")}</ThemedText>
+                </Pressable>
+              )}
+            </GlassCard>
+          );
+        })() : (
+          <Pressable onPress={() => navigation.navigate("GoalSetup", { mode: "edit" })}>
+            <GlassCard>
+              <View style={styles.goalHeader}>
+                <View style={styles.goalHeaderLeft}>
+                  <ThemedText style={styles.goalCardTitle}>{t("goalStatus.cardTitle")}</ThemedText>
+                  <ThemedText style={styles.goalName}>{t("goal.pickerTitle")}</ThemedText>
+                </View>
+                <Feather name="chevron-right" size={20} color={Colors.white60} />
+              </View>
+              <ThemedText style={styles.goalStatusText}>{t("goal.pickerSubtitle")}</ThemedText>
+            </GlassCard>
+          </Pressable>
+        )}
       </View>
 
       <View style={styles.scannerSection}>
@@ -365,6 +429,96 @@ const styles = StyleSheet.create({
   durationUnit: {
     fontSize: 9,
     color: Colors.white40,
+  },
+  goalHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: Spacing.md,
+  },
+  goalHeaderLeft: {
+    flex: 1,
+  },
+  goalCardTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: Colors.white60,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  goalNameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  goalDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  goalName: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.white,
+  },
+  goalEditBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  goalStatusText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.success,
+    marginBottom: Spacing.lg,
+  },
+  goalBarRow: {
+    marginBottom: Spacing.md,
+  },
+  goalBarLabelRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  goalBarLabel: {
+    fontSize: 12,
+    color: Colors.white60,
+    textTransform: "capitalize",
+  },
+  goalBarValue: {
+    fontSize: 12,
+    color: Colors.white,
+    fontWeight: "600",
+  },
+  goalBarTrack: {
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.white10,
+    overflow: "hidden",
+  },
+  goalBarFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  goalScanCta: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: Spacing.md,
+    paddingVertical: 12,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: "rgba(212,17,115,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.3)",
+  },
+  goalScanCtaText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.primary,
   },
   chartSection: {
     paddingHorizontal: Spacing["2xl"],

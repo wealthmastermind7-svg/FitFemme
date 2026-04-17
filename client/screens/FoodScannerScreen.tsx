@@ -20,6 +20,8 @@ import { BlurView } from "expo-blur";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/theme";
 import { getApiUrl } from "@/lib/query-client";
+import { storage, BodyGoal, computeMealFeedback } from "@/lib/storage";
+import { useLanguage } from "@/lib/i18n";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const CIRCLE_SIZE = Math.min(SCREEN_W - 48, 340);
@@ -50,6 +52,9 @@ export default function FoodScannerScreen() {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<NutritionResult | null>(null);
   const [activeTab, setActiveTab] = useState<"macros" | "stats">("macros");
+  const [feedbackKey, setFeedbackKey] = useState<string | null>(null);
+  const [savedToday, setSavedToday] = useState(false);
+  const { t } = useLanguage();
 
   const pickImage = async (fromCamera: boolean) => {
     setResult(null);
@@ -107,6 +112,37 @@ export default function FoodScannerScreen() {
       const data = await resp.json();
       setResult(data);
       setActiveTab("macros");
+
+      // Save the meal to today's log so the Home goal status reflects it
+      try {
+        await storage.addScannedMeal({
+          dish: data.dish,
+          calories: data.calories || 0,
+          protein: data.protein || 0,
+          carbs: data.carbs || 0,
+          fat: data.fat || 0,
+          fiber: data.fiber || 0,
+          healthScore: data.healthScore || 0,
+        });
+        setSavedToday(true);
+      } catch (saveErr) {
+        console.log("Failed to save meal:", saveErr);
+      }
+
+      // Compute goal-aware feedback
+      try {
+        const profile = await storage.getUserProfile();
+        const fb = computeMealFeedback(profile?.bodyGoal as BodyGoal | undefined, {
+          calories: data.calories || 0,
+          protein: data.protein || 0,
+          carbs: data.carbs || 0,
+          fat: data.fat || 0,
+          fiber: data.fiber || 0,
+        });
+        setFeedbackKey(fb);
+      } catch (fbErr) {
+        console.log("Failed to compute feedback:", fbErr);
+      }
     } catch (e: any) {
       Alert.alert("Analysis failed", e.message ?? "Something went wrong. Please try again.");
     } finally {
@@ -118,6 +154,8 @@ export default function FoodScannerScreen() {
     setImageUri(null);
     setImageBase64(null);
     setResult(null);
+    setFeedbackKey(null);
+    setSavedToday(false);
   };
 
   const healthColor = (score: number) =>
@@ -265,6 +303,19 @@ export default function FoodScannerScreen() {
                 <ThemedText style={styles.caloriesDesc}>{result.description}</ThemedText>
               </View>
             </View>
+
+            {/* Goal-aware feedback banner */}
+            {feedbackKey && (
+              <View style={styles.feedbackCard}>
+                <Feather name="zap" size={16} color={ACCENT} />
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.feedbackText}>{t(feedbackKey)}</ThemedText>
+                  {savedToday && (
+                    <ThemedText style={styles.feedbackSavedText}>{t("mealFeedback.savedToday")}</ThemedText>
+                  )}
+                </View>
+              </View>
+            )}
 
             {/* MACROS tab */}
             {activeTab === "macros" && (
@@ -514,6 +565,29 @@ const styles = StyleSheet.create({
   },
   caloriesNum: { fontSize: 24, fontWeight: "800", color: "#fff", marginBottom: 2 },
   caloriesDesc: { fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 16 },
+  feedbackCard: {
+    marginHorizontal: 24,
+    marginBottom: 16,
+    padding: 14,
+    borderRadius: 16,
+    backgroundColor: "rgba(212,17,115,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.3)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  feedbackText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#fff",
+    lineHeight: 19,
+  },
+  feedbackSavedText: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 3,
+  },
 
   tabPanel: {
     width: "100%",

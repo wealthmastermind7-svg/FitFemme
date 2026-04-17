@@ -86,7 +86,7 @@ export default function OnboardingScreen() {
       await AsyncStorage.setItem("@hasOnboarded", "true");
       navigation.reset({
         index: 0,
-        routes: [{ name: "Main" }],
+        routes: [{ name: "GoalSetup", params: { mode: "onboarding" } }],
       });
     } catch (error) {
       console.log("Error saving onboarding status:", error);

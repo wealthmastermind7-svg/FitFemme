@@ -11,7 +11,10 @@ import * as MailComposer from "expo-mail-composer";
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { storage, UserProfile, sampleUserProfile } from "@/lib/storage";
+import { storage, UserProfile, sampleUserProfile, GOAL_CONFIG } from "@/lib/storage";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useSubscription } from "@/lib/revenuecat";
 import Paywall from "@/components/Paywall";
 import { useLanguage, Language } from "@/lib/i18n";
@@ -88,6 +91,7 @@ export default function ProfileScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
 
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed, customerInfo } = useSubscription();
   const { language, setLanguage, t } = useLanguage();
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -369,6 +373,35 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>{t("profile.yourGoal")}</ThemedText>
+        <Pressable onPress={() => navigation.navigate("GoalSetup", { mode: "edit" })}>
+          <GlassCard style={styles.settingsCard}>
+            <View style={styles.goalRow}>
+              {profile.bodyGoal ? (
+                <>
+                  <View style={[styles.goalRowDot, { backgroundColor: GOAL_CONFIG[profile.bodyGoal].color }]} />
+                  <View style={{ flex: 1 }}>
+                    <ThemedText style={styles.goalRowTitle}>
+                      {t(GOAL_CONFIG[profile.bodyGoal].titleKey)}
+                    </ThemedText>
+                    <ThemedText style={styles.goalRowSub}>
+                      {t(`goal.${profile.bodyGoal === "lean_toned" ? "leanToned" : profile.bodyGoal === "booty_builder" ? "bootyBuilder" : "flatStomach"}.desc`)}
+                    </ThemedText>
+                  </View>
+                </>
+              ) : (
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.goalRowTitle}>{t("goal.pickerTitle")}</ThemedText>
+                  <ThemedText style={styles.goalRowSub}>{t("goal.pickerSubtitle")}</ThemedText>
+                </View>
+              )}
+              <Feather name="chevron-right" size={20} color={Colors.white60} />
+            </View>
+          </GlassCard>
+        </Pressable>
+      </View>
+
+      <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>{t("profile.account")}</ThemedText>
         <GlassCard style={styles.settingsCard}>
           {accountSettings.map((item) => renderSettingItem(item, true, false))}
@@ -637,6 +670,28 @@ const styles = StyleSheet.create({
   },
   settingsCard: {
     paddingVertical: Spacing.sm,
+  },
+  goalRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    gap: 12,
+  },
+  goalRowDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  goalRowTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.white,
+    marginBottom: 2,
+  },
+  goalRowSub: {
+    fontSize: 12,
+    color: Colors.white60,
   },
   settingItem: {
     flexDirection: "row",

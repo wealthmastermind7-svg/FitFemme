@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export type BodyGoal = "lean_toned" | "booty_builder" | "flat_stomach";
+
 export interface UserProfile {
   name: string;
   age: number;
@@ -8,6 +10,108 @@ export interface UserProfile {
   caloriesGoal: number;
   durationGoal: number;
   stepsGoal: number;
+  bodyGoal?: BodyGoal;
+  units?: string;
+}
+
+export interface ScannedMeal {
+  id: string;
+  date: string; // YYYY-MM-DD
+  loggedAt: string; // ISO timestamp
+  dish: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  healthScore: number;
+}
+
+export interface GoalConfig {
+  caloriesTarget: number;
+  proteinTarget: number;
+  titleKey: string;
+  shortKey: string;
+  emoji: string;
+  color: string;
+}
+
+export const GOAL_CONFIG: Record<BodyGoal, GoalConfig> = {
+  lean_toned: {
+    caloriesTarget: 1500,
+    proteinTarget: 120,
+    titleKey: "goal.leanToned.title",
+    shortKey: "goal.leanToned.short",
+    emoji: "🔥",
+    color: "#ff8a65",
+  },
+  booty_builder: {
+    caloriesTarget: 2200,
+    proteinTarget: 140,
+    titleKey: "goal.bootyBuilder.title",
+    shortKey: "goal.bootyBuilder.short",
+    emoji: "🍑",
+    color: "#d41173",
+  },
+  flat_stomach: {
+    caloriesTarget: 1700,
+    proteinTarget: 100,
+    titleKey: "goal.flatStomach.title",
+    shortKey: "goal.flatStomach.short",
+    emoji: "✨",
+    color: "#4fc3f7",
+  },
+};
+
+/**
+ * Compute today's status text key for a goal based on calories consumed.
+ * Returns a translation key + computed percent.
+ */
+export function computeGoalStatus(
+  goal: BodyGoal,
+  caloriesConsumed: number,
+): { statusKey: string; percent: number; tone: "good" | "warn" | "neutral" } {
+  const cfg = GOAL_CONFIG[goal];
+  const percent = cfg.caloriesTarget > 0 ? (caloriesConsumed / cfg.caloriesTarget) * 100 : 0;
+
+  if (caloriesConsumed === 0) {
+    return { statusKey: "goalStatus.empty", percent: 0, tone: "neutral" };
+  }
+
+  if (goal === "lean_toned") {
+    if (percent < 60) return { statusKey: "goalStatus.leanToned.light", percent, tone: "good" };
+    if (percent <= 95) return { statusKey: "goalStatus.leanToned.onTrack", percent, tone: "good" };
+    if (percent <= 110) return { statusKey: "goalStatus.leanToned.atTarget", percent, tone: "good" };
+    return { statusKey: "goalStatus.leanToned.over", percent, tone: "warn" };
+  }
+  if (goal === "booty_builder") {
+    if (percent < 70) return { statusKey: "goalStatus.bootyBuilder.needMore", percent, tone: "warn" };
+    if (percent <= 110) return { statusKey: "goalStatus.bootyBuilder.fueling", percent, tone: "good" };
+    return { statusKey: "goalStatus.bootyBuilder.plenty", percent, tone: "good" };
+  }
+  // flat_stomach
+  if (percent < 60) return { statusKey: "goalStatus.flatStomach.clean", percent, tone: "good" };
+  if (percent <= 95) return { statusKey: "goalStatus.flatStomach.onTrack", percent, tone: "good" };
+  if (percent <= 110) return { statusKey: "goalStatus.flatStomach.atTarget", percent, tone: "good" };
+  return { statusKey: "goalStatus.flatStomach.over", percent, tone: "warn" };
+}
+
+/**
+ * Goal-aware feedback for a single scanned meal.
+ * Returns a translation key.
+ */
+export function computeMealFeedback(
+  goal: BodyGoal | undefined,
+  meal: { calories: number; protein: number; carbs: number; fat: number; fiber: number },
+): string {
+  const g = goal ?? "lean_toned";
+  if (g === "booty_builder" && meal.protein < 20) return "mealFeedback.addProtein";
+  if (g === "flat_stomach" && meal.calories >= 700) return "mealFeedback.heavyBloat";
+  if (g === "lean_toned" && meal.calories >= 700) return "mealFeedback.heavyLean";
+  if (meal.protein >= 25) return "mealFeedback.highProtein";
+  if (meal.protein < 10) return "mealFeedback.lowProtein";
+  if (meal.fiber >= 8) return "mealFeedback.highFiber";
+  return "mealFeedback.balanced";
 }
 
 export interface DailyMetrics {
@@ -70,7 +174,12 @@ const KEYS = {
   STREAK: "@streak",
   WEEKLY_ACTIVITY: "@weeklyActivity",
   COMPLETED_EXERCISES: "@completedExercises",
+  SCANNED_MEALS: "@scannedMeals",
 };
+
+function todayKey(): string {
+  return new Date().toISOString().split("T")[0];
+}
 
 export const storage = {
   async getUserProfile(): Promise<UserProfile | null> {
@@ -164,6 +273,46 @@ export const storage = {
     } catch {
       return [];
     }
+  },
+
+  async addScannedMeal(meal: Omit<ScannedMeal, "id" | "date" | "loggedAt">): Promise<ScannedMeal> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.SCANNED_MEALS);
+      const meals: ScannedMeal[] = json ? JSON.parse(json) : [];
+      const now = new Date();
+      const newMeal: ScannedMeal = {
+        ...meal,
+        id: `${now.getTime()}`,
+        date: todayKey(),
+        loggedAt: now.toISOString(),
+      };
+      meals.push(newMeal);
+      // Keep only the last 60 days of meals to avoid unbounded growth
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 60);
+      const cutoffStr = cutoff.toISOString().split("T")[0];
+      const trimmed = meals.filter((m) => m.date >= cutoffStr);
+      await AsyncStorage.setItem(KEYS.SCANNED_MEALS, JSON.stringify(trimmed));
+      return newMeal;
+    } catch (error) {
+      console.log("Error adding scanned meal:", error);
+      throw error;
+    }
+  },
+
+  async getScannedMeals(): Promise<ScannedMeal[]> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.SCANNED_MEALS);
+      return json ? JSON.parse(json) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async getTodaysMeals(): Promise<ScannedMeal[]> {
+    const meals = await this.getScannedMeals();
+    const today = todayKey();
+    return meals.filter((m) => m.date === today);
   },
 
   async clearAll(): Promise<void> {
