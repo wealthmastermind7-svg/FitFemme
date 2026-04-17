@@ -97,6 +97,95 @@ export function computeGoalStatus(
 }
 
 /**
+ * Per-workout relevance for each body goal (0-1 score).
+ * Higher = better match. Used to rank "Recommended for You" on Home.
+ */
+export const WORKOUT_GOAL_WEIGHTS: Record<BodyGoal, Record<string, number>> = {
+  lean_toned: { "1": 1.0, "2": 0.5, "3": 0.7, "4": 1.0, "5": 0.4, "6": 0.6 },
+  booty_builder: { "1": 0.4, "2": 1.0, "3": 0.4, "4": 0.3, "5": 0.5, "6": 0.3 },
+  flat_stomach: { "1": 0.7, "2": 0.3, "3": 1.0, "4": 0.8, "5": 0.6, "6": 1.0 },
+};
+
+export function getRecommendedWorkouts<T extends { id: string }>(
+  goal: BodyGoal | undefined,
+  workouts: T[],
+  n = 3,
+): T[] {
+  if (!goal) return workouts.slice(0, n);
+  const weights = WORKOUT_GOAL_WEIGHTS[goal];
+  return [...workouts]
+    .sort((a, b) => (weights[b.id] ?? 0) - (weights[a.id] ?? 0))
+    .slice(0, n);
+}
+
+export interface MealIdea {
+  id: string;
+  titleKey: string;
+  descKey: string;
+  calories: number;
+  protein: number;
+  icon: string; // Feather icon name
+  color: string;
+}
+
+export const MEAL_IDEAS: Record<BodyGoal, MealIdea[]> = {
+  lean_toned: [
+    { id: "lt1", titleKey: "mealIdeas.lt1.title", descKey: "mealIdeas.lt1.desc", calories: 380, protein: 42, icon: "leaf", color: "#81c784" },
+    { id: "lt2", titleKey: "mealIdeas.lt2.title", descKey: "mealIdeas.lt2.desc", calories: 420, protein: 38, icon: "wind", color: "#4fc3f7" },
+    { id: "lt3", titleKey: "mealIdeas.lt3.title", descKey: "mealIdeas.lt3.desc", calories: 280, protein: 28, icon: "circle", color: "#f0c93e" },
+    { id: "lt4", titleKey: "mealIdeas.lt4.title", descKey: "mealIdeas.lt4.desc", calories: 220, protein: 24, icon: "sunrise", color: "#ff8a65" },
+  ],
+  booty_builder: [
+    { id: "bb1", titleKey: "mealIdeas.bb1.title", descKey: "mealIdeas.bb1.desc", calories: 620, protein: 48, icon: "zap", color: "#d41173" },
+    { id: "bb2", titleKey: "mealIdeas.bb2.title", descKey: "mealIdeas.bb2.desc", calories: 720, protein: 52, icon: "trending-up", color: "#ff8a65" },
+    { id: "bb3", titleKey: "mealIdeas.bb3.title", descKey: "mealIdeas.bb3.desc", calories: 480, protein: 35, icon: "sunrise", color: "#f0c93e" },
+    { id: "bb4", titleKey: "mealIdeas.bb4.title", descKey: "mealIdeas.bb4.desc", calories: 580, protein: 42, icon: "wind", color: "#4fc3f7" },
+  ],
+  flat_stomach: [
+    { id: "fs1", titleKey: "mealIdeas.fs1.title", descKey: "mealIdeas.fs1.desc", calories: 360, protein: 38, icon: "wind", color: "#4fc3f7" },
+    { id: "fs2", titleKey: "mealIdeas.fs2.title", descKey: "mealIdeas.fs2.desc", calories: 240, protein: 18, icon: "droplet", color: "#81c784" },
+    { id: "fs3", titleKey: "mealIdeas.fs3.title", descKey: "mealIdeas.fs3.desc", calories: 180, protein: 12, icon: "leaf", color: "#a5d6a7" },
+    { id: "fs4", titleKey: "mealIdeas.fs4.title", descKey: "mealIdeas.fs4.desc", calories: 320, protein: 32, icon: "circle", color: "#4fc3f7" },
+  ],
+};
+
+export interface WeeklyInsights {
+  daysLogged: number;
+  totalMeals: number;
+  avgCalories: number;
+  avgProtein: number;
+  daysOnTrack: number;
+}
+
+export function computeWeeklyInsights(
+  goal: BodyGoal | undefined,
+  meals: ScannedMeal[],
+): WeeklyInsights {
+  const byDay = new Map<string, ScannedMeal[]>();
+  meals.forEach((m) => {
+    const arr = byDay.get(m.date) ?? [];
+    arr.push(m);
+    byDay.set(m.date, arr);
+  });
+  const daysLogged = byDay.size;
+  const totalMeals = meals.length;
+  const totalCal = meals.reduce((s, m) => s + (m.calories || 0), 0);
+  const totalProt = meals.reduce((s, m) => s + (m.protein || 0), 0);
+  const avgCalories = daysLogged > 0 ? Math.round(totalCal / daysLogged) : 0;
+  const avgProtein = daysLogged > 0 ? Math.round(totalProt / daysLogged) : 0;
+  let daysOnTrack = 0;
+  if (goal) {
+    const target = GOAL_CONFIG[goal].caloriesTarget;
+    byDay.forEach((dayMeals) => {
+      const dayCal = dayMeals.reduce((s, m) => s + (m.calories || 0), 0);
+      const pct = target > 0 ? (dayCal / target) * 100 : 0;
+      if (pct >= 60 && pct <= 110) daysOnTrack++;
+    });
+  }
+  return { daysLogged, totalMeals, avgCalories, avgProtein, daysOnTrack };
+}
+
+/**
  * Goal-aware feedback for a single scanned meal.
  * Returns a translation key.
  */
@@ -313,6 +402,14 @@ export const storage = {
     const meals = await this.getScannedMeals();
     const today = todayKey();
     return meals.filter((m) => m.date === today);
+  },
+
+  async getMealsLastNDays(n: number): Promise<ScannedMeal[]> {
+    const meals = await this.getScannedMeals();
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - (n - 1));
+    const cutoffStr = cutoff.toISOString().split("T")[0];
+    return meals.filter((m) => m.date >= cutoffStr);
   },
 
   async clearAll(): Promise<void> {

@@ -146,6 +146,25 @@ All subscriptions can be managed through device settings (iOS: Settings → Subs
 
 ## Recent Changes
 
+### Goal Personalization Phase 2 (April 2026)
+- **Recommended workouts** by body goal on Home screen (top 3, ranked via `WORKOUT_GOAL_WEIGHTS` in `client/lib/storage.ts`). Falls back to all workouts when no goal is set.
+- **This Week insights card** on Home: days logged, avg calories, avg protein, days on track (within 60–110% of calorie target). Uses `storage.getMealsLastNDays(7)` + `computeWeeklyInsights()`.
+- **Meal Ideas screen** (`client/screens/MealIdeasScreen.tsx`): full-screen modal with 4 curated meals per goal, each with calories, protein, Feather icon, and goal-themed gradient header. Registered in `RootStackNavigator` as `MealIdeas` route.
+- "View meal ideas for your goal" link in Home insights section opens the screen.
+- All new strings translated EN/ES/PT (mealIdeas.\*, weeklyInsights.\*, home.recommendedForYou, home.thisWeek, home.viewMealIdeas).
+
+### Goal Personalization Phase 1 (April 2026)
+- `BodyGoal` type ("lean_toned" | "booty_builder" | "flat_stomach") added to `UserProfile` in `client/lib/storage.ts`
+- `GOAL_CONFIG` per goal: calorie target, protein target, color, title key. lean=1500cal/120p, booty=2200cal/140p, flat=1700cal/100p
+- `ScannedMeal` interface + `addScannedMeal`/`getTodaysMeals` in storage; meals persist to AsyncStorage trimmed to 60 days
+- `computeGoalStatus(goal, calories)` returns translation key + tone (good/warn/neutral) for live status banner
+- `computeMealFeedback(goal, meal)` returns goal-aware key (e.g. "addProtein", "heavyBloat")
+- `GoalPicker` component + `GoalSetupScreen` (mode: "onboarding" | "edit"), registered as fullScreenModal in `RootStackNavigator`
+- Onboarding flow updated to navigate to GoalSetup before Main
+- HomeScreen "Today's Goal Status" card replaces Weekly Progress: goal name + dot, status text, calorie/protein progress bars, scan CTA when empty, edit button
+- FoodScannerScreen saves each scanned meal and shows goal-aware feedback banner
+- ProfileScreen "Your Goal" section shows current goal with subtitle, taps to edit
+
 ### Food Scanner Feature (April 2026)
 - AI-powered food scanner accessible via the + (Add) button in the tab bar
 - + button now shows an action sheet: "Start Workout" or "Scan Food"

@@ -29,6 +29,9 @@ import {
   initializeSampleData,
   GOAL_CONFIG,
   computeGoalStatus,
+  getRecommendedWorkouts,
+  computeWeeklyInsights,
+  WeeklyInsights,
 } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage } from "@/lib/i18n";
@@ -42,6 +45,7 @@ export default function HomeScreen() {
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
   const [todaysMeals, setTodaysMeals] = useState<ScannedMeal[]>([]);
+  const [weeklyInsights, setWeeklyInsights] = useState<WeeklyInsights | null>(null);
 
   useEffect(() => {
     loadData();
@@ -58,10 +62,12 @@ export default function HomeScreen() {
     const userProfile = await storage.getUserProfile();
     const dailyMetrics = await storage.getDailyMetrics();
     const meals = await storage.getTodaysMeals();
+    const weekMeals = await storage.getMealsLastNDays(7);
 
     if (userProfile) setProfile(userProfile);
     if (dailyMetrics) setMetrics(dailyMetrics);
     setTodaysMeals(meals);
+    setWeeklyInsights(computeWeeklyInsights(userProfile?.bodyGoal, weekMeals));
   };
 
   const getGreeting = () => {
@@ -256,19 +262,62 @@ export default function HomeScreen() {
         </Pressable>
       </View>
 
+      {/* Weekly insights */}
+      {profile.bodyGoal && (
+        <View style={styles.workoutsSection}>
+          <View style={styles.workoutsHeader}>
+            <ThemedText style={styles.sectionTitle}>{t("home.thisWeek")}</ThemedText>
+          </View>
+          <GlassCard>
+            {weeklyInsights && weeklyInsights.daysLogged > 0 ? (
+              <View style={styles.insightsGrid}>
+                <View style={styles.insightCell}>
+                  <ThemedText style={styles.insightValue}>{weeklyInsights.daysLogged}/7</ThemedText>
+                  <ThemedText style={styles.insightLabel}>{t("weeklyInsights.daysLogged")}</ThemedText>
+                </View>
+                <View style={styles.insightCell}>
+                  <ThemedText style={styles.insightValue}>{weeklyInsights.avgCalories}</ThemedText>
+                  <ThemedText style={styles.insightLabel}>{t("weeklyInsights.avgCalories")}</ThemedText>
+                </View>
+                <View style={styles.insightCell}>
+                  <ThemedText style={styles.insightValue}>{weeklyInsights.avgProtein}g</ThemedText>
+                  <ThemedText style={styles.insightLabel}>{t("weeklyInsights.avgProtein")}</ThemedText>
+                </View>
+                <View style={styles.insightCell}>
+                  <ThemedText style={[styles.insightValue, { color: GOAL_CONFIG[profile.bodyGoal].color }]}>
+                    {weeklyInsights.daysOnTrack}/{weeklyInsights.daysLogged}
+                  </ThemedText>
+                  <ThemedText style={styles.insightLabel}>{t("weeklyInsights.daysOnTrack")}</ThemedText>
+                </View>
+              </View>
+            ) : (
+              <ThemedText style={styles.insightsEmpty}>{t("weeklyInsights.empty")}</ThemedText>
+            )}
+          </GlassCard>
+
+          <Pressable
+            style={styles.mealIdeasLink}
+            onPress={() => navigation.navigate("MealIdeas")}
+          >
+            <Feather name="book-open" size={14} color={Colors.primary} />
+            <ThemedText style={styles.mealIdeasLinkText}>{t("home.viewMealIdeas")}</ThemedText>
+            <Feather name="chevron-right" size={14} color={Colors.primary} />
+          </Pressable>
+        </View>
+      )}
+
       <View style={styles.workoutsSection}>
         <View style={styles.workoutsHeader}>
-          <ThemedText style={styles.sectionTitle}>{t("home.todaysWorkout")}</ThemedText>
-          <Pressable>
-            <ThemedText style={styles.detailsLink}>{t("common.viewAll")}</ThemedText>
-          </Pressable>
+          <ThemedText style={styles.sectionTitle}>
+            {profile.bodyGoal ? t("home.recommendedForYou") : t("home.todaysWorkout")}
+          </ThemedText>
         </View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.workoutsList}
         >
-          {sampleWorkouts.map((workout) => (
+          {getRecommendedWorkouts(profile.bodyGoal, sampleWorkouts, profile.bodyGoal ? 3 : sampleWorkouts.length).map((workout) => (
             <WorkoutCard
               key={workout.id}
               workout={workout}
@@ -516,6 +565,45 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,17,115,0.3)",
   },
   goalScanCtaText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.primary,
+  },
+  insightsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  insightCell: {
+    width: "50%",
+    paddingVertical: Spacing.md,
+    alignItems: "center",
+  },
+  insightValue: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  insightLabel: {
+    fontSize: 11,
+    color: Colors.white60,
+    textAlign: "center",
+  },
+  insightsEmpty: {
+    fontSize: 13,
+    color: Colors.white60,
+    textAlign: "center",
+    paddingVertical: Spacing.md,
+  },
+  mealIdeasLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: Spacing.md,
+    paddingVertical: 10,
+  },
+  mealIdeasLinkText: {
     fontSize: 13,
     fontWeight: "600",
     color: Colors.primary,
