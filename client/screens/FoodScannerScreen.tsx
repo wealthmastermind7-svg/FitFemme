@@ -25,7 +25,7 @@ const { width: SCREEN_W } = Dimensions.get("window");
 const CIRCLE_SIZE = Math.min(SCREEN_W - 48, 340);
 const BG = "#0d0a14";
 const ACCENT = Colors.primary; // #d41173 — used in result panels only
-const CORAL = "#e8857a"; // primary visual accent on the scanner hero
+const CORAL = Colors.primary; // brand pink used as accent on the scanner hero
 const PILL_BG = "rgba(20,14,28,0.82)";
 
 interface NutritionResult {
