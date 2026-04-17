@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "node:http";
 
-const MOONSHOT_API_URL = "https://api.moonshot.cn/v1/chat/completions";
+const MOONSHOT_API_URL = "https://api.moonshot.ai/v1/chat/completions";
 const MOONSHOT_MODEL = "moonshot-v1-8k-vision-preview";
 
 const NUTRITION_PROMPT = `You are a professional nutritionist and food recognition expert.

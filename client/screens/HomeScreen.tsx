@@ -17,7 +17,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { CircularProgress } from "@/components/CircularProgress";
 import { WorkoutCard } from "@/components/WorkoutCard";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import {
   storage,
   UserProfile,
@@ -156,6 +156,44 @@ export default function HomeScreen() {
             </View>
           </View>
         </GlassCard>
+      </View>
+
+      <View style={styles.scannerSection}>
+        <Pressable
+          onPress={() => navigation.navigate("FoodScanner")}
+          style={({ pressed }) => [styles.scannerCard, pressed && { opacity: 0.92 }]}
+        >
+          <ImageBackground
+            source={require("../../assets/images/workouts/workout3.png")}
+            style={styles.scannerImage}
+            imageStyle={styles.scannerImageRadius}
+            resizeMode="cover"
+          >
+            <LinearGradient
+              colors={["rgba(13,10,20,0.55)", "rgba(212,17,115,0.55)", "rgba(13,10,20,0.92)"]}
+              locations={[0, 0.5, 1]}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View style={styles.scannerBadge}>
+              <View style={styles.scannerBadgeDot} />
+              <ThemedText style={styles.scannerBadgeText}>NEW · AI POWERED</ThemedText>
+            </View>
+            <View style={styles.scannerContent}>
+              <View style={styles.scannerIconCircle}>
+                <Feather name="camera" size={22} color={Colors.white} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={styles.scannerTitle}>Scan your meal</ThemedText>
+                <ThemedText style={styles.scannerSubtitle}>
+                  Get instant calories, macros & health score
+                </ThemedText>
+              </View>
+              <View style={styles.scannerArrow}>
+                <Feather name="arrow-right" size={18} color={Colors.white} />
+              </View>
+            </View>
+          </ImageBackground>
+        </Pressable>
       </View>
 
       <View style={styles.workoutsSection}>
@@ -338,6 +376,79 @@ const styles = StyleSheet.create({
   },
   chartCard: {
     marginTop: Spacing.lg,
+  },
+  scannerSection: {
+    paddingHorizontal: Spacing["2xl"],
+    marginTop: Spacing["2xl"],
+  },
+  scannerCard: {
+    height: 130,
+    borderRadius: BorderRadius.xl,
+    overflow: "hidden",
+    ...Shadows.primaryGlow,
+  },
+  scannerImage: {
+    flex: 1,
+    justifyContent: "space-between",
+    padding: Spacing.lg,
+  },
+  scannerImageRadius: {
+    borderRadius: BorderRadius.xl,
+  },
+  scannerBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+  },
+  scannerBadgeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: Colors.primary,
+  },
+  scannerBadgeText: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: Colors.white,
+    letterSpacing: 1,
+  },
+  scannerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+  scannerIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scannerTitle: {
+    fontSize: 17,
+    fontWeight: "800",
+    color: Colors.white,
+  },
+  scannerSubtitle: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.78)",
+    marginTop: 2,
+  },
+  scannerArrow: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   workoutsSection: {
     marginTop: Spacing["3xl"],

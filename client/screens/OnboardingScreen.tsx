@@ -48,6 +48,15 @@ const slides = [
   },
   {
     id: 3,
+    title1: "SCAN",
+    title2: "YOUR",
+    title3: "MEAL",
+    subtitle: "Snap any plate to instantly see calories, macros, and a health score. AI-powered nutrition in seconds.",
+    image: require("../../assets/images/workouts/workout3.png"),
+    icon: "camera",
+  },
+  {
+    id: 4,
     title1: "WELCOME",
     title2: "TO FIT",
     title3: "FEMME",

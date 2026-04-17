@@ -24,8 +24,8 @@ import { getApiUrl } from "@/lib/query-client";
 const { width: SCREEN_W } = Dimensions.get("window");
 const CIRCLE_SIZE = Math.min(SCREEN_W - 48, 340);
 const BG = "#0d0a14";
-const ACCENT = Colors.primary; // #d41173
-const CORAL = "#e8857a";
+const ACCENT = Colors.primary; // #d41173 — used in result panels only
+const CORAL = "#e8857a"; // primary visual accent on the scanner hero
 const PILL_BG = "rgba(20,14,28,0.82)";
 
 interface NutritionResult {
@@ -370,16 +370,16 @@ const styles = StyleSheet.create({
   },
   glowRing: {
     position: "absolute",
-    width: CIRCLE_SIZE + 12,
-    height: CIRCLE_SIZE + 12,
-    borderRadius: (CIRCLE_SIZE + 12) / 2,
-    borderWidth: 1.5,
-    borderColor: ACCENT + "55",
-    shadowColor: ACCENT,
+    width: CIRCLE_SIZE + 18,
+    height: CIRCLE_SIZE + 18,
+    borderRadius: (CIRCLE_SIZE + 18) / 2,
+    borderWidth: 4,
+    borderColor: CORAL + "70",
+    shadowColor: CORAL,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 18,
-    elevation: 12,
+    shadowOpacity: 0.55,
+    shadowRadius: 22,
+    elevation: 14,
   },
   circle: {
     width: CIRCLE_SIZE,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: CIRCLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: ACCENT + "40",
+    borderColor: CORAL + "55",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -477,14 +477,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: ACCENT,
-    paddingHorizontal: 28,
-    paddingVertical: 13,
+    backgroundColor: CORAL,
+    paddingHorizontal: 30,
+    paddingVertical: 14,
     borderRadius: 99,
-    shadowColor: ACCENT,
+    shadowColor: CORAL,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.55,
-    shadowRadius: 12,
+    shadowOpacity: 0.6,
+    shadowRadius: 14,
     elevation: 10,
   },
   scanBtnText: { color: "#fff", fontSize: 15, fontWeight: "800", letterSpacing: 1 },
