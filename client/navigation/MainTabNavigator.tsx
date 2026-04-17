@@ -1,17 +1,28 @@
-import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  Platform,
+  ActionSheetIOS,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { LinearGradient } from "expo-linear-gradient";
 
 import HomeStackNavigator from "@/navigation/HomeStackNavigator";
 import WorkoutsStackNavigator from "@/navigation/WorkoutsStackNavigator";
 import StatsStackNavigator from "@/navigation/StatsStackNavigator";
 import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
-import { Colors, Spacing, Shadows } from "@/constants/theme";
+import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { useLanguage } from "@/lib/i18n";
+import { ThemedText } from "@/components/ThemedText";
+import { RootStackParamList } from "@/navigation/RootStackNavigator";
 
 export type MainTabParamList = {
   HomeTab: undefined;
@@ -25,6 +36,95 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function AddPlaceholder() {
   return null;
+}
+
+// The center + button lives here so it can use hooks
+function CenterButton() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [sheetVisible, setSheetVisible] = useState(false);
+
+  const showOptions = () => {
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["Cancel", "Start Workout", "Scan Food"],
+          cancelButtonIndex: 0,
+          tintColor: Colors.primary,
+        },
+        (idx) => {
+          if (idx === 1) navigation.navigate("WorkoutPlayer");
+          if (idx === 2) navigation.navigate("FoodScanner");
+        }
+      );
+    } else {
+      setSheetVisible(true);
+    }
+  };
+
+  return (
+    <>
+      <Pressable style={styles.centerButton} onPress={showOptions}>
+        <View style={styles.centerButtonInner}>
+          <Feather name="plus" size={28} color={Colors.white} />
+        </View>
+      </Pressable>
+
+      {/* Android action sheet */}
+      {Platform.OS !== "ios" && (
+        <Modal
+          visible={sheetVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSheetVisible(false)}
+        >
+          <Pressable style={styles.overlay} onPress={() => setSheetVisible(false)}>
+            <View style={styles.sheet}>
+              <View style={styles.sheetHandle} />
+              <ThemedText style={styles.sheetTitle}>What would you like to do?</ThemedText>
+
+              <Pressable
+                style={styles.sheetOption}
+                onPress={() => {
+                  setSheetVisible(false);
+                  navigation.navigate("WorkoutPlayer");
+                }}
+              >
+                <View style={[styles.sheetIcon, { backgroundColor: Colors.primary + "20" }]}>
+                  <Feather name="activity" size={20} color={Colors.primary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.sheetOptionTitle}>Start Workout</ThemedText>
+                  <ThemedText style={styles.sheetOptionSub}>Begin a guided training session</ThemedText>
+                </View>
+                <Feather name="chevron-right" size={18} color={Colors.white60} />
+              </Pressable>
+
+              <Pressable
+                style={styles.sheetOption}
+                onPress={() => {
+                  setSheetVisible(false);
+                  navigation.navigate("FoodScanner");
+                }}
+              >
+                <View style={[styles.sheetIcon, { backgroundColor: "#4fc3f720" }]}>
+                  <Feather name="camera" size={20} color="#4fc3f7" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.sheetOptionTitle}>Scan Food</ThemedText>
+                  <ThemedText style={styles.sheetOptionSub}>Analyze nutrition from a photo</ThemedText>
+                </View>
+                <Feather name="chevron-right" size={18} color={Colors.white60} />
+              </Pressable>
+
+              <Pressable style={styles.cancelBtn} onPress={() => setSheetVisible(false)}>
+                <ThemedText style={styles.cancelText}>Cancel</ThemedText>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
+      )}
+    </>
+  );
 }
 
 export default function MainTabNavigator() {
@@ -91,23 +191,8 @@ export default function MainTabNavigator() {
         component={AddPlaceholder}
         options={{
           title: "",
-          tabBarButton: (props) => (
-            <Pressable
-              {...props}
-              style={styles.centerButton}
-            >
-              <View style={styles.centerButtonInner}>
-                <Feather name="plus" size={28} color={Colors.white} />
-              </View>
-            </Pressable>
-          ),
+          tabBarButton: () => <CenterButton />,
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate("WorkoutPlayer");
-          },
-        })}
       />
       <Tab.Screen
         name="StatsTab"
@@ -148,4 +233,57 @@ const styles = StyleSheet.create({
     alignItems: "center",
     ...Shadows.primaryGlow,
   },
+  // Android action sheet
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    backgroundColor: "#2a1320",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: 34,
+    paddingTop: 14,
+  },
+  sheetHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+  sheetTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.white60,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginBottom: 16,
+  },
+  sheetOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.06)",
+  },
+  sheetIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sheetOptionTitle: { fontSize: 16, fontWeight: "600", color: Colors.white, marginBottom: 2 },
+  sheetOptionSub: { fontSize: 12, color: Colors.white60 },
+  cancelBtn: {
+    marginTop: 14,
+    alignItems: "center",
+    paddingVertical: 14,
+  },
+  cancelText: { fontSize: 15, color: Colors.white60, fontWeight: "500" },
 });

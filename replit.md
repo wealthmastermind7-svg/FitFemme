@@ -146,6 +146,15 @@ All subscriptions can be managed through device settings (iOS: Settings → Subs
 
 ## Recent Changes
 
+### Food Scanner Feature (April 2026)
+- AI-powered food scanner accessible via the + (Add) button in the tab bar
+- + button now shows an action sheet: "Start Workout" or "Scan Food"
+- `FoodScannerScreen.tsx`: camera or gallery picker, sends image to backend, displays full nutrition breakdown
+- Backend endpoint `POST /api/ai/analyze-food` in `server/routes.ts` — calls Moonshot vision API (`moonshot-v1-8k-vision-preview`)
+- Results display: dish name, estimated calories, protein/carbs/fat/fiber macros, health score (1–10), detected ingredients
+- Requires `MOONSHOT_API_KEY` environment secret
+- Works in Expo Go and TestFlight (image is sent as base64 to server for analysis)
+
 ### Multi-Language Support (April 2026)
 - Added i18n system in `client/lib/i18n.ts` with support for English, Spanish (Español), and Portuguese (Português)
 - Comprehensive translation library with 50+ keys covering onboarding, workouts, stats, profile, paywall, and common UI elements
