@@ -164,7 +164,7 @@ export default function HomeScreen() {
           style={({ pressed }) => [styles.scannerCard, pressed && { opacity: 0.92 }]}
         >
           <ImageBackground
-            source={require("../../assets/images/workouts/workout3.png")}
+            source={require("../../assets/images/food/plate-hero.jpg")}
             style={styles.scannerImage}
             imageStyle={styles.scannerImageRadius}
             resizeMode="cover"
