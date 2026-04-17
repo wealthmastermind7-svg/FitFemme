@@ -40,7 +40,7 @@ interface NutritionResult {
   ingredients: string[];
 }
 
-const FOOD_PLACEHOLDER = require("../../assets/images/food/plate-hero.jpg");
+const FOOD_PLACEHOLDER = require("../../assets/images/food/plate-hero.png");
 
 export default function FoodScannerScreen() {
   const insets = useSafeAreaInsets();

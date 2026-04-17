@@ -164,20 +164,16 @@ export default function HomeScreen() {
           style={({ pressed }) => [styles.scannerCard, pressed && { opacity: 0.92 }]}
         >
           <ImageBackground
-            source={require("../../assets/images/food/plate-hero.jpg")}
+            source={require("../../assets/images/food/plate-hero.png")}
             style={styles.scannerImage}
             imageStyle={styles.scannerImageRadius}
             resizeMode="cover"
           >
             <LinearGradient
-              colors={["rgba(13,10,20,0.55)", "rgba(212,17,115,0.55)", "rgba(13,10,20,0.92)"]}
+              colors={["rgba(13,10,20,0.35)", "rgba(13,10,20,0.55)", "rgba(13,10,20,0.92)"]}
               locations={[0, 0.5, 1]}
               style={StyleSheet.absoluteFillObject}
             />
-            <View style={styles.scannerBadge}>
-              <View style={styles.scannerBadgeDot} />
-              <ThemedText style={styles.scannerBadgeText}>NEW · AI POWERED</ThemedText>
-            </View>
             <View style={styles.scannerContent}>
               <View style={styles.scannerIconCircle}>
                 <Feather name="camera" size={22} color={Colors.white} />
