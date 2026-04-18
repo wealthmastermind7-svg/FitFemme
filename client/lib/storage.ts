@@ -106,6 +106,29 @@ export const WORKOUT_GOAL_WEIGHTS: Record<BodyGoal, Record<string, number>> = {
   flat_stomach: { "1": 0.7, "2": 0.3, "3": 1.0, "4": 0.8, "5": 0.6, "6": 1.0 },
 };
 
+export const WORKOUT_GOAL_EXPLANATIONS: Record<BodyGoal, { titleKey: string; bodyKey: string; tags: string[] }> = {
+  lean_toned: {
+    titleKey: "goalWorkouts.leanToned.title",
+    bodyKey: "goalWorkouts.leanToned.body",
+    tags: ["goalWorkouts.leanToned.tag1", "goalWorkouts.leanToned.tag2", "goalWorkouts.leanToned.tag3"],
+  },
+  booty_builder: {
+    titleKey: "goalWorkouts.bootyBuilder.title",
+    bodyKey: "goalWorkouts.bootyBuilder.body",
+    tags: ["goalWorkouts.bootyBuilder.tag1", "goalWorkouts.bootyBuilder.tag2", "goalWorkouts.bootyBuilder.tag3"],
+  },
+  flat_stomach: {
+    titleKey: "goalWorkouts.flatStomach.title",
+    bodyKey: "goalWorkouts.flatStomach.body",
+    tags: ["goalWorkouts.flatStomach.tag1", "goalWorkouts.flatStomach.tag2", "goalWorkouts.flatStomach.tag3"],
+  },
+};
+
+export function getGoalWorkoutExplanation(goal: BodyGoal | undefined) {
+  if (!goal) return undefined;
+  return WORKOUT_GOAL_EXPLANATIONS[goal];
+}
+
 export function getRecommendedWorkouts<T extends { id: string }>(
   goal: BodyGoal | undefined,
   workouts: T[],

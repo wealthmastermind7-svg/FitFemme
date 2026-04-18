@@ -34,6 +34,7 @@ import {
   WeeklyInsights,
   WorkoutSession,
   computeNetEnergy,
+  getGoalWorkoutExplanation,
 } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage } from "@/lib/i18n";
@@ -253,6 +254,37 @@ export default function HomeScreen() {
         )}
       </View>
 
+      {profile.bodyGoal ? (
+        <View style={styles.flowSection}>
+          <GlassCard>
+            <View style={styles.flowHeader}>
+              <View style={styles.flowHeaderLeft}>
+                <ThemedText style={styles.flowTitle}>{t("home.goalFlowTitle")}</ThemedText>
+                <ThemedText style={styles.flowSubtitle}>{t("home.goalFlowSubtitle")}</ThemedText>
+              </View>
+            </View>
+            <View style={styles.flowSteps}>
+              <FlowStep index={1} label={t("home.goalFlowStep1")} active />
+              <FlowConnector />
+              <FlowStep
+                index={2}
+                label={t("home.goalFlowStep2")}
+                active={todaysMeals.length > 0}
+              />
+              <FlowConnector />
+              <FlowStep
+                index={3}
+                label={t("home.goalFlowStep3")}
+                active={todaysSessions.length > 0}
+              />
+              <FlowConnector />
+              <FlowStep index={4} label={t("home.goalFlowStep4")} active={todaysMeals.length > 0 || todaysSessions.length > 0} />
+            </View>
+            <ThemedText style={styles.flowHint}>{t("home.goalFlowHint")}</ThemedText>
+          </GlassCard>
+        </View>
+      ) : null}
+
       <View style={styles.scannerSection}>
         <Pressable
           onPress={() => navigation.navigate("FoodScanner")}
@@ -337,6 +369,14 @@ export default function HomeScreen() {
             {profile.bodyGoal ? t("home.recommendedForYou") : t("home.todaysWorkout")}
           </ThemedText>
         </View>
+        {profile.bodyGoal ? (
+          <View style={styles.goalWorkoutKey}>
+            <Feather name="target" size={13} color={Colors.primary} />
+            <ThemedText style={styles.goalWorkoutKeyText}>
+              {t(getGoalWorkoutExplanation(profile.bodyGoal)?.titleKey ?? "goalWorkouts.title")}
+            </ThemedText>
+          </View>
+        ) : null}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -351,6 +391,31 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
       </View>
+
+      {profile.bodyGoal ? (
+        <View style={styles.goalWorkoutSection}>
+          <GlassCard>
+            <View style={styles.goalWorkoutHeader}>
+              <View style={styles.goalWorkoutHeaderCopy}>
+                <ThemedText style={styles.goalWorkoutTitle}>{t("goalWorkouts.title")}</ThemedText>
+                <ThemedText style={styles.goalWorkoutSubtitle}>
+                  {t(getGoalWorkoutExplanation(profile.bodyGoal)?.titleKey ?? "goalWorkouts.title")}
+                </ThemedText>
+              </View>
+            </View>
+            <ThemedText style={styles.goalWorkoutBody}>
+              {t(getGoalWorkoutExplanation(profile.bodyGoal)?.bodyKey ?? "goalWorkouts.title")}
+            </ThemedText>
+            <View style={styles.goalWorkoutTags}>
+              {getGoalWorkoutExplanation(profile.bodyGoal)?.tags.map((tagKey) => (
+                <View key={tagKey} style={styles.goalWorkoutTag}>
+                  <ThemedText style={styles.goalWorkoutTagText}>{t(tagKey)}</ThemedText>
+                </View>
+              ))}
+            </View>
+          </GlassCard>
+        </View>
+      ) : null}
 
       <View style={styles.quoteSection}>
         <ThemedText style={styles.quote}>
@@ -534,6 +599,49 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: Colors.white,
+  },
+  goalWorkoutSection: {
+    paddingHorizontal: Spacing["2xl"],
+    marginTop: Spacing["2xl"],
+  },
+  goalWorkoutHeader: {
+    marginBottom: Spacing.sm,
+  },
+  goalWorkoutHeaderCopy: {
+    gap: 4,
+  },
+  goalWorkoutTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: Colors.white,
+  },
+  goalWorkoutSubtitle: {
+    fontSize: 12,
+    color: Colors.white40,
+  },
+  goalWorkoutBody: {
+    fontSize: 13,
+    color: Colors.white60,
+    lineHeight: 19,
+    marginBottom: Spacing.md,
+  },
+  goalWorkoutTags: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  goalWorkoutTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    backgroundColor: "rgba(212,17,115,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.22)",
+  },
+  goalWorkoutTagText: {
+    fontSize: 11,
+    color: Colors.white,
+    fontWeight: "600",
   },
   goalEditBtn: {
     width: 32,
