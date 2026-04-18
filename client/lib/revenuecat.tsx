@@ -38,23 +38,35 @@ export function initializeRevenueCat() {
   console.log("RevenueCat configured");
 }
 
+// In Expo Go (and on web) the native RevenueCat module is unavailable, so
+// purchases / entitlements can never resolve. To allow previewing Pro features
+// during development we treat those environments as subscribed.
+export const IS_EXPO_GO =
+  Constants.appOwnership === "expo" ||
+  Constants.executionEnvironment === "storeClient";
+export const IS_PREVIEW_MODE = IS_EXPO_GO || Platform.OS === "web";
+
 function useSubscriptionContext() {
   const customerInfoQuery = useQuery({
     queryKey: ["revenuecat", "customer-info"],
     queryFn: async () => {
+      if (IS_PREVIEW_MODE) return null;
       const info = await Purchases.getCustomerInfo();
       return info;
     },
     staleTime: 60 * 1000,
+    enabled: !IS_PREVIEW_MODE,
   });
 
   const offeringsQuery = useQuery({
     queryKey: ["revenuecat", "offerings"],
     queryFn: async () => {
+      if (IS_PREVIEW_MODE) return null;
       const offerings = await Purchases.getOfferings();
       return offerings;
     },
     staleTime: 300 * 1000,
+    enabled: !IS_PREVIEW_MODE,
   });
 
   const purchaseMutation = useMutation({
@@ -73,6 +85,7 @@ function useSubscriptionContext() {
   });
 
   const isSubscribed =
+    IS_PREVIEW_MODE ||
     customerInfoQuery.data?.entitlements.active?.[REVENUECAT_ENTITLEMENT_IDENTIFIER] !== undefined;
 
   return {
