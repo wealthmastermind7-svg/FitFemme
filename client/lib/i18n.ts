@@ -591,8 +591,8 @@ const translations: Record<Language, Record<string, string>> = {
     "profile.support": "Soporte",
     "profile.privacyPolicy": "Política de Privacidad",
     "profile.termsOfService": "Términos y Condiciones",
-    "profile.privacyUrl": "https://fitfemme.cerolauto.store/marketing/privacy.html",
-    "profile.termsUrl": "https://fitfemme.cerolauto.store/marketing/terms.html",
+    "profile.privacyUrl": "https://fitfemme.cerolauto.store/marketing/es/privacy.html",
+    "profile.termsUrl": "https://fitfemme.cerolauto.store/marketing/es/terms.html",
     "profile.contact": "Contáctanos",
     "profile.logout": "Cerrar Sesión",
 
@@ -1041,8 +1041,8 @@ const translations: Record<Language, Record<string, string>> = {
     "profile.support": "Suporte",
     "profile.privacyPolicy": "Política de Privacidade",
     "profile.termsOfService": "Termos e Condições",
-    "profile.privacyUrl": "https://fitfemme.cerolauto.store/marketing/privacy.html",
-    "profile.termsUrl": "https://fitfemme.cerolauto.store/marketing/terms.html",
+    "profile.privacyUrl": "https://fitfemme.cerolauto.store/marketing/pt/privacy.html",
+    "profile.termsUrl": "https://fitfemme.cerolauto.store/marketing/pt/terms.html",
     "profile.contact": "Contate-nos",
     "profile.logout": "Sair",
 
