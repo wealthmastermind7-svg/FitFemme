@@ -317,7 +317,10 @@ const KEYS = {
   WEEKLY_ACTIVITY: "@weeklyActivity",
   COMPLETED_EXERCISES: "@completedExercises",
   SCANNED_MEALS: "@scannedMeals",
+  SCAN_COUNT: "@scanCount",
 };
+
+export const FREE_SCAN_LIMIT = 3;
 
 function todayKey(): string {
   return new Date().toISOString().split("T")[0];
@@ -463,6 +466,22 @@ export const storage = {
     cutoff.setDate(cutoff.getDate() - (n - 1));
     const cutoffStr = cutoff.toISOString().split("T")[0];
     return meals.filter((m) => m.date >= cutoffStr);
+  },
+
+  async getScanCount(): Promise<number> {
+    try {
+      const v = await AsyncStorage.getItem(KEYS.SCAN_COUNT);
+      return v ? parseInt(v, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  },
+
+  async incrementScanCount(): Promise<number> {
+    const current = await this.getScanCount();
+    const next = current + 1;
+    await AsyncStorage.setItem(KEYS.SCAN_COUNT, next.toString());
+    return next;
   },
 
   async clearAll(): Promise<void> {

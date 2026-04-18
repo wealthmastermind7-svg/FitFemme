@@ -20,8 +20,10 @@ import { BlurView } from "expo-blur";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/theme";
 import { getApiUrl } from "@/lib/query-client";
-import { storage, BodyGoal, computeMealFeedback } from "@/lib/storage";
+import { storage, BodyGoal, computeMealFeedback, FREE_SCAN_LIMIT } from "@/lib/storage";
 import { useLanguage } from "@/lib/i18n";
+import { useSubscription } from "@/lib/revenuecat";
+import Paywall from "@/components/Paywall";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const CIRCLE_SIZE = Math.min(SCREEN_W - 48, 340);
@@ -47,6 +49,7 @@ const FOOD_PLACEHOLDER = require("../../assets/images/food/plate-hero.png");
 export default function FoodScannerScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const { isSubscribed, isLoading: subscriptionLoading } = useSubscription();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -54,9 +57,29 @@ export default function FoodScannerScreen() {
   const [activeTab, setActiveTab] = useState<"macros" | "stats">("macros");
   const [feedbackKey, setFeedbackKey] = useState<string | null>(null);
   const [savedToday, setSavedToday] = useState(false);
+  const [scanCount, setScanCount] = useState(0);
+  const [scanCountLoaded, setScanCountLoaded] = useState(false);
+  const [paywallVisible, setPaywallVisible] = useState(false);
   const { t } = useLanguage();
 
+  React.useEffect(() => {
+    storage
+      .getScanCount()
+      .then((c) => setScanCount(c))
+      .catch(() => {})
+      .finally(() => setScanCountLoaded(true));
+  }, []);
+
+  const stateReady = scanCountLoaded && !subscriptionLoading;
+  const remainingFreeScans = Math.max(0, FREE_SCAN_LIMIT - scanCount);
+  const limitReached = stateReady && !isSubscribed && remainingFreeScans <= 0;
+
   const pickImage = async (fromCamera: boolean) => {
+    if (!stateReady) return;
+    if (limitReached) {
+      setPaywallVisible(true);
+      return;
+    }
     setResult(null);
     if (fromCamera) {
       const perm = await ImagePicker.requestCameraPermissionsAsync();
@@ -96,6 +119,10 @@ export default function FoodScannerScreen() {
 
   const analyze = async () => {
     if (!imageBase64) return;
+    if (limitReached) {
+      setPaywallVisible(true);
+      return;
+    }
     setAnalyzing(true);
     setResult(null);
     try {
@@ -125,6 +152,10 @@ export default function FoodScannerScreen() {
           healthScore: data.healthScore || 0,
         });
         setSavedToday(true);
+        if (!isSubscribed) {
+          const next = await storage.incrementScanCount();
+          setScanCount(next);
+        }
       } catch (saveErr) {
         console.log("Failed to save meal:", saveErr);
       }
@@ -182,6 +213,44 @@ export default function FoodScannerScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
+        {/* Free scan counter (only when not subscribed) */}
+        {!isSubscribed && !limitReached && (
+          <View style={styles.counterPill}>
+            <Feather name="zap" size={12} color={CORAL} />
+            <ThemedText style={styles.counterPillText}>
+              {remainingFreeScans} {t("scanner.freeScansLeft")}
+            </ThemedText>
+          </View>
+        )}
+
+        {/* WOW upgrade screen — shown when free limit reached */}
+        {limitReached ? (
+          <View style={styles.wowWrapper}>
+            <LinearGradient
+              colors={[CORAL + "30", "transparent"]}
+              style={styles.wowGlow}
+            />
+            <View style={styles.wowIconCircle}>
+              <Feather name="zap" size={36} color={CORAL} />
+            </View>
+            <ThemedText style={styles.wowTitle}>{t("scanner.unlockTitle")}</ThemedText>
+            <ThemedText style={styles.wowSubtitle}>{t("scanner.unlockSubtitle")}</ThemedText>
+
+            <View style={styles.wowFeatureList}>
+              <WowRow icon="camera" text={t("scanner.featUnlimited")} />
+              <WowRow icon="pie-chart" text={t("scanner.featMacros")} />
+              <WowRow icon="trending-up" text={t("scanner.featProgress")} />
+              <WowRow icon="target" text={t("scanner.featGoalCoach")} />
+            </View>
+
+            <Pressable style={styles.wowCta} onPress={() => setPaywallVisible(true)}>
+              <Feather name="unlock" size={18} color="#fff" />
+              <ThemedText style={styles.wowCtaText}>{t("scanner.unlockCta")}</ThemedText>
+            </Pressable>
+            <ThemedText style={styles.wowFootnote}>{t("scanner.unlockFootnote")}</ThemedText>
+          </View>
+        ) : (
+        <>
         {/* ── Central circle ──────────────────────────────────── */}
         <View style={styles.circleWrapper}>
           {/* Glow ring */}
@@ -285,6 +354,8 @@ export default function FoodScannerScreen() {
             <ThemedText style={styles.galleryBtnText}>Choose from gallery instead</ThemedText>
           </Pressable>
         )}
+        </>
+        )}
 
         {/* ── Results ──────────────────────────────────────── */}
         {result && (
@@ -361,11 +432,23 @@ export default function FoodScannerScreen() {
           </>
         )}
       </ScrollView>
+      <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </View>
   );
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────
+
+function WowRow({ icon, text }: { icon: string; text: string }) {
+  return (
+    <View style={styles.wowRow}>
+      <View style={styles.wowRowIcon}>
+        <Feather name={icon as any} size={15} color={CORAL} />
+      </View>
+      <ThemedText style={styles.wowRowText}>{text}</ThemedText>
+    </View>
+  );
+}
 
 function MacroTile({ label, value, unit, color, icon }: { label: string; value: number; unit: string; color: string; icon: string }) {
   return (
@@ -539,6 +622,122 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   scanBtnText: { color: "#fff", fontSize: 15, fontWeight: "800", letterSpacing: 1 },
+
+  // ── Counter pill ──
+  counterPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(212,17,115,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.4)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 99,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  counterPillText: { color: "#fff", fontSize: 12, fontWeight: "700", letterSpacing: 0.3 },
+
+  // ── WOW upgrade screen ──
+  wowWrapper: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: 16,
+    paddingHorizontal: 6,
+    position: "relative",
+  },
+  wowGlow: {
+    position: "absolute",
+    top: -10,
+    width: 320,
+    height: 320,
+    borderRadius: 160,
+    opacity: 0.85,
+  },
+  wowIconCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: "rgba(212,17,115,0.18)",
+    borderWidth: 2,
+    borderColor: CORAL + "60",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 22,
+    shadowColor: CORAL,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  wowTitle: {
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 8,
+    paddingHorizontal: 12,
+  },
+  wowSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.7)",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 28,
+    paddingHorizontal: 20,
+  },
+  wowFeatureList: {
+    width: "100%",
+    gap: 12,
+    marginBottom: 28,
+    paddingHorizontal: 4,
+  },
+  wowRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
+  },
+  wowRowIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(212,17,115,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wowRowText: { color: "#fff", fontSize: 14, fontWeight: "600", flex: 1 },
+  wowCta: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: CORAL,
+    paddingHorizontal: 36,
+    paddingVertical: 16,
+    borderRadius: 99,
+    width: "100%",
+    shadowColor: CORAL,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.55,
+    shadowRadius: 18,
+    elevation: 12,
+  },
+  wowCtaText: { color: "#fff", fontSize: 16, fontWeight: "800", letterSpacing: 0.5 },
+  wowFootnote: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 14,
+    paddingHorizontal: 30,
+    lineHeight: 17,
+  },
 
   galleryBtn: {
     flexDirection: "row",
