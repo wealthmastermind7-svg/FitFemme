@@ -794,7 +794,8 @@ const styles = StyleSheet.create({
   },
   goalWorkoutSection: {
     paddingHorizontal: Spacing["2xl"],
-    marginTop: Spacing["2xl"],
+    marginTop: Spacing["3xl"],
+    marginBottom: Spacing["2xl"],
   },
   goalWorkoutHeader: {
     marginBottom: Spacing.sm,
