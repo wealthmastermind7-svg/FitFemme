@@ -6,3 +6,75 @@ id = "rf7C50_IYKZ7cAx7Szm90"
 uri = "file://assets/images/food/plate-hero.png"
 type = "image"
 title = "premium gourmet food plate"
+
+[[generated]]
+id = "yc0pNYDOIpL9WsXIovomX"
+uri = "file://assets/images/meals/bb3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YFXl4-QRr7iag9d1xyfVT"
+uri = "file://assets/images/meals/bb4.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "0YtmAL3z-uAxTYyG6Q7i9"
+uri = "file://assets/images/meals/fs1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LEIQo_uDlQpr7n6urjjqQ"
+uri = "file://assets/images/meals/fs2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "NM_7kgBE7FGqcdp48d5GH"
+uri = "file://assets/images/meals/fs3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ngBxlskqIldvlG7nv6Gd5"
+uri = "file://assets/images/meals/fs4.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tNNyVsXzj0aMJ8wUxuBQ-"
+uri = "file://assets/images/meals/lt1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "jzHxbLErrbHS-zje5G1_1"
+uri = "file://assets/images/meals/lt2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xPP-ln8M-mSdu1P4WtvgB"
+uri = "file://assets/images/meals/lt3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fF6_RoURF6zkpz9RPsRVr"
+uri = "file://assets/images/meals/lt4.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "x_6yMWIyMRiEcAySmGFRW"
+uri = "file://assets/images/meals/bb1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "0BBWlAKSiwlswWEkkZGb0"
+uri = "file://assets/images/meals/bb2.png"
+type = "image"
+title = "generated_image"

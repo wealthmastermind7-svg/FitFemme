@@ -129,9 +129,25 @@ export interface MealIdea {
   prepMins: number;
   icon: string; // Feather icon name
   color: string;
+  image?: any; // require()'d image source (or look up via MEAL_IMAGES[id])
   ingredientKeys: string[];
   stepKeys: string[];
 }
+
+export const MEAL_IMAGES: Record<string, any> = {
+  lt1: require("../../assets/images/meals/lt1.png"),
+  lt2: require("../../assets/images/meals/lt2.png"),
+  lt3: require("../../assets/images/meals/lt3.png"),
+  lt4: require("../../assets/images/meals/lt4.png"),
+  bb1: require("../../assets/images/meals/bb1.png"),
+  bb2: require("../../assets/images/meals/bb2.png"),
+  bb3: require("../../assets/images/meals/bb3.png"),
+  bb4: require("../../assets/images/meals/bb4.png"),
+  fs1: require("../../assets/images/meals/fs1.png"),
+  fs2: require("../../assets/images/meals/fs2.png"),
+  fs3: require("../../assets/images/meals/fs3.png"),
+  fs4: require("../../assets/images/meals/fs4.png"),
+};
 
 export const MEAL_IDEAS: Record<BodyGoal, MealIdea[]> = {
   lean_toned: [

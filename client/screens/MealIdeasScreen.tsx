@@ -5,6 +5,7 @@ import {
   ScrollView,
   Pressable,
   StatusBar,
+  ImageBackground,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,7 +16,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import { storage, BodyGoal, GOAL_CONFIG, MEAL_IDEAS, MealIdea } from "@/lib/storage";
+import { storage, BodyGoal, GOAL_CONFIG, MEAL_IDEAS, MEAL_IMAGES, MealIdea } from "@/lib/storage";
 import { useLanguage } from "@/lib/i18n";
 import type { RootStackParamList } from "@/navigation/RootStackNavigator";
 
@@ -86,49 +87,59 @@ export default function MealIdeasScreen() {
               <Pressable
                 key={idea.id}
                 onPress={() => handleIdeaPress(idea)}
-                style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
+                style={({ pressed }) => [
+                  styles.ideaCard,
+                  { opacity: pressed ? 0.92 : 1, transform: [{ scale: pressed ? 0.99 : 1 }] },
+                ]}
               >
-                <GlassCard style={styles.ideaCard}>
-                  <View style={[styles.ideaIcon, { backgroundColor: idea.color + "25" }]}>
-                    <Feather name={idea.icon as any} size={22} color={idea.color} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <ThemedText style={styles.ideaTitle}>{t(idea.titleKey)}</ThemedText>
-                    <ThemedText style={styles.ideaDesc}>{t(idea.descKey)}</ThemedText>
-                    <View style={styles.ideaStats}>
-                      <View style={styles.ideaStatPill}>
-                        <Feather name="zap" size={11} color="#f0c93e" />
-                        <ThemedText style={styles.ideaStatText}>
-                          {idea.calories} {t("mealIdeas.cal")}
-                        </ThemedText>
-                      </View>
-                      <View style={styles.ideaStatPill}>
-                        <Feather name="activity" size={11} color="#4fc3f7" />
-                        <ThemedText style={styles.ideaStatText}>
-                          {idea.protein}g {t("mealIdeas.protein")}
-                        </ThemedText>
-                      </View>
-                      <View style={styles.ideaStatPill}>
-                        <Feather name="clock" size={11} color="#a5d6a7" />
-                        <ThemedText style={styles.ideaStatText}>
-                          {idea.prepMins} {t("mealIdeas.detail.minutes")}
-                        </ThemedText>
-                      </View>
-                    </View>
-                    <View style={styles.viewRecipeRow}>
-                      <ThemedText style={[styles.viewRecipeText, { color: idea.color }]}>
-                        {t("mealIdeas.viewRecipe")}
-                      </ThemedText>
-                      <Feather name="arrow-right" size={12} color={idea.color} />
-                    </View>
-                  </View>
-                  <Feather
-                    name="chevron-right"
-                    size={16}
-                    color={Colors.white60}
-                    style={styles.ideaChevron}
+                <ImageBackground
+                  source={MEAL_IMAGES[idea.id]}
+                  style={styles.ideaImage}
+                  imageStyle={styles.ideaImageInner}
+                >
+                  <LinearGradient
+                    colors={["transparent", "rgba(0,0,0,0.25)", "rgba(0,0,0,0.85)"]}
+                    locations={[0.35, 0.6, 1]}
+                    style={StyleSheet.absoluteFillObject}
                   />
-                </GlassCard>
+                  <View style={styles.ideaCalBadge}>
+                    <Feather name="zap" size={10} color="#f0c93e" />
+                    <ThemedText style={styles.ideaCalText}>
+                      {idea.calories} {t("mealIdeas.cal")}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.ideaImageOverlay}>
+                    <ThemedText style={styles.ideaTitle} numberOfLines={1}>
+                      {t(idea.titleKey)}
+                    </ThemedText>
+                    <ThemedText style={styles.ideaDesc} numberOfLines={2}>
+                      {t(idea.descKey)}
+                    </ThemedText>
+                  </View>
+                </ImageBackground>
+
+                <View style={styles.ideaFooter}>
+                  <View style={styles.ideaStats}>
+                    <View style={styles.ideaStatPill}>
+                      <Feather name="activity" size={11} color="#4fc3f7" />
+                      <ThemedText style={styles.ideaStatText}>
+                        {idea.protein}g {t("mealIdeas.protein")}
+                      </ThemedText>
+                    </View>
+                    <View style={styles.ideaStatPill}>
+                      <Feather name="clock" size={11} color="#a5d6a7" />
+                      <ThemedText style={styles.ideaStatText}>
+                        {idea.prepMins} {t("mealIdeas.detail.minutes")}
+                      </ThemedText>
+                    </View>
+                  </View>
+                  <View style={styles.viewRecipeRow}>
+                    <ThemedText style={[styles.viewRecipeText, { color: idea.color }]}>
+                      {t("mealIdeas.viewRecipe")}
+                    </ThemedText>
+                    <Feather name="arrow-right" size={13} color={idea.color} />
+                  </View>
+                </View>
               </Pressable>
             ))}
           </>
@@ -207,32 +218,51 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   ideaCard: {
+    borderRadius: BorderRadius.lg,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    marginBottom: Spacing.sm,
+  },
+  ideaImage: {
+    width: "100%",
+    height: 180,
+    justifyContent: "flex-end",
+  },
+  ideaImageInner: {
+    resizeMode: "cover",
+  },
+  ideaImageOverlay: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.md,
+  },
+  ideaCalBadge: {
+    position: "absolute",
+    top: 12,
+    right: 12,
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 14,
-    padding: Spacing.lg,
-  },
-  ideaIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
     alignItems: "center",
-    justifyContent: "center",
+    gap: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+    backgroundColor: "rgba(0,0,0,0.55)",
   },
-  ideaTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 3,
-  },
+  ideaCalText: { color: Colors.white, fontSize: 11, fontWeight: "700" },
   ideaTitle: {
-    flexShrink: 1,
-    fontSize: 15,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "800",
     color: Colors.white,
+    marginBottom: 3,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowRadius: 4,
   },
-  ideaChevron: {
-    alignSelf: "center",
+  ideaFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    gap: 12,
   },
   proBadge: {
     flexDirection: "row",

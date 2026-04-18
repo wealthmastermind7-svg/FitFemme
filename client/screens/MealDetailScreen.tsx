@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, Pressable, StatusBar } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, StatusBar, ImageBackground } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,7 +9,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import { findMealIdea, GOAL_CONFIG } from "@/lib/storage";
+import { findMealIdea, GOAL_CONFIG, MEAL_IMAGES } from "@/lib/storage";
 import { useLanguage } from "@/lib/i18n";
 import type { RootStackParamList } from "@/navigation/RootStackNavigator";
 
@@ -44,25 +44,29 @@ export default function MealDetailScreen() {
         style={StyleSheet.absoluteFillObject}
       />
 
-      <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={10}>
-          <Feather name="x" size={22} color={Colors.white} />
-        </Pressable>
-        <View style={[styles.goalChip, { backgroundColor: "rgba(0,0,0,0.35)" }]}>
-          <View style={[styles.goalDot, { backgroundColor: goalCfg.color }]} />
-          <ThemedText style={styles.goalChipText}>{t(goalCfg.titleKey)}</ThemedText>
-        </View>
-        <View style={{ width: 40 }} />
-      </View>
-
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + Spacing["3xl"] }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero */}
-        <View style={[styles.heroIcon, { backgroundColor: idea.color + "30" }]}>
-          <Feather name={idea.icon as any} size={42} color={idea.color} />
-        </View>
+        {/* Hero image */}
+        <ImageBackground source={MEAL_IMAGES[idea.id]} style={styles.heroImage}>
+          <LinearGradient
+            colors={["rgba(0,0,0,0.35)", "transparent", "rgba(20,12,20,0.95)"]}
+            locations={[0, 0.4, 1]}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <View style={[styles.header, { paddingTop: insets.top + Spacing.md }]}>
+            <Pressable onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={10}>
+              <Feather name="x" size={22} color={Colors.white} />
+            </Pressable>
+            <View style={[styles.goalChip, { backgroundColor: "rgba(0,0,0,0.45)" }]}>
+              <View style={[styles.goalDot, { backgroundColor: goalCfg.color }]} />
+              <ThemedText style={styles.goalChipText}>{t(goalCfg.titleKey)}</ThemedText>
+            </View>
+            <View style={{ width: 40 }} />
+          </View>
+        </ImageBackground>
+        <View style={styles.body}>
         <ThemedText style={styles.title}>{t(idea.titleKey)}</ThemedText>
         <ThemedText style={styles.desc}>{t(idea.descKey)}</ThemedText>
 
@@ -119,6 +123,7 @@ export default function MealDetailScreen() {
             </View>
           ))}
         </GlassCard>
+        </View>
       </ScrollView>
     </View>
   );
@@ -162,15 +167,18 @@ const styles = StyleSheet.create({
   },
   goalDot: { width: 8, height: 8, borderRadius: 4 },
   goalChipText: { color: Colors.white, fontSize: 12, fontWeight: "600" },
-  scroll: { paddingHorizontal: Spacing["2xl"], paddingTop: Spacing.lg },
-  heroIcon: {
-    width: 76, height: 76, borderRadius: 38,
-    alignItems: "center", justifyContent: "center",
-    alignSelf: "center", marginBottom: Spacing.lg,
+  scroll: { paddingTop: 0 },
+  body: { paddingHorizontal: Spacing["2xl"] },
+  heroImage: {
+    width: "100%",
+    height: 320,
+    justifyContent: "flex-start",
+    marginBottom: Spacing.lg,
   },
   title: {
     fontSize: 26, fontWeight: "800", color: Colors.white,
     textAlign: "center", marginBottom: 6,
+    paddingHorizontal: Spacing["2xl"],
   },
   desc: {
     fontSize: 14, color: Colors.white80, textAlign: "center",
