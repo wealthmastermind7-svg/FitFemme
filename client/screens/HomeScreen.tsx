@@ -264,21 +264,92 @@ export default function HomeScreen() {
               </View>
             </View>
             <View style={styles.flowSteps}>
-              <FlowStep index={1} label={t("home.goalFlowStep1")} active />
-              <FlowConnector />
-              <FlowStep
-                index={2}
-                label={t("home.goalFlowStep2")}
-                active={todaysMeals.length > 0}
-              />
-              <FlowConnector />
-              <FlowStep
-                index={3}
-                label={t("home.goalFlowStep3")}
-                active={todaysSessions.length > 0}
-              />
-              <FlowConnector />
-              <FlowStep index={4} label={t("home.goalFlowStep4")} active={todaysMeals.length > 0 || todaysSessions.length > 0} />
+              <View style={styles.flowStep}>
+                <View style={[styles.flowStepCircle, styles.flowStepCircleActive]}>
+                  <ThemedText style={[styles.flowStepNumber, styles.flowStepNumberActive]}>1</ThemedText>
+                </View>
+                <ThemedText style={[styles.flowStepLabel, styles.flowStepLabelActive]}>
+                  {t("home.goalFlowStep1")}
+                </ThemedText>
+              </View>
+              <View style={styles.flowConnector} />
+              <View style={styles.flowStep}>
+                <View
+                  style={[
+                    styles.flowStepCircle,
+                    todaysMeals.length > 0 && styles.flowStepCircleActive,
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.flowStepNumber,
+                      todaysMeals.length > 0 && styles.flowStepNumberActive,
+                    ]}
+                  >
+                    2
+                  </ThemedText>
+                </View>
+                <ThemedText
+                  style={[
+                    styles.flowStepLabel,
+                    todaysMeals.length > 0 && styles.flowStepLabelActive,
+                  ]}
+                >
+                  {t("home.goalFlowStep2")}
+                </ThemedText>
+              </View>
+              <View style={styles.flowConnector} />
+              <View style={styles.flowStep}>
+                <View
+                  style={[
+                    styles.flowStepCircle,
+                    todaysSessions.length > 0 && styles.flowStepCircleActive,
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.flowStepNumber,
+                      todaysSessions.length > 0 && styles.flowStepNumberActive,
+                    ]}
+                  >
+                    3
+                  </ThemedText>
+                </View>
+                <ThemedText
+                  style={[
+                    styles.flowStepLabel,
+                    todaysSessions.length > 0 && styles.flowStepLabelActive,
+                  ]}
+                >
+                  {t("home.goalFlowStep3")}
+                </ThemedText>
+              </View>
+              <View style={styles.flowConnector} />
+              <View style={styles.flowStep}>
+                <View
+                  style={[
+                    styles.flowStepCircle,
+                    (todaysMeals.length > 0 || todaysSessions.length > 0) && styles.flowStepCircleActive,
+                  ]}
+                >
+                  <ThemedText
+                    style={[
+                      styles.flowStepNumber,
+                      (todaysMeals.length > 0 || todaysSessions.length > 0) && styles.flowStepNumberActive,
+                    ]}
+                  >
+                    4
+                  </ThemedText>
+                </View>
+                <ThemedText
+                  style={[
+                    styles.flowStepLabel,
+                    (todaysMeals.length > 0 || todaysSessions.length > 0) && styles.flowStepLabelActive,
+                  ]}
+                >
+                  {t("home.goalFlowStep4")}
+                </ThemedText>
+              </View>
             </View>
             <ThemedText style={styles.flowHint}>{t("home.goalFlowHint")}</ThemedText>
           </GlassCard>
@@ -599,6 +670,76 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: Colors.white,
+  },
+  flowSection: {
+    paddingHorizontal: Spacing["2xl"],
+    marginTop: Spacing["2xl"],
+  },
+  flowHeader: {
+    marginBottom: Spacing.sm,
+  },
+  flowHeaderLeft: {
+    gap: 4,
+  },
+  flowTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: Colors.white,
+  },
+  flowSubtitle: {
+    fontSize: 12,
+    color: Colors.white40,
+  },
+  flowSteps: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  flowStep: {
+    alignItems: "center",
+    width: 58,
+  },
+  flowStepCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 6,
+    backgroundColor: Colors.white10,
+    borderWidth: 1,
+    borderColor: Colors.white10,
+  },
+  flowStepCircleActive: {
+    backgroundColor: "rgba(212,17,115,0.18)",
+    borderColor: "rgba(212,17,115,0.45)",
+  },
+  flowStepNumber: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: Colors.white60,
+  },
+  flowStepNumberActive: {
+    color: Colors.primary,
+  },
+  flowStepLabel: {
+    fontSize: 10,
+    color: Colors.white40,
+    textAlign: "center",
+    lineHeight: 13,
+  },
+  flowStepLabelActive: {
+    color: Colors.white,
+  },
+  flowConnector: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.white10,
+    marginBottom: 24,
+  },
+  flowHint: {
+    fontSize: 12,
+    color: Colors.white60,
+    marginTop: Spacing.md,
   },
   goalWorkoutSection: {
     paddingHorizontal: Spacing["2xl"],
