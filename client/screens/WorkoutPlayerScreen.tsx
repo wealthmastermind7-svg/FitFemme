@@ -21,7 +21,7 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { CircularProgress } from "@/components/CircularProgress";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { sampleWorkouts, Exercise, storage, CompletedExercise } from "@/lib/storage";
+import { sampleWorkouts, Exercise, storage, CompletedExercise, estimateCaloriesBurned, toKilograms } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage, getExerciseTranslationKey } from "@/lib/i18n";
 
@@ -215,12 +215,30 @@ export default function WorkoutPlayerScreen() {
     } else {
       // Last exercise complete, save it
       await saveCompletedExercise(currentExercise);
-      
+      await saveWorkoutSession();
+
       setIsPlaying(false);
       setWorkoutComplete(true);
       if (vibrationEnabled) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
+    }
+  };
+
+  const saveWorkoutSession = async () => {
+    try {
+      const profile = await storage.getUserProfile();
+      const weightKg = profile ? toKilograms(profile.weight, profile.units) : 65;
+      const calories = estimateCaloriesBurned(workout.category, workout.duration, weightKg);
+      await storage.addWorkoutSession({
+        workoutId: workout.id,
+        workoutTitle: workout.title,
+        category: workout.category,
+        durationMinutes: workout.duration,
+        caloriesBurned: calories,
+      });
+    } catch (error) {
+      console.log("Error saving workout session:", error);
     }
   };
 

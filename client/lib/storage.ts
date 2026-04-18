@@ -256,6 +256,82 @@ export function computeMealFeedback(
   return "mealFeedback.balanced";
 }
 
+export interface WorkoutSession {
+  id: string;
+  workoutId: string;
+  workoutTitle: string;
+  category: "HIIT" | "Strength" | "Cardio" | "Core" | "Stretch";
+  durationMinutes: number;
+  caloriesBurned: number;
+  completedAt: string;
+  date: string;
+}
+
+const MET_BY_CATEGORY: Record<WorkoutSession["category"], number> = {
+  HIIT: 9,
+  Cardio: 8,
+  Strength: 6,
+  Core: 5,
+  Stretch: 3,
+};
+
+export function toKilograms(weight: number, units: string | undefined): number {
+  if (!Number.isFinite(weight) || weight <= 0) return 65;
+  return units === "Imperial" ? weight * 0.45359237 : weight;
+}
+
+export function estimateCaloriesBurned(
+  category: WorkoutSession["category"],
+  durationMinutes: number,
+  weightKg = 65,
+): number {
+  const met = MET_BY_CATEGORY[category] ?? 6;
+  const safeWeight = Number.isFinite(weightKg) && weightKg > 0 ? weightKg : 65;
+  const safeMinutes = Number.isFinite(durationMinutes) && durationMinutes > 0 ? durationMinutes : 0;
+  return Math.round(met * safeWeight * (safeMinutes / 60));
+}
+
+const BURN_CREDIT_BY_GOAL: Record<BodyGoal, number> = {
+  lean_toned: 0,
+  booty_builder: 1.0,
+  flat_stomach: 0.5,
+};
+
+export interface NetEnergy {
+  baseTarget: number;
+  effectiveTarget: number;
+  eaten: number;
+  burned: number;
+  burnCreditUsed: number;
+  netConsumed: number;
+  netRemaining: number;
+}
+
+export function computeNetEnergy(
+  goal: BodyGoal | undefined,
+  eaten: number,
+  burned: number,
+): NetEnergy {
+  const g = goal ?? "lean_toned";
+  const baseTarget = GOAL_CONFIG[g].caloriesTarget;
+  const factor = BURN_CREDIT_BY_GOAL[g];
+  const safeEaten = Number.isFinite(eaten) && eaten > 0 ? eaten : 0;
+  const safeBurned = Number.isFinite(burned) && burned > 0 ? burned : 0;
+  const burnCreditUsed = Math.round(safeBurned * factor);
+  const effectiveTarget = baseTarget + burnCreditUsed;
+  const netConsumed = safeEaten;
+  const netRemaining = effectiveTarget - netConsumed;
+  return {
+    baseTarget,
+    effectiveTarget,
+    eaten,
+    burned,
+    burnCreditUsed,
+    netConsumed,
+    netRemaining,
+  };
+}
+
 export interface DailyMetrics {
   date: string;
   caloriesBurned: number;
@@ -318,6 +394,7 @@ const KEYS = {
   COMPLETED_EXERCISES: "@completedExercises",
   SCANNED_MEALS: "@scannedMeals",
   SCAN_COUNT: "@scanCount",
+  WORKOUT_SESSIONS: "@workoutSessions",
 };
 
 export const FREE_SCAN_LIMIT = 3;
@@ -482,6 +559,47 @@ export const storage = {
     const next = current + 1;
     await AsyncStorage.setItem(KEYS.SCAN_COUNT, next.toString());
     return next;
+  },
+
+  async addWorkoutSession(
+    session: Omit<WorkoutSession, "id" | "date" | "completedAt">,
+  ): Promise<WorkoutSession> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.WORKOUT_SESSIONS);
+      const sessions: WorkoutSession[] = json ? JSON.parse(json) : [];
+      const now = new Date();
+      const newSession: WorkoutSession = {
+        ...session,
+        id: `${now.getTime()}`,
+        date: todayKey(),
+        completedAt: now.toISOString(),
+      };
+      sessions.push(newSession);
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 60);
+      const cutoffStr = cutoff.toISOString().split("T")[0];
+      const trimmed = sessions.filter((s) => s.date >= cutoffStr);
+      await AsyncStorage.setItem(KEYS.WORKOUT_SESSIONS, JSON.stringify(trimmed));
+      return newSession;
+    } catch (error) {
+      console.log("Error adding workout session:", error);
+      throw error;
+    }
+  },
+
+  async getWorkoutSessions(): Promise<WorkoutSession[]> {
+    try {
+      const json = await AsyncStorage.getItem(KEYS.WORKOUT_SESSIONS);
+      return json ? JSON.parse(json) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async getTodaysWorkoutSessions(): Promise<WorkoutSession[]> {
+    const sessions = await this.getWorkoutSessions();
+    const today = todayKey();
+    return sessions.filter((s) => s.date === today);
   },
 
   async clearAll(): Promise<void> {

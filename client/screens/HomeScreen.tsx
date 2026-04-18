@@ -32,6 +32,8 @@ import {
   getRecommendedWorkouts,
   computeWeeklyInsights,
   WeeklyInsights,
+  WorkoutSession,
+  computeNetEnergy,
 } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage } from "@/lib/i18n";
@@ -45,6 +47,7 @@ export default function HomeScreen() {
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
   const [todaysMeals, setTodaysMeals] = useState<ScannedMeal[]>([]);
+  const [todaysSessions, setTodaysSessions] = useState<WorkoutSession[]>([]);
   const [weeklyInsights, setWeeklyInsights] = useState<WeeklyInsights | null>(null);
 
   useEffect(() => {
@@ -63,10 +66,12 @@ export default function HomeScreen() {
     const dailyMetrics = await storage.getDailyMetrics();
     const meals = await storage.getTodaysMeals();
     const weekMeals = await storage.getMealsLastNDays(7);
+    const sessions = await storage.getTodaysWorkoutSessions();
 
     if (userProfile) setProfile(userProfile);
     if (dailyMetrics) setMetrics(dailyMetrics);
     setTodaysMeals(meals);
+    setTodaysSessions(sessions);
     setWeeklyInsights(computeWeeklyInsights(userProfile?.bodyGoal, weekMeals));
   };
 
@@ -149,8 +154,10 @@ export default function HomeScreen() {
           const cfg = GOAL_CONFIG[profile.bodyGoal];
           const calories = todaysMeals.reduce((s, m) => s + (m.calories || 0), 0);
           const protein = todaysMeals.reduce((s, m) => s + (m.protein || 0), 0);
+          const burned = todaysSessions.reduce((s, w) => s + (w.caloriesBurned || 0), 0);
+          const energy = computeNetEnergy(profile.bodyGoal, calories, burned);
           const status = computeGoalStatus(profile.bodyGoal, calories);
-          const calPct = Math.min(100, Math.round((calories / cfg.caloriesTarget) * 100));
+          const calPct = Math.min(100, Math.round((calories / energy.effectiveTarget) * 100));
           const proPct = Math.min(100, Math.round((protein / cfg.proteinTarget) * 100));
           const statusColor =
             status.tone === "warn" ? "#f0a55a" : status.tone === "good" ? Colors.success : Colors.white60;
@@ -181,12 +188,30 @@ export default function HomeScreen() {
                 <View style={styles.goalBarLabelRow}>
                   <ThemedText style={styles.goalBarLabel}>{t("goalStatus.calories")}</ThemedText>
                   <ThemedText style={styles.goalBarValue}>
-                    {Math.round(calories)} / {cfg.caloriesTarget}
+                    {Math.round(calories)} / {energy.effectiveTarget}
                   </ThemedText>
                 </View>
                 <View style={styles.goalBarTrack}>
                   <View style={[styles.goalBarFill, { width: `${calPct}%`, backgroundColor: cfg.color }]} />
                 </View>
+                {burned > 0 && (
+                  <View style={styles.energyRow}>
+                    <View style={styles.energyChip}>
+                      <Feather name="zap" size={11} color="#ff8a65" />
+                      <ThemedText style={styles.energyChipText}>
+                        {t("home.burned")} {burned}
+                      </ThemedText>
+                    </View>
+                    {energy.burnCreditUsed > 0 && (
+                      <ThemedText style={styles.energyHint}>
+                        +{energy.burnCreditUsed} {t("home.bonus")}
+                      </ThemedText>
+                    )}
+                    {energy.burnCreditUsed === 0 && profile.bodyGoal === "lean_toned" && (
+                      <ThemedText style={styles.energyHint}>{t("home.deficitProtected")}</ThemedText>
+                    )}
+                  </View>
+                )}
               </View>
 
               <View style={styles.goalBarRow}>
@@ -551,6 +576,35 @@ const styles = StyleSheet.create({
   goalBarFill: {
     height: "100%",
     borderRadius: 4,
+  },
+  energyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+  energyChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "rgba(255,138,101,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(255,138,101,0.3)",
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 99,
+  },
+  energyChipText: {
+    color: "#ff8a65",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  energyHint: {
+    color: Colors.white60,
+    fontSize: 10.5,
+    fontWeight: "600",
+    letterSpacing: 0.2,
   },
   goalScanCta: {
     flexDirection: "row",
