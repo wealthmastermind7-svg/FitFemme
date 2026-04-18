@@ -14,28 +14,20 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
-import Paywall from "@/components/Paywall";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { storage, BodyGoal, GOAL_CONFIG, MEAL_IDEAS, MealIdea } from "@/lib/storage";
 import { useLanguage } from "@/lib/i18n";
-import { useSubscription } from "@/lib/revenuecat";
 import type { RootStackParamList } from "@/navigation/RootStackNavigator";
 
 export default function MealIdeasScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useLanguage();
-  const { isSubscribed } = useSubscription();
   const [goal, setGoal] = useState<BodyGoal | undefined>(undefined);
   const [loaded, setLoaded] = useState(false);
-  const [paywallVisible, setPaywallVisible] = useState(false);
 
   const handleIdeaPress = (idea: MealIdea) => {
-    if (isSubscribed) {
-      navigation.navigate("MealDetail", { id: idea.id });
-    } else {
-      setPaywallVisible(true);
-    }
+    navigation.navigate("MealDetail", { id: idea.id });
   };
 
   useEffect(() => {
@@ -90,22 +82,6 @@ export default function MealIdeasScreen() {
               </View>
             </View>
 
-            {!isSubscribed && (
-              <Pressable
-                style={[styles.proBanner, { borderColor: goalCfg.color + "55" }]}
-                onPress={() => setPaywallVisible(true)}
-              >
-                <View style={[styles.proBannerIcon, { backgroundColor: goalCfg.color + "25" }]}>
-                  <Feather name="lock" size={18} color={goalCfg.color} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <ThemedText style={styles.proBannerTitle}>{t("mealIdeas.proLocked")}</ThemedText>
-                  <ThemedText style={styles.proBannerSub}>{t("mealIdeas.proLockedSub")}</ThemedText>
-                </View>
-                <Feather name="chevron-right" size={18} color={Colors.white60} />
-              </Pressable>
-            )}
-
             {ideas.map((idea) => (
               <Pressable
                 key={idea.id}
@@ -117,15 +93,7 @@ export default function MealIdeasScreen() {
                     <Feather name={idea.icon as any} size={22} color={idea.color} />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <View style={styles.ideaTitleRow}>
-                      <ThemedText style={styles.ideaTitle}>{t(idea.titleKey)}</ThemedText>
-                      {!isSubscribed && (
-                        <View style={styles.proBadge}>
-                          <Feather name="lock" size={9} color={Colors.white} />
-                          <ThemedText style={styles.proBadgeText}>{t("mealIdeas.proBadge")}</ThemedText>
-                        </View>
-                      )}
-                    </View>
+                    <ThemedText style={styles.ideaTitle}>{t(idea.titleKey)}</ThemedText>
                     <ThemedText style={styles.ideaDesc}>{t(idea.descKey)}</ThemedText>
                     <View style={styles.ideaStats}>
                       <View style={styles.ideaStatPill}>
@@ -147,9 +115,15 @@ export default function MealIdeasScreen() {
                         </ThemedText>
                       </View>
                     </View>
+                    <View style={styles.viewRecipeRow}>
+                      <ThemedText style={[styles.viewRecipeText, { color: idea.color }]}>
+                        {t("mealIdeas.viewRecipe")}
+                      </ThemedText>
+                      <Feather name="arrow-right" size={12} color={idea.color} />
+                    </View>
                   </View>
                   <Feather
-                    name={isSubscribed ? "chevron-right" : "lock"}
+                    name="chevron-right"
                     size={16}
                     color={Colors.white60}
                     style={styles.ideaChevron}
@@ -176,7 +150,6 @@ export default function MealIdeasScreen() {
         )}
       </ScrollView>
 
-      <Paywall isVisible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </View>
   );
 }
@@ -327,6 +300,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.white,
     fontWeight: "600",
+  },
+  viewRecipeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 10,
+  },
+  viewRecipeText: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.3,
   },
   emptyCard: {
     alignItems: "center",
