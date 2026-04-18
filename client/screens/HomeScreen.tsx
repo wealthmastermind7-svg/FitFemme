@@ -441,11 +441,16 @@ export default function HomeScreen() {
           </ThemedText>
         </View>
         {profile.bodyGoal ? (
-          <View style={styles.goalWorkoutKey}>
-            <Feather name="target" size={13} color={Colors.primary} />
-            <ThemedText style={styles.goalWorkoutKeyText}>
-              {t(getGoalWorkoutExplanation(profile.bodyGoal)?.titleKey ?? "goalWorkouts.title")}
-            </ThemedText>
+          <View style={styles.goalWorkoutBadge}>
+            <View style={styles.goalWorkoutBadgeIcon}>
+              <Feather name="target" size={12} color={Colors.primary} />
+            </View>
+            <View style={styles.goalWorkoutBadgeCopy}>
+              <ThemedText style={styles.goalWorkoutBadgeLabel}>{t("goalWorkouts.title")}</ThemedText>
+              <ThemedText style={styles.goalWorkoutBadgeText}>
+                {t(getGoalWorkoutExplanation(profile.bodyGoal)?.titleKey ?? "goalWorkouts.title")}
+              </ThemedText>
+            </View>
           </View>
         ) : null}
         <ScrollView
@@ -474,15 +479,23 @@ export default function HomeScreen() {
                 </ThemedText>
               </View>
             </View>
-            <ThemedText style={styles.goalWorkoutBody}>
-              {t(getGoalWorkoutExplanation(profile.bodyGoal)?.bodyKey ?? "goalWorkouts.title")}
-            </ThemedText>
-            <View style={styles.goalWorkoutTags}>
-              {getGoalWorkoutExplanation(profile.bodyGoal)?.tags.map((tagKey) => (
-                <View key={tagKey} style={styles.goalWorkoutTag}>
-                  <ThemedText style={styles.goalWorkoutTagText}>{t(tagKey)}</ThemedText>
+            <View style={styles.goalWorkoutPremiumRow}>
+              <View style={styles.goalWorkoutPremiumArt}>
+                <View style={styles.goalWorkoutPremiumHalo} />
+                <View style={styles.goalWorkoutPremiumDisc} />
+              </View>
+              <View style={styles.goalWorkoutPremiumCopy}>
+                <ThemedText style={styles.goalWorkoutBody}>
+                  {t(getGoalWorkoutExplanation(profile.bodyGoal)?.bodyKey ?? "goalWorkouts.title")}
+                </ThemedText>
+                <View style={styles.goalWorkoutTags}>
+                  {getGoalWorkoutExplanation(profile.bodyGoal)?.tags.map((tagKey) => (
+                    <View key={tagKey} style={styles.goalWorkoutTag}>
+                      <ThemedText style={styles.goalWorkoutTagText}>{t(tagKey)}</ThemedText>
+                    </View>
+                  ))}
                 </View>
-              ))}
+              </View>
             </View>
           </GlassCard>
         </View>
@@ -671,6 +684,44 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.white,
   },
+  goalWorkoutBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: Spacing.sm,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: BorderRadius.xl,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+  },
+  goalWorkoutBadgeIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(212,17,115,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.18)",
+  },
+  goalWorkoutBadgeCopy: {
+    flex: 1,
+  },
+  goalWorkoutBadgeLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: Colors.primary,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  goalWorkoutBadgeText: {
+    fontSize: 13,
+    color: Colors.white,
+    fontWeight: "700",
+  },
   flowSection: {
     paddingHorizontal: Spacing["2xl"],
     marginTop: Spacing["2xl"],
@@ -765,6 +816,40 @@ const styles = StyleSheet.create({
     color: Colors.white60,
     lineHeight: 19,
     marginBottom: Spacing.md,
+  },
+  goalWorkoutPremiumRow: {
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "flex-start",
+  },
+  goalWorkoutPremiumArt: {
+    width: 92,
+    height: 120,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  goalWorkoutPremiumHalo: {
+    position: "absolute",
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: "rgba(212,17,115,0.2)",
+  },
+  goalWorkoutPremiumDisc: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.primary,
+    opacity: 0.8,
+  },
+  goalWorkoutPremiumCopy: {
+    flex: 1,
+    minHeight: 120,
   },
   goalWorkoutTags: {
     flexDirection: "row",
