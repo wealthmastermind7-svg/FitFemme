@@ -9,6 +9,7 @@ import WorkoutPlayerScreen from "@/screens/WorkoutPlayerScreen";
 import FoodScannerScreen from "@/screens/FoodScannerScreen";
 import GoalSetupScreen from "@/screens/GoalSetupScreen";
 import MealIdeasScreen from "@/screens/MealIdeasScreen";
+import MealDetailScreen from "@/screens/MealDetailScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
 import { Colors } from "@/constants/theme";
 
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   FoodScanner: undefined;
   GoalSetup: { mode?: "onboarding" | "edit" } | undefined;
   MealIdeas: undefined;
+  MealDetail: { id: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -105,6 +107,15 @@ export default function RootStackNavigator() {
       <Stack.Screen
         name="MealIdeas"
         component={MealIdeasScreen}
+        options={{
+          presentation: "fullScreenModal",
+          headerShown: false,
+          animation: "slide_from_bottom",
+        }}
+      />
+      <Stack.Screen
+        name="MealDetail"
+        component={MealDetailScreen}
         options={{
           presentation: "fullScreenModal",
           headerShown: false,

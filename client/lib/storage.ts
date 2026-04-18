@@ -124,30 +124,67 @@ export interface MealIdea {
   descKey: string;
   calories: number;
   protein: number;
+  carbs: number;
+  fat: number;
+  prepMins: number;
   icon: string; // Feather icon name
   color: string;
+  ingredientKeys: string[];
+  stepKeys: string[];
 }
 
 export const MEAL_IDEAS: Record<BodyGoal, MealIdea[]> = {
   lean_toned: [
-    { id: "lt1", titleKey: "mealIdeas.lt1.title", descKey: "mealIdeas.lt1.desc", calories: 380, protein: 42, icon: "leaf", color: "#81c784" },
-    { id: "lt2", titleKey: "mealIdeas.lt2.title", descKey: "mealIdeas.lt2.desc", calories: 420, protein: 38, icon: "wind", color: "#4fc3f7" },
-    { id: "lt3", titleKey: "mealIdeas.lt3.title", descKey: "mealIdeas.lt3.desc", calories: 280, protein: 28, icon: "circle", color: "#f0c93e" },
-    { id: "lt4", titleKey: "mealIdeas.lt4.title", descKey: "mealIdeas.lt4.desc", calories: 220, protein: 24, icon: "sunrise", color: "#ff8a65" },
+    { id: "lt1", titleKey: "mealIdeas.lt1.title", descKey: "mealIdeas.lt1.desc", calories: 380, protein: 42, carbs: 18, fat: 14, prepMins: 15, icon: "leaf", color: "#81c784",
+      ingredientKeys: ["mealIdeas.lt1.ing1","mealIdeas.lt1.ing2","mealIdeas.lt1.ing3","mealIdeas.lt1.ing4","mealIdeas.lt1.ing5"],
+      stepKeys: ["mealIdeas.lt1.step1","mealIdeas.lt1.step2","mealIdeas.lt1.step3"] },
+    { id: "lt2", titleKey: "mealIdeas.lt2.title", descKey: "mealIdeas.lt2.desc", calories: 420, protein: 38, carbs: 24, fat: 20, prepMins: 25, icon: "wind", color: "#4fc3f7",
+      ingredientKeys: ["mealIdeas.lt2.ing1","mealIdeas.lt2.ing2","mealIdeas.lt2.ing3","mealIdeas.lt2.ing4","mealIdeas.lt2.ing5"],
+      stepKeys: ["mealIdeas.lt2.step1","mealIdeas.lt2.step2","mealIdeas.lt2.step3"] },
+    { id: "lt3", titleKey: "mealIdeas.lt3.title", descKey: "mealIdeas.lt3.desc", calories: 280, protein: 28, carbs: 22, fat: 8, prepMins: 5, icon: "circle", color: "#f0c93e",
+      ingredientKeys: ["mealIdeas.lt3.ing1","mealIdeas.lt3.ing2","mealIdeas.lt3.ing3","mealIdeas.lt3.ing4"],
+      stepKeys: ["mealIdeas.lt3.step1","mealIdeas.lt3.step2"] },
+    { id: "lt4", titleKey: "mealIdeas.lt4.title", descKey: "mealIdeas.lt4.desc", calories: 220, protein: 24, carbs: 8, fat: 9, prepMins: 10, icon: "sunrise", color: "#ff8a65",
+      ingredientKeys: ["mealIdeas.lt4.ing1","mealIdeas.lt4.ing2","mealIdeas.lt4.ing3","mealIdeas.lt4.ing4"],
+      stepKeys: ["mealIdeas.lt4.step1","mealIdeas.lt4.step2","mealIdeas.lt4.step3"] },
   ],
   booty_builder: [
-    { id: "bb1", titleKey: "mealIdeas.bb1.title", descKey: "mealIdeas.bb1.desc", calories: 620, protein: 48, icon: "zap", color: "#d41173" },
-    { id: "bb2", titleKey: "mealIdeas.bb2.title", descKey: "mealIdeas.bb2.desc", calories: 720, protein: 52, icon: "trending-up", color: "#ff8a65" },
-    { id: "bb3", titleKey: "mealIdeas.bb3.title", descKey: "mealIdeas.bb3.desc", calories: 480, protein: 35, icon: "sunrise", color: "#f0c93e" },
-    { id: "bb4", titleKey: "mealIdeas.bb4.title", descKey: "mealIdeas.bb4.desc", calories: 580, protein: 42, icon: "wind", color: "#4fc3f7" },
+    { id: "bb1", titleKey: "mealIdeas.bb1.title", descKey: "mealIdeas.bb1.desc", calories: 620, protein: 48, carbs: 65, fat: 16, prepMins: 20, icon: "zap", color: "#d41173",
+      ingredientKeys: ["mealIdeas.bb1.ing1","mealIdeas.bb1.ing2","mealIdeas.bb1.ing3","mealIdeas.bb1.ing4","mealIdeas.bb1.ing5"],
+      stepKeys: ["mealIdeas.bb1.step1","mealIdeas.bb1.step2","mealIdeas.bb1.step3"] },
+    { id: "bb2", titleKey: "mealIdeas.bb2.title", descKey: "mealIdeas.bb2.desc", calories: 720, protein: 52, carbs: 60, fat: 28, prepMins: 30, icon: "trending-up", color: "#ff8a65",
+      ingredientKeys: ["mealIdeas.bb2.ing1","mealIdeas.bb2.ing2","mealIdeas.bb2.ing3","mealIdeas.bb2.ing4","mealIdeas.bb2.ing5"],
+      stepKeys: ["mealIdeas.bb2.step1","mealIdeas.bb2.step2","mealIdeas.bb2.step3"] },
+    { id: "bb3", titleKey: "mealIdeas.bb3.title", descKey: "mealIdeas.bb3.desc", calories: 480, protein: 35, carbs: 58, fat: 12, prepMins: 8, icon: "sunrise", color: "#f0c93e",
+      ingredientKeys: ["mealIdeas.bb3.ing1","mealIdeas.bb3.ing2","mealIdeas.bb3.ing3","mealIdeas.bb3.ing4"],
+      stepKeys: ["mealIdeas.bb3.step1","mealIdeas.bb3.step2"] },
+    { id: "bb4", titleKey: "mealIdeas.bb4.title", descKey: "mealIdeas.bb4.desc", calories: 580, protein: 42, carbs: 55, fat: 18, prepMins: 15, icon: "wind", color: "#4fc3f7",
+      ingredientKeys: ["mealIdeas.bb4.ing1","mealIdeas.bb4.ing2","mealIdeas.bb4.ing3","mealIdeas.bb4.ing4","mealIdeas.bb4.ing5"],
+      stepKeys: ["mealIdeas.bb4.step1","mealIdeas.bb4.step2","mealIdeas.bb4.step3"] },
   ],
   flat_stomach: [
-    { id: "fs1", titleKey: "mealIdeas.fs1.title", descKey: "mealIdeas.fs1.desc", calories: 360, protein: 38, icon: "wind", color: "#4fc3f7" },
-    { id: "fs2", titleKey: "mealIdeas.fs2.title", descKey: "mealIdeas.fs2.desc", calories: 240, protein: 18, icon: "droplet", color: "#81c784" },
-    { id: "fs3", titleKey: "mealIdeas.fs3.title", descKey: "mealIdeas.fs3.desc", calories: 180, protein: 12, icon: "leaf", color: "#a5d6a7" },
-    { id: "fs4", titleKey: "mealIdeas.fs4.title", descKey: "mealIdeas.fs4.desc", calories: 320, protein: 32, icon: "circle", color: "#4fc3f7" },
+    { id: "fs1", titleKey: "mealIdeas.fs1.title", descKey: "mealIdeas.fs1.desc", calories: 360, protein: 38, carbs: 18, fat: 12, prepMins: 20, icon: "wind", color: "#4fc3f7",
+      ingredientKeys: ["mealIdeas.fs1.ing1","mealIdeas.fs1.ing2","mealIdeas.fs1.ing3","mealIdeas.fs1.ing4"],
+      stepKeys: ["mealIdeas.fs1.step1","mealIdeas.fs1.step2","mealIdeas.fs1.step3"] },
+    { id: "fs2", titleKey: "mealIdeas.fs2.title", descKey: "mealIdeas.fs2.desc", calories: 240, protein: 18, carbs: 28, fat: 6, prepMins: 25, icon: "droplet", color: "#81c784",
+      ingredientKeys: ["mealIdeas.fs2.ing1","mealIdeas.fs2.ing2","mealIdeas.fs2.ing3","mealIdeas.fs2.ing4","mealIdeas.fs2.ing5"],
+      stepKeys: ["mealIdeas.fs2.step1","mealIdeas.fs2.step2","mealIdeas.fs2.step3"] },
+    { id: "fs3", titleKey: "mealIdeas.fs3.title", descKey: "mealIdeas.fs3.desc", calories: 180, protein: 12, carbs: 14, fat: 10, prepMins: 8, icon: "leaf", color: "#a5d6a7",
+      ingredientKeys: ["mealIdeas.fs3.ing1","mealIdeas.fs3.ing2","mealIdeas.fs3.ing3","mealIdeas.fs3.ing4"],
+      stepKeys: ["mealIdeas.fs3.step1","mealIdeas.fs3.step2"] },
+    { id: "fs4", titleKey: "mealIdeas.fs4.title", descKey: "mealIdeas.fs4.desc", calories: 320, protein: 32, carbs: 16, fat: 10, prepMins: 18, icon: "circle", color: "#4fc3f7",
+      ingredientKeys: ["mealIdeas.fs4.ing1","mealIdeas.fs4.ing2","mealIdeas.fs4.ing3","mealIdeas.fs4.ing4"],
+      stepKeys: ["mealIdeas.fs4.step1","mealIdeas.fs4.step2","mealIdeas.fs4.step3"] },
   ],
 };
+
+export function findMealIdea(id: string): { idea: MealIdea; goal: BodyGoal } | undefined {
+  for (const g of Object.keys(MEAL_IDEAS) as BodyGoal[]) {
+    const idea = MEAL_IDEAS[g].find((m) => m.id === id);
+    if (idea) return { idea, goal: g };
+  }
+  return undefined;
+}
 
 export interface WeeklyInsights {
   daysLogged: number;
