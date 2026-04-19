@@ -46,6 +46,7 @@ Preferred communication style: Simple, everyday language.
 - **Workout Features**: Includes 6 workout categories with exercise demonstration GIFs, a workout preview screen, and encouraging feedback during sessions. Workout-burn is linked to meal-calorie calculations based on body goals.
 - **Multi-Language Support**: i18n system implemented for English, Spanish, and Portuguese, with language persistence and a selector in the Profile screen.
 - **UI/UX**: Custom pink-themed app icon, workout filtering, empty state UI, and enhanced onboarding.
+- **Onboarding**: Multi-step interactive questionnaire (welcome → goal → name → age → weight + units → weekly commitment → animated "building your plan" → Main). Persists full UserProfile (including `daysPerWeek`) and sets `@hasOnboarded` only on final completion. Fully translated EN/ES/PT.
 
 ## External Dependencies
 

@@ -12,6 +12,7 @@ export interface UserProfile {
   stepsGoal: number;
   bodyGoal?: BodyGoal;
   units?: string;
+  daysPerWeek?: number;
 }
 
 export interface ScannedMeal {
