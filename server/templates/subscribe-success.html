@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="{{LANG}}">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fit Femme — Welcome to Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0;
+        background: radial-gradient(circle at 50% 0%, #3a1828 0%, #221019 60%);
+        color: #fff;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 460px;
+        margin: 0 auto;
+        padding: 60px 22px;
+        text-align: center;
+      }
+      .check {
+        width: 84px; height: 84px;
+        border-radius: 50%;
+        background: #d41173;
+        margin: 0 auto 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 44px; font-weight: 800;
+      }
+      h1 { font-size: 28px; font-weight: 800; margin: 0 0 10px; }
+      p { color: #e8d5dd; font-size: 15px; line-height: 1.55; margin: 0 0 14px; }
+      .email { color: #fff; font-weight: 700; }
+      .btn {
+        display: inline-block;
+        margin-top: 24px;
+        padding: 16px 28px;
+        background: #d41173;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        border-radius: 14px;
+        font-size: 16px;
+      }
+      .help {
+        margin-top: 28px;
+        font-size: 13px;
+        color: #9a7884;
+        line-height: 1.6;
+      }
+      .help a { color: #e8d5dd; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="check">✓</div>
+      <h1 id="h1">You're in.</h1>
+      <p id="line1"></p>
+      <p id="line2"></p>
+      <a class="btn" id="open-btn" href="fitfemme://">Open Fit Femme</a>
+      <p class="help" id="help"></p>
+    </div>
+    <script>
+      const LANG = "{{LANG}}";
+      const EMAIL = "{{EMAIL}}";
+      const PLAN = "{{PLAN}}";
+
+      const T = {
+        en: {
+          h1: "You're in.",
+          line1: "Your <span class='email'>" + (EMAIL || "Pro") + "</span> account is now active.",
+          line2: "Open the app and tap <b>Restore purchases</b> if Pro doesn't unlock automatically within a minute.",
+          btn: "Open Fit Femme",
+          help: "Didn't receive a confirmation email? Check spam or <a href='/subscribe/restore?lang=en'>re-sync your account</a>.",
+        },
+        es: {
+          h1: "¡Listo!",
+          line1: "Tu cuenta <span class='email'>" + (EMAIL || "Pro") + "</span> ya está activa.",
+          line2: "Abre la app y toca <b>Restaurar compras</b> si Pro no se activa solo en un minuto.",
+          btn: "Abrir Fit Femme",
+          help: "¿No recibiste el email? Revisa spam o <a href='/subscribe/restore?lang=es'>vuelve a sincronizar tu cuenta</a>.",
+        },
+        pt: {
+          h1: "Tudo certo!",
+          line1: "Sua conta <span class='email'>" + (EMAIL || "Pro") + "</span> já está ativa.",
+          line2: "Abra o app e toque em <b>Restaurar compras</b> se o Pro não desbloquear sozinho em um minuto.",
+          btn: "Abrir Fit Femme",
+          help: "Não recebeu o e-mail? Veja sua pasta de spam ou <a href='/subscribe/restore?lang=pt'>re-sincronize sua conta</a>.",
+        },
+      }[LANG] || null;
+      const t = T || {
+        h1: "You're in.", line1: "", line2: "", btn: "Open Fit Femme", help: "",
+      };
+      document.getElementById("h1").textContent = t.h1;
+      document.getElementById("line1").innerHTML = t.line1;
+      document.getElementById("line2").innerHTML = t.line2;
+      document.getElementById("open-btn").textContent = t.btn;
+      document.getElementById("help").innerHTML = t.help;
+    </script>
+  </body>
+</html>

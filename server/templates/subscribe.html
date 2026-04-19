@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="{{LANG}}">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fit Femme — Subscribe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #221019;
+        --bg-2: #3a1828;
+        --pink: #d41173;
+        --pink-soft: #ff5fa6;
+        --text: #ffffff;
+        --text-dim: #e8d5dd;
+        --text-mute: #9a7884;
+        --card: rgba(255, 255, 255, 0.06);
+        --card-border: rgba(255, 255, 255, 0.12);
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: radial-gradient(circle at 50% 0%, var(--bg-2) 0%, var(--bg) 60%);
+      }
+      .wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 32px 22px 64px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--pink);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 99px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      h1 {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 14px 0 8px;
+        line-height: 1.15;
+      }
+      .lede {
+        color: var(--text-dim);
+        font-size: 15px;
+        line-height: 1.55;
+        margin: 0 0 22px;
+      }
+      .country-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(212, 17, 115, 0.12);
+        border: 1px solid rgba(212, 17, 115, 0.35);
+        padding: 12px 14px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        font-size: 13.5px;
+        color: var(--text-dim);
+      }
+      .country-banner b { color: #fff; font-weight: 700; }
+      .lang-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 18px;
+      }
+      .lang-row a {
+        flex: 1;
+        text-align: center;
+        padding: 8px 0;
+        border-radius: 10px;
+        background: var(--card);
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+      }
+      .lang-row a.active {
+        border-color: var(--pink);
+        color: #fff;
+      }
+      .plans {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 8px 0 22px;
+      }
+      .plan {
+        background: var(--card);
+        border: 2px solid var(--card-border);
+        border-radius: 16px;
+        padding: 16px 18px;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .plan:hover { border-color: rgba(255,255,255,0.25); }
+      .plan.selected {
+        border-color: var(--pink);
+        background: rgba(212, 17, 115, 0.12);
+      }
+      .plan-name { font-size: 16px; font-weight: 700; }
+      .plan-sub { font-size: 12.5px; color: var(--text-mute); margin-top: 2px; }
+      .plan-price { font-size: 18px; font-weight: 800; }
+      .plan-tag {
+        display: inline-block;
+        background: var(--pink);
+        color: #fff;
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 99px;
+        margin-left: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        vertical-align: middle;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dim);
+        margin: 14px 0 6px;
+      }
+      input[type="email"] {
+        width: 100%;
+        padding: 14px 14px;
+        font-size: 15px;
+        background: rgba(0,0,0,0.25);
+        border: 1.5px solid var(--card-border);
+        border-radius: 12px;
+        color: #fff;
+        font-family: inherit;
+        outline: none;
+      }
+      input[type="email"]:focus { border-color: var(--pink); }
+      .hint {
+        font-size: 12px;
+        color: var(--text-mute);
+        margin-top: 6px;
+        line-height: 1.5;
+      }
+      .pay-methods {
+        display: flex;
+        gap: 8px;
+        margin: 16px 0 8px;
+        flex-wrap: wrap;
+      }
+      .pay-pill {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 11px;
+        border-radius: 99px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: var(--text-dim);
+      }
+      .pay-pill.featured {
+        background: rgba(212, 17, 115, 0.18);
+        border-color: var(--pink);
+        color: #fff;
+      }
+      button.cta {
+        width: 100%;
+        margin-top: 18px;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        background: var(--pink);
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: transform 0.05s, opacity 0.15s;
+        font-family: inherit;
+      }
+      button.cta:hover { opacity: 0.92; }
+      button.cta:active { transform: scale(0.99); }
+      button.cta:disabled {
+        background: rgba(255,255,255,0.1);
+        color: var(--text-mute);
+        cursor: not-allowed;
+      }
+      .restore-row {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--text-mute);
+      }
+      .restore-row a { color: var(--text-dim); text-decoration: underline; }
+      .footnote {
+        margin-top: 26px;
+        padding-top: 18px;
+        border-top: 1px solid var(--card-border);
+        font-size: 11.5px;
+        color: var(--text-mute);
+        line-height: 1.6;
+        text-align: center;
+      }
+      .notice {
+        background: rgba(255, 200, 80, 0.1);
+        border: 1px solid rgba(255, 200, 80, 0.4);
+        color: #ffd980;
+        padding: 12px 14px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="badge" id="badge">Fit Femme Pro</span>
+
+      <h1 id="h1">Unlock everything</h1>
+      <p class="lede" id="lede">Full workouts, smart tracking, AI food scanner, and your personalized plan.</p>
+
+      <div id="config-notice" class="notice" style="display:none;"></div>
+
+      <div class="lang-row">
+        <a href="?lang=en" id="lang-en">English</a>
+        <a href="?lang=es" id="lang-es">Español</a>
+        <a href="?lang=pt" id="lang-pt">Português</a>
+      </div>
+
+      <div class="country-banner" id="country-banner"></div>
+
+      <div class="plans" id="plans"></div>
+
+      <label for="email" id="email-label">Your account email</label>
+      <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+      <p class="hint" id="email-hint">Use the same email you'll sign in with on the app.</p>
+
+      <div class="pay-methods" id="pay-methods"></div>
+
+      <button class="cta" id="cta">Continue to checkout</button>
+
+      <div class="restore-row">
+        <span id="restore-label">Already paid?</span>
+        <a href="/subscribe/restore?lang={{LANG}}" id="restore-link">Restore on this device</a>
+      </div>
+
+      <p class="footnote" id="footnote">
+        Powered by RevenueCat. Subscriptions auto-renew unless cancelled. Manage anytime from your account.
+      </p>
+    </div>
+
+    <script>
+      const LANG = "{{LANG}}";
+      const COUNTRY = "{{COUNTRY}}";
+      const CHECKOUT_URLS = {{CHECKOUT_URLS_JSON}};
+      const PRICES = {{PRICES_JSON}};
+      const CONFIGURED = {{CONFIGURED}};
+
+      const I18N = {
+        en: {
+          badge: "Fit Femme Pro",
+          h1: "Unlock everything",
+          lede: "Full workouts, smart tracking, AI food scanner, and your personalized plan.",
+          countryBR: "We detected you're in <b>Brazil</b>. You can pay with <b>Pix</b>, boleto, or card.",
+          countryMX: "We detected you're in <b>Mexico</b>. You can pay with <b>OXXO</b>, SPEI, or card.",
+          countryOther: "Pay with your local card. Apple Pay and Google Pay supported in most regions.",
+          plans: {
+            monthly: { name: "Monthly", sub: "Cancel anytime" },
+            annual:  { name: "Annual",  sub: "Best value · save 35%", tag: "Popular" },
+            lifetime:{ name: "Lifetime",sub: "Pay once, keep forever" },
+          },
+          emailLabel: "Your account email",
+          emailHint: "Use the same email you'll sign in with on the app.",
+          payMethods: { pix: "Pix", oxxo: "OXXO", card: "Card", applepay: "Apple Pay", gpay: "Google Pay" },
+          cta: "Continue to checkout",
+          ctaInvalid: "Enter your email to continue",
+          restoreLabel: "Already paid?",
+          restoreLink: "Restore on this device",
+          footnote: "Powered by RevenueCat. Subscriptions auto-renew unless cancelled. Manage anytime from your account.",
+          notConfigured: "Web checkout is being set up. Please check back shortly or subscribe inside the app."
+        },
+        es: {
+          badge: "Fit Femme Pro",
+          h1: "Desbloquea todo",
+          lede: "Entrenamientos completos, seguimiento inteligente, escáner de comida con IA y tu plan personalizado.",
+          countryBR: "Detectamos que estás en <b>Brasil</b>. Puedes pagar con <b>Pix</b>, boleto o tarjeta.",
+          countryMX: "Detectamos que estás en <b>México</b>. Puedes pagar con <b>OXXO</b>, SPEI o tarjeta.",
+          countryOther: "Paga con tu tarjeta local. Apple Pay y Google Pay disponibles en la mayoría de regiones.",
+          plans: {
+            monthly: { name: "Mensual", sub: "Cancela cuando quieras" },
+            annual:  { name: "Anual",   sub: "Mejor valor · ahorra 35%", tag: "Popular" },
+            lifetime:{ name: "De por vida", sub: "Paga una vez, úsalo siempre" },
+          },
+          emailLabel: "Email de tu cuenta",
+          emailHint: "Usa el mismo email con el que iniciarás sesión en la app.",
+          payMethods: { pix: "Pix", oxxo: "OXXO", card: "Tarjeta", applepay: "Apple Pay", gpay: "Google Pay" },
+          cta: "Continuar al pago",
+          ctaInvalid: "Ingresa tu email para continuar",
+          restoreLabel: "¿Ya pagaste?",
+          restoreLink: "Restaurar en este dispositivo",
+          footnote: "Procesado por RevenueCat. Las suscripciones se renuevan automáticamente salvo cancelación. Gestiona cuando quieras desde tu cuenta.",
+          notConfigured: "El pago web se está configurando. Vuelve pronto o suscríbete dentro de la app."
+        },
+        pt: {
+          badge: "Fit Femme Pro",
+          h1: "Libere tudo",
+          lede: "Treinos completos, acompanhamento inteligente, scanner de comida com IA e seu plano personalizado.",
+          countryBR: "Detectamos que você está no <b>Brasil</b>. Você pode pagar com <b>Pix</b>, boleto ou cartão.",
+          countryMX: "Detectamos que você está no <b>México</b>. Você pode pagar com <b>OXXO</b>, SPEI ou cartão.",
+          countryOther: "Pague com seu cartão local. Apple Pay e Google Pay disponíveis na maioria das regiões.",
+          plans: {
+            monthly: { name: "Mensal", sub: "Cancele quando quiser" },
+            annual:  { name: "Anual",  sub: "Melhor valor · economize 35%", tag: "Popular" },
+            lifetime:{ name: "Vitalício", sub: "Pague uma vez, use para sempre" },
+          },
+          emailLabel: "E-mail da sua conta",
+          emailHint: "Use o mesmo e-mail que você vai usar no app.",
+          payMethods: { pix: "Pix", oxxo: "OXXO", card: "Cartão", applepay: "Apple Pay", gpay: "Google Pay" },
+          cta: "Continuar para o pagamento",
+          ctaInvalid: "Digite seu e-mail para continuar",
+          restoreLabel: "Já pagou?",
+          restoreLink: "Restaurar neste dispositivo",
+          footnote: "Processado pela RevenueCat. As assinaturas são renovadas automaticamente, salvo cancelamento. Gerencie quando quiser na sua conta.",
+          notConfigured: "O checkout web está sendo configurado. Volte em breve ou assine pelo app."
+        },
+      };
+      const T = I18N[LANG] || I18N.en;
+
+      // --- Apply static text ---
+      document.getElementById("badge").textContent = T.badge;
+      document.getElementById("h1").textContent = T.h1;
+      document.getElementById("lede").textContent = T.lede;
+      document.getElementById("email-label").textContent = T.emailLabel;
+      document.getElementById("email-hint").textContent = T.emailHint;
+      document.getElementById("restore-label").textContent = T.restoreLabel;
+      document.getElementById("restore-link").textContent = T.restoreLink;
+      document.getElementById("footnote").textContent = T.footnote;
+
+      // Highlight active language
+      document.getElementById("lang-" + LANG)?.classList.add("active");
+
+      // Country banner
+      const cb = document.getElementById("country-banner");
+      if (COUNTRY === "BR") cb.innerHTML = T.countryBR;
+      else if (COUNTRY === "MX") cb.innerHTML = T.countryMX;
+      else cb.innerHTML = T.countryOther;
+
+      // Payment method pills
+      const pmEl = document.getElementById("pay-methods");
+      const methods = COUNTRY === "BR"
+        ? [["pix", true], ["card", false], ["applepay", false], ["gpay", false]]
+        : COUNTRY === "MX"
+        ? [["oxxo", true], ["card", false], ["applepay", false], ["gpay", false]]
+        : [["card", true], ["applepay", false], ["gpay", false]];
+      methods.forEach(([k, featured]) => {
+        const span = document.createElement("span");
+        span.className = "pay-pill" + (featured ? " featured" : "");
+        span.textContent = T.payMethods[k];
+        pmEl.appendChild(span);
+      });
+
+      // Plans
+      const plansEl = document.getElementById("plans");
+      let selectedPlan = "annual";
+      ["monthly","annual","lifetime"].forEach((p) => {
+        const meta = T.plans[p];
+        const div = document.createElement("div");
+        div.className = "plan" + (p === selectedPlan ? " selected" : "");
+        div.dataset.plan = p;
+        div.innerHTML =
+          '<div>' +
+            '<div class="plan-name">' + meta.name +
+              (meta.tag ? ' <span class="plan-tag">' + meta.tag + '</span>' : '') +
+            '</div>' +
+            '<div class="plan-sub">' + meta.sub + '</div>' +
+          '</div>' +
+          '<div class="plan-price">' + PRICES[p] + '</div>';
+        div.addEventListener("click", () => {
+          selectedPlan = p;
+          [...plansEl.children].forEach((c) =>
+            c.classList.toggle("selected", c.dataset.plan === p)
+          );
+        });
+        plansEl.appendChild(div);
+      });
+
+      // Config notice
+      if (!CONFIGURED) {
+        const n = document.getElementById("config-notice");
+        n.style.display = "block";
+        n.textContent = T.notConfigured;
+      }
+
+      // CTA
+      const cta = document.getElementById("cta");
+      const emailInput = document.getElementById("email");
+      function refreshCta() {
+        const email = emailInput.value.trim();
+        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        cta.textContent = valid ? T.cta : T.ctaInvalid;
+        cta.disabled = !valid;
+      }
+      emailInput.addEventListener("input", refreshCta);
+      refreshCta();
+
+      cta.addEventListener("click", () => {
+        const email = emailInput.value.trim().toLowerCase();
+        const baseUrl = CHECKOUT_URLS[selectedPlan];
+        if (!baseUrl) {
+          alert(T.notConfigured);
+          return;
+        }
+        // Append app_user_id (the email) and email so RevenueCat /
+        // the processor attaches the purchase to the right customer.
+        const u = new URL(baseUrl);
+        u.searchParams.set("app_user_id", email);
+        u.searchParams.set("email", email);
+        u.searchParams.set("client_reference_id", email);
+        u.searchParams.set("prefilled_email", email);
+        u.searchParams.set("locale", LANG);
+        // Tell the processor where to land after success
+        const success = window.location.origin +
+          "/subscribe/success?lang=" + LANG +
+          "&email=" + encodeURIComponent(email) +
+          "&plan=" + selectedPlan;
+        u.searchParams.set("success_url", success);
+        u.searchParams.set("redirect_url", success);
+        window.location.href = u.toString();
+      });
+    </script>
+  </body>
+</html>

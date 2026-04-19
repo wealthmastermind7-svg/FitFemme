@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="{{LANG}}">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fit Femme — Restore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0;
+        background: radial-gradient(circle at 50% 0%, #3a1828 0%, #221019 60%);
+        color: #fff;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        min-height: 100vh;
+      }
+      .wrap { max-width: 460px; margin: 0 auto; padding: 60px 22px; }
+      h1 { font-size: 26px; font-weight: 800; margin: 0 0 8px; }
+      p { color: #e8d5dd; font-size: 15px; line-height: 1.55; margin: 0 0 18px; }
+      label { display: block; font-size: 13px; color: #e8d5dd; margin: 14px 0 6px; font-weight: 600; }
+      input {
+        width: 100%; padding: 14px;
+        background: rgba(0,0,0,0.25);
+        border: 1.5px solid rgba(255,255,255,0.12);
+        border-radius: 12px; color: #fff;
+        font-family: inherit; font-size: 15px; outline: none;
+      }
+      input:focus { border-color: #d41173; }
+      button {
+        width: 100%; margin-top: 16px;
+        padding: 16px;
+        background: #d41173;
+        color: #fff; border: none; border-radius: 14px;
+        font-weight: 700; font-size: 16px;
+        font-family: inherit; cursor: pointer;
+      }
+      button:disabled { background: rgba(255,255,255,0.1); color: #9a7884; }
+      .result {
+        margin-top: 18px; padding: 14px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        font-size: 14px; color: #e8d5dd;
+        line-height: 1.55;
+      }
+      .result.ok {
+        background: rgba(38, 200, 122, 0.1);
+        border-color: rgba(38, 200, 122, 0.45);
+        color: #c8f5da;
+      }
+      .result.warn {
+        background: rgba(255, 200, 80, 0.08);
+        border-color: rgba(255, 200, 80, 0.35);
+        color: #ffd980;
+      }
+      .back { display: inline-block; margin-top: 22px; color: #9a7884; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 id="h1">Restore your account</h1>
+      <p id="lede"></p>
+      <label for="email" id="email-label">Account email</label>
+      <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+      <button id="check">Check</button>
+      <div class="result" id="result" style="display:none;"></div>
+      <a class="back" href="/subscribe?lang={{LANG}}" id="back">← Back to plans</a>
+    </div>
+    <script>
+      const LANG = "{{LANG}}";
+      const T = {
+        en: {
+          h1: "Restore your account",
+          lede: "Enter the email you used at checkout. We'll confirm your subscription is active so the app can unlock Pro on next sign-in.",
+          emailLabel: "Account email",
+          check: "Check",
+          checking: "Checking…",
+          ok: "Pro is active for <b>{email}</b>. Open the app and tap Restore purchases — Pro will unlock within a minute.",
+          none: "We don't see an active subscription for <b>{email}</b> yet. If you just paid, give it a minute and try again, or contact support.",
+          back: "← Back to plans",
+        },
+        es: {
+          h1: "Restaurar tu cuenta",
+          lede: "Ingresa el email que usaste al pagar. Confirmaremos que tu suscripción está activa para que la app desbloquee Pro al iniciar sesión.",
+          emailLabel: "Email de la cuenta",
+          check: "Verificar",
+          checking: "Verificando…",
+          ok: "Pro está activo para <b>{email}</b>. Abre la app y toca Restaurar compras — Pro se activará en un minuto.",
+          none: "Aún no vemos una suscripción activa para <b>{email}</b>. Si acabas de pagar, espera un minuto e intenta de nuevo, o contacta soporte.",
+          back: "← Volver a los planes",
+        },
+        pt: {
+          h1: "Restaurar sua conta",
+          lede: "Digite o e-mail usado no checkout. Vamos confirmar que sua assinatura está ativa para o app desbloquear o Pro no próximo login.",
+          emailLabel: "E-mail da conta",
+          check: "Verificar",
+          checking: "Verificando…",
+          ok: "Pro ativo para <b>{email}</b>. Abra o app e toque em Restaurar compras — o Pro será liberado em até um minuto.",
+          none: "Ainda não vemos assinatura ativa para <b>{email}</b>. Se acabou de pagar, espere um minuto e tente de novo, ou fale com o suporte.",
+          back: "← Voltar para planos",
+        },
+      }[LANG] || null;
+      const t = T || {};
+      const $ = (id) => document.getElementById(id);
+      $("h1").textContent = t.h1;
+      $("lede").textContent = t.lede;
+      $("email-label").textContent = t.emailLabel;
+      $("check").textContent = t.check;
+      $("back").textContent = t.back;
+
+      const btn = $("check");
+      const input = $("email");
+      const result = $("result");
+      // Build the result DOM safely — split the localized template on
+      // {email}, run textContent on the user-supplied chunk, and let
+      // the static halves keep their <b> formatting.
+      function renderResult(template, email, className) {
+        result.className = "result " + className;
+        result.replaceChildren();
+        const parts = template.split("{email}");
+        const tmp = document.createElement("template");
+        tmp.innerHTML = parts[0];
+        result.appendChild(tmp.content.cloneNode(true));
+        const b = document.createElement("b");
+        b.textContent = email;
+        result.appendChild(b);
+        const tmp2 = document.createElement("template");
+        tmp2.innerHTML = parts[1] ?? "";
+        result.appendChild(tmp2.content.cloneNode(true));
+        result.style.display = "block";
+      }
+
+      btn.addEventListener("click", async () => {
+        const email = input.value.trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+        btn.disabled = true;
+        btn.textContent = t.checking;
+        try {
+          const r = await fetch("/api/web-purchases/lookup?email=" + encodeURIComponent(email));
+          const data = await r.json();
+          if (data.hasActive) {
+            // Strip the {email} bold marker — server only confirms boolean now
+            renderResult(t.ok, email, "ok");
+          } else {
+            renderResult(t.none, email, "warn");
+          }
+        } finally {
+          btn.disabled = false;
+          btn.textContent = t.check;
+        }
+      });
+    </script>
+  </body>
+</html>

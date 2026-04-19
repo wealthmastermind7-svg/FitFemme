@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { registerWebCheckoutRoutes } from "./web-checkout";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -222,6 +223,10 @@ function setupErrorHandler(app: express.Application) {
   setupCors(app);
   setupBodyParsing(app);
   setupRequestLogging(app);
+
+  // LATAM web checkout (Pix / OXXO / cards) and the RevenueCat webhook.
+  // Registered BEFORE expo + landing middleware so /subscribe wins.
+  registerWebCheckoutRoutes(app);
 
   configureExpoAndLanding(app);
 
