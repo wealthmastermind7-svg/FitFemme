@@ -2,6 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type BodyGoal = "lean_toned" | "booty_builder" | "flat_stomach";
 
+export type DietType = "classic" | "pescatarian" | "vegetarian" | "vegan";
+export type WeightDirection = "lose" | "maintain" | "gain";
+
 export interface UserProfile {
   name: string;
   age: number;
@@ -13,6 +16,70 @@ export interface UserProfile {
   bodyGoal?: BodyGoal;
   units?: string;
   daysPerWeek?: number;
+  // Cal AI–style onboarding additions. All optional so existing profiles
+  // (and the sampleUserProfile fixture) keep working without migration.
+  heightCm?: number;
+  birthYear?: number;
+  birthMonth?: number;
+  birthDay?: number;
+  dietType?: DietType;
+  weightDirection?: WeightDirection;
+  source?: string;
+  triedOthers?: boolean;
+  hasCoach?: boolean;
+  blockers?: string[];
+  accomplishments?: string[];
+  proteinGoal?: number;
+  carbsGoal?: number;
+  fatGoal?: number;
+  healthScore?: number;
+}
+
+/**
+ * Mifflin–St Jeor BMR for women, multiplied by an activity factor derived
+ * from `daysPerWeek`, then nudged by the chosen weight direction (lose/maintain/gain).
+ * Returns a rounded {calories, protein, carbs, fat, healthScore} bundle that the
+ * onboarding "plan ready" screen can display verbatim.
+ */
+export function computeMacroTargets(input: {
+  weightKg: number;
+  heightCm: number;
+  age: number;
+  daysPerWeek: number;
+  direction: WeightDirection;
+}): {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  healthScore: number;
+} {
+  const { weightKg, heightCm, age, daysPerWeek, direction } = input;
+  const safeWeight = Math.max(35, Math.min(weightKg ?? 65, 200));
+  const safeHeight = Math.max(120, Math.min(heightCm ?? 165, 220));
+  const safeAge = Math.max(13, Math.min(age ?? 28, 90));
+  // Female BMR (Mifflin-St Jeor): 10*kg + 6.25*cm - 5*age - 161
+  const bmr = 10 * safeWeight + 6.25 * safeHeight - 5 * safeAge - 161;
+  // Activity factor: 0/wk → 1.2, 1-2 → 1.375, 3-4 → 1.55, 5+ → 1.725
+  // Use nullish coalescing so a legitimate 0 isn't replaced with the default 3.
+  const days = Math.max(0, Math.min(daysPerWeek ?? 3, 7));
+  const activity =
+    days <= 0 ? 1.2 : days <= 2 ? 1.375 : days <= 4 ? 1.55 : 1.725;
+  let tdee = bmr * activity;
+  // Direction nudge: lose -20%, maintain 0, gain +15%.
+  if (direction === "lose") tdee *= 0.8;
+  else if (direction === "gain") tdee *= 1.15;
+  const calories = Math.round(tdee / 10) * 10;
+  // Macro split — protein 30%, carbs 40%, fat 30% (4/4/9 kcal/g)
+  const protein = Math.round((calories * 0.3) / 4);
+  const carbs = Math.round((calories * 0.4) / 4);
+  const fat = Math.round((calories * 0.3) / 9);
+  // Simple "health score" 1-10 — rewards consistency + balanced direction
+  const healthScore = Math.max(
+    4,
+    Math.min(10, 5 + Math.round(days * 0.6) + (direction === "maintain" ? 1 : 0)),
+  );
+  return { calories, protein, carbs, fat, healthScore };
 }
 
 export interface ScannedMeal {
