@@ -393,17 +393,17 @@ const shellStyles = StyleSheet.create({
     paddingBottom: 160,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "800",
     color: Colors.white,
-    lineHeight: 34,
+    lineHeight: 38,
     marginBottom: Spacing.sm,
     letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 17,
     color: Colors.white60,
-    lineHeight: 21,
+    lineHeight: 23,
   },
   option: {
     flexDirection: "row",
@@ -430,12 +430,12 @@ const shellStyles = StyleSheet.create({
     justifyContent: "center",
   },
   optionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     color: Colors.white,
   },
   optionSub: {
-    fontSize: 13,
+    fontSize: 14,
     color: Colors.white60,
     marginTop: 2,
   },
@@ -479,7 +479,7 @@ const shellStyles = StyleSheet.create({
     backgroundColor: Colors.white10,
   },
   continueText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
     color: Colors.white,
   },
@@ -488,7 +488,7 @@ const shellStyles = StyleSheet.create({
 const wheelStyles = StyleSheet.create({
   col: { alignItems: "center", justifyContent: "center" },
   label: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "700",
     color: Colors.white80,
     marginBottom: Spacing.sm,

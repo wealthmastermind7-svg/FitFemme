@@ -4,9 +4,10 @@
  * (`./index.tsx`) owns the state machine and persistence.
  */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import * as StoreReview from "expo-store-review";
 import Animated, {
   Easing,
   FadeIn,
@@ -627,6 +628,33 @@ const REVIEWS = [
 
 export function ReviewsStep() {
   const { t } = useLanguage();
+
+  // Surface the native App Store / Play Store rating prompt while the user is
+  // looking at the social-proof page. The OS throttles this aggressively
+  // (max ~3 prompts per 365 days on iOS), so we don't need our own debounce.
+  // Web has no notion of a store rating; skip entirely.
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const available = await StoreReview.isAvailableAsync();
+        if (!available || cancelled) return;
+        // hasAction guards against environments (e.g. simulators without a
+        // signed-in App Store account) where requesting would be a no-op.
+        const hasAction = await StoreReview.hasAction();
+        if (!hasAction || cancelled) return;
+        await StoreReview.requestReview();
+      } catch {
+        // Never let a rating-prompt failure block onboarding.
+      }
+    }, 700);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <>
       <StepHeading title={t("onb2.reviews.title")} />
@@ -1016,8 +1044,8 @@ const reviewStyles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarTxt: { fontSize: 22 },
-  cardName: { fontSize: 14, fontWeight: "700", color: Colors.white },
-  cardQuote: { fontSize: 14, color: Colors.white80, lineHeight: 20 },
+  cardName: { fontSize: 15, fontWeight: "700", color: Colors.white },
+  cardQuote: { fontSize: 15, color: Colors.white80, lineHeight: 22 },
 });
 
 const buildStyles = StyleSheet.create({
