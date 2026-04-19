@@ -1,14 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Fit Femme - App Premium de Fitness para Mulheres. Treinos guiados com cronômetros, acompanhamento visual de progresso e celebração das curvas e da cultura.">
-    <title>Fit Femme - App Premium de Fitness para Mulheres</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a050a">
+    <meta name="description" content="Fit Femme — fitness premium para mulheres. Cronômetros guiados, demos visuais e um acompanhamento que celebra suas curvas e sua cultura.">
+    <meta property="og:title" content="Fit Femme — Fitness premium para mulheres">
+    <meta property="og:description" content="Cronômetros guiados, progresso visual e uma celebração das suas curvas e da sua cultura.">
+    <meta property="og:type" content="website">
+    <title>Fit Femme — Fitness premium para mulheres</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
@@ -16,12 +23,12 @@
                     <span class="logo-text">Fit</span><span class="logo-accent">Femme</span>
                 </a>
                 <nav class="nav">
-                    <a href="/marketing/pt/" class="nav-link">Início</a>
-                    <a href="#features" class="nav-link">Recursos</a>
-                    <a href="#download" class="nav-link">Baixar</a>
+                    <a href="/marketing/pt/" class="nav-link nav-primary">Início</a>
+                    <a href="#features" class="nav-link nav-primary">Recursos</a>
+                    <a href="#download" class="nav-link nav-primary">Baixar</a>
                     <div class="nav-divider"></div>
-                    <a href="/marketing/pt/privacy.html" class="nav-link">Privacidade</a>
-                    <a href="/marketing/pt/terms.html" class="nav-link">Termos</a>
+                    <a href="/marketing/pt/privacy.html" class="nav-link nav-legal">Privacidade</a>
+                    <a href="/marketing/pt/terms.html" class="nav-link nav-legal">Termos</a>
                     <div class="lang-switcher">
                         <a href="/marketing/" class="lang-link">EN</a>
                         <a href="/marketing/es/" class="lang-link">ES</a>
@@ -33,183 +40,148 @@
     </header>
 
     <main class="main-content">
-        <!-- Hero Section -->
         <section class="hero">
             <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Celebre Seu <span class="gradient-text">Poder</span></h1>
-                    <p class="hero-subtitle">Treinos premium feitos para mulheres. Cronômetros guiados com demonstrações visuais, acompanhamento de progresso e celebração das suas curvas e da sua cultura.</p>
-                    <div class="hero-ctas">
-                        <button class="btn btn-primary" id="download-btn">Baixar Agora <span>→</span></button>
-                        <a href="#features" class="btn btn-secondary">Saiba Mais</a>
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <span class="eyebrow"><span class="dot"></span>Fitness premium para mulheres</span>
+                        <h1 class="hero-title">Celebre <span class="display gradient-text">o seu poder</span></h1>
+                        <p class="hero-subtitle">Cronômetros guiados, demonstrações visuais e um progresso que celebra as suas curvas e a sua cultura — não as calorias.</p>
+                        <div class="hero-ctas">
+                            <button class="btn btn-primary" id="download-btn">Baixar o app <span class="arrow">→</span></button>
+                            <a href="#features" class="btn btn-secondary">Ver o que vem dentro</a>
+                        </div>
+                        <div class="store-badges">
+                            <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="store-badge" id="app-store-link" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                <span class="badge-text"><small>Baixar na</small><strong>App Store</strong></span>
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.fitfemme.app" class="store-badge" id="play-store-link" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.59.34-1.11.84-1.35L13.69 12 3.84 21.85c-.5-.25-.84-.76-.84-1.35M16.81 15.12 6.05 21.34l8.49-8.49 2.27 2.27M20.16 10.81c.34.27.59.69.59 1.19s-.22.9-.57 1.18l-2.29 1.32L15.39 12l2.5-2.5 2.27 1.31M6.05 2.66l10.76 6.22-2.27 2.27L6.05 2.66z"/></svg>
+                                <span class="badge-text"><small>Disponível na</small><strong>Google Play</strong></span>
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat"><div class="stat-number">6</div><div class="stat-label">Treinos</div></div>
+                            <div class="stat"><div class="stat-number">100+</div><div class="stat-label">Exercícios</div></div>
+                            <div class="stat"><div class="stat-number">3</div><div class="stat-label">Idiomas</div></div>
+                        </div>
                     </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-number">6</div>
-                            <div class="stat-label">Treinos Selecionados</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">100+</div>
-                            <div class="stat-label">Exercícios</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">∞</div>
-                            <div class="stat-label">Empoderamento</div>
+                    <div class="hero-visual">
+                        <img src="/assets/images/hero-fitness-pt.png" alt="Mulher treinando com Fit Femme" loading="eager" decoding="async">
+                        <div class="hero-chip">
+                            <div class="hero-chip-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="hero-chip-meta">
+                                <div class="hero-chip-title">Glúteos no Máximo · Round 2</div>
+                                <div class="hero-chip-sub">00:32 restantes · Coice de Burrinho</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="hero-gradient"></div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="features">
+        <section id="features" class="section features">
             <div class="container">
-                <h2>Por Que Fit Femme?</h2>
+                <div class="section-head">
+                    <h2>Um app que <span class="display gradient-text">parece com você</span></h2>
+                    <p>Feito para mulheres, em um tema escuro cinematográfico com o capricho que você espera de um app premium.</p>
+                </div>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Cronômetros Guiados</h3>
-                        <p>Sem vídeos confusos. Siga cronômetros guiados enquanto contamos as repetições. Foque na sua execução, não na tela.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h3>Cronômetros guiados</h3>
+                        <p>Sem vídeos confusos. Siga cronômetros guiados enquanto contamos as repetições — foque na sua técnica.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Progresso Visual</h3>
-                        <p>Veja a distribuição do seu treino entre os grupos musculares. Acompanhe com precisão em quais áreas você está focando.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg></div>
+                        <h3>Progresso visual</h3>
+                        <p>Veja sua distribuição por grupos musculares com um gráfico em pentágono que mostra o que você está construindo.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">💪</div>
-                        <h3>Demonstrações de Exercícios</h3>
-                        <p>Demonstrações visuais em GIF para cada exercício. Receba orientação de execução correta para resultados máximos.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/><circle cx="12" cy="12" r="9"/></svg></div>
+                        <h3>Demos de exercícios</h3>
+                        <p>Demonstrações visuais para cada exercício. Aprenda a forma correta na primeira vez.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🎨</div>
-                        <h3>Design Lindo</h3>
-                        <p>Modo escuro com fotografia cinematográfica. Interface Liquid Glass inspirada no design de luxo moderno.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.4 1.1 6.7L12 17l-5.6 3 1.1-6.7L3 8.9 9 8z"/></svg></div>
+                        <h3>Interface Liquid Glass</h3>
+                        <p>Modo escuro com fotografia cinematográfica e interface translúcida inspirada no luxo moderno.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🌟</div>
-                        <h3>Celebre Você</h3>
-                        <p>App premium feito para mulheres. Celebre suas curvas, sua cultura e sua força.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                        <h3>Celebre você</h3>
+                        <p>Construído em torno de metas reais — corpo definido, glúteos, barriga lisa — com imagens que se parecem com você.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>Sem Assinaturas Obrigatórias</h3>
-                        <p>Tenha acesso vitalício a todos os treinos. Experiência premium com opção de pagamento único.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                        <h3>Scanner de comida</h3>
+                        <p>Tire uma foto do seu prato e receba uma análise nutricional na hora, balanceada com as calorias que você queimou.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Workouts Section -->
-        <section class="workouts">
+        <section class="section workouts">
             <div class="container">
-                <h2>Nossa Coleção de Treinos</h2>
+                <div class="section-head">
+                    <h2>Seis treinos. <span class="display gradient-text">Variações infinitas.</span></h2>
+                    <p>Rotinas escolhidas a dedo que se adaptam à sua meta, à sua semana e ao seu nível de compromisso.</p>
+                </div>
                 <div class="workouts-grid">
-                    <div class="workout-card">
-                        <div class="workout-label">HIIT</div>
-                        <h3>Queima Corpo Inteiro</h3>
-                        <p>30 min • Alta Intensidade</p>
-                        <ul>
-                            <li>Agachamento com Salto</li>
-                            <li>Burpees</li>
-                            <li>Escalador</li>
-                            <li>Flexões</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Força</div>
-                        <h3>Glúteos no Topo</h3>
-                        <p>15 min • Intensidade Média</p>
-                        <ul>
-                            <li>Caminhada com Ponte de Glúteo</li>
-                            <li>Coice de Burro</li>
-                            <li>Faixa de Resistência</li>
-                            <li>Agachamento com Peso</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Core</div>
-                        <h3>Esmaga Core</h3>
-                        <p>20 min • Alta Intensidade</p>
-                        <ul>
-                            <li>Abdominal Bicicleta</li>
-                            <li>Elevação de Pernas</li>
-                            <li>Giro Russo</li>
-                            <li>Variações de Prancha</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Cardio</div>
-                        <h3>Rainha do Cardio</h3>
-                        <p>25 min • Alta Intensidade</p>
-                        <ul>
-                            <li>Joelhos Altos</li>
-                            <li>Pular Corda</li>
-                            <li>Saltos no Caixote</li>
-                            <li>Sprints Intervalados</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Alongamento</div>
-                        <h3>Fluxo de Flexibilidade</h3>
-                        <p>20 min • Baixa Intensidade</p>
-                        <ul>
-                            <li>Flexão à Frente</li>
-                            <li>Alongamento de Posterior</li>
-                            <li>Aberturas de Quadril</li>
-                            <li>Posturas de Yoga</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Core</div>
-                        <h3>Abdômen Sem Equipamento</h3>
-                        <p>15 min • Alta Intensidade</p>
-                        <ul>
-                            <li>Abdominal com Abertura</li>
-                            <li>Abdominal Reverso</li>
-                            <li>Abdominal Bicicleta</li>
-                            <li>Dead Bugs</li>
-                        </ul>
-                    </div>
+                    <div class="workout-card"><div class="workout-label">HIIT</div><h3>Queima Total</h3><div class="meta">30 min · Alta intensidade</div><ul><li>Agachamento com Salto</li><li>Burpees</li><li>Escaladores</li><li>Flexões</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Força</div><h3>Glúteos no Máximo</h3><div class="meta">15 min · Média intensidade</div><ul><li>Ponte de Glúteos</li><li>Coice de Burrinho</li><li>Faixa de Resistência</li><li>Agachamento com Peso</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Core</div><h3>Core Crusher</h3><div class="meta">20 min · Alta intensidade</div><ul><li>Abdominal Bicicleta</li><li>Elevação de Pernas</li><li>Russian Twist</li><li>Variações de Prancha</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Cardio</div><h3>Rainha do Cardio</h3><div class="meta">25 min · Alta intensidade</div><ul><li>Joelhos Altos</li><li>Pular Corda</li><li>Saltos no Caixote</li><li>Sprints</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Alongamento</div><h3>Flexibilidade</h3><div class="meta">20 min · Baixa intensidade</div><ul><li>Flexões à Frente</li><li>Alongamento Posterior</li><li>Abertura de Quadril</li><li>Posturas de Yoga</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Core</div><h3>Abs Sem Equipamento</h3><div class="meta">15 min · Alta intensidade</div><ul><li>Abdominal com Abertura</li><li>Abdominal Reverso</li><li>Bicicleta</li><li>Dead Bugs</li></ul></div>
                 </div>
             </div>
         </section>
 
-        <!-- CTA Section -->
         <section id="download" class="cta-section">
             <div class="container">
                 <div class="cta-box">
-                    <h2>Pronta Para Celebrar Seu Poder?</h2>
-                    <p>Junte-se a milhares de mulheres transformando sua jornada fitness com cronômetros guiados e acompanhamento visual de progresso.</p>
-                    <button class="btn btn-primary" style="font-size: 18px; padding: 16px 48px;" id="download-cta">Baixe o Fit Femme Agora <span>→</span></button>
-                    <p class="cta-note">Disponível para iOS e Android • Sem assinatura obrigatória</p>
+                    <h2>Pronta para <span class="display gradient-text">celebrar o seu poder?</span></h2>
+                    <p>Baixe o Fit Femme no iPhone ou Android e comece o seu primeiro treino guiado em menos de 30 segundos.</p>
+                    <div class="store-badges">
+                        <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="store-badge" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            <span class="badge-text"><small>Baixar na</small><strong>App Store</strong></span>
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.fitfemme.app" class="store-badge" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.59.34-1.11.84-1.35L13.69 12 3.84 21.85c-.5-.25-.84-.76-.84-1.35M16.81 15.12 6.05 21.34l8.49-8.49 2.27 2.27M20.16 10.81c.34.27.59.69.59 1.19s-.22.9-.57 1.18l-2.29 1.32L15.39 12l2.5-2.5 2.27 1.31M6.05 2.66l10.76 6.22-2.27 2.27L6.05 2.66z"/></svg>
+                            <span class="badge-text"><small>Disponível na</small><strong>Google Play</strong></span>
+                        </a>
+                    </div>
+                    <p class="cta-note">Disponível no iOS e Android · Planos premium a partir de $1,99/mês</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>Fit Femme</h4>
-                    <p>Treinos premium com cronômetros guiados. Celebre seu poder, suas curvas e sua cultura.</p>
+                    <p>Treinos premium com cronômetros guiados. Celebre o seu poder, as suas curvas e a sua cultura.</p>
                 </div>
                 <div class="footer-section">
                     <h4>Produto</h4>
                     <ul>
                         <li><a href="#features">Recursos</a></li>
-                        <li><a href="#download">Baixar App</a></li>
+                        <li><a href="#download">Baixar app</a></li>
                         <li><a href="/marketing/pt/sources.html">Fontes</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="/marketing/pt/privacy.html">Política de Privacidade</a></li>
-                        <li><a href="/marketing/pt/terms.html">Termos e Condições</a></li>
+                        <li><a href="/marketing/pt/privacy.html">Política de privacidade</a></li>
+                        <li><a href="/marketing/pt/terms.html">Termos de serviço</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -218,10 +190,15 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Fit Femme. Feito com amor para as mulheres. Todos os direitos reservados.</p>
+                <p>&copy; 2026 Fit Femme. Feito com amor para mulheres em todo o mundo.</p>
             </div>
         </div>
     </footer>
+
+    <div class="mobile-cta" role="region" aria-label="Baixar Fit Femme">
+        <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="btn btn-primary" id="mobile-cta-btn">Baixar <span class="arrow">→</span></a>
+        <a href="#features" class="btn btn-secondary">Recursos</a>
+    </div>
 
     <script src="../script.js"></script>
 </body>

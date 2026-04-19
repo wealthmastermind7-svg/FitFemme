@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Fit Femme - Premium Fitness App for Women. Curated workouts with guided timers, visual progress tracking, and celebration of curves and culture.">
-    <title>Fit Femme - Premium Fitness App for Women</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a050a">
+    <meta name="description" content="Fit Femme — premium fitness for women. Guided workout timers, visual progress tracking, and a celebration of your curves and culture.">
+    <meta property="og:title" content="Fit Femme — Premium Fitness for Women">
+    <meta property="og:description" content="Guided timers, visual progress, and a celebration of your curves and culture.">
+    <meta property="og:type" content="website">
+    <title>Fit Femme — Premium Fitness for Women</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
@@ -16,12 +23,12 @@
                     <span class="logo-text">Fit</span><span class="logo-accent">Femme</span>
                 </a>
                 <nav class="nav">
-                    <a href="/marketing/" class="nav-link">Home</a>
-                    <a href="#features" class="nav-link">Features</a>
-                    <a href="#download" class="nav-link">Download</a>
+                    <a href="/marketing/" class="nav-link nav-primary">Home</a>
+                    <a href="#features" class="nav-link nav-primary">Features</a>
+                    <a href="#download" class="nav-link nav-primary">Download</a>
                     <div class="nav-divider"></div>
-                    <a href="/marketing/privacy.html" class="nav-link">Privacy</a>
-                    <a href="/marketing/terms.html" class="nav-link">Terms</a>
+                    <a href="/marketing/privacy.html" class="nav-link nav-legal">Privacy</a>
+                    <a href="/marketing/terms.html" class="nav-link nav-legal">Terms</a>
                     <div class="lang-switcher">
                         <a href="/marketing/" class="lang-link active">EN</a>
                         <a href="/marketing/es/" class="lang-link">ES</a>
@@ -33,183 +40,152 @@
     </header>
 
     <main class="main-content">
-        <!-- Hero Section -->
+        <!-- Hero -->
         <section class="hero">
             <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Celebrate Your <span class="gradient-text">Power</span></h1>
-                    <p class="hero-subtitle">Premium workouts designed for women. Guided timers with visual demos, progress tracking, and celebration of your curves and culture.</p>
-                    <div class="hero-ctas">
-                        <button class="btn btn-primary" id="download-btn">Download Now <span>→</span></button>
-                        <a href="#features" class="btn btn-secondary">Learn More</a>
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <span class="eyebrow"><span class="dot"></span>Premium fitness for women</span>
+                        <h1 class="hero-title">Celebrate <span class="display gradient-text">Your Power</span></h1>
+                        <p class="hero-subtitle">Guided workout timers, cinematic visual demos and a progress story that celebrates your curves and your culture — not your calorie count.</p>
+                        <div class="hero-ctas">
+                            <button class="btn btn-primary" id="download-btn">Download the app <span class="arrow">→</span></button>
+                            <a href="#features" class="btn btn-secondary">See what's inside</a>
+                        </div>
+                        <div class="store-badges">
+                            <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="store-badge" id="app-store-link" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.fitfemme.app" class="store-badge" id="play-store-link" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.59.34-1.11.84-1.35L13.69 12 3.84 21.85c-.5-.25-.84-.76-.84-1.35M16.81 15.12 6.05 21.34l8.49-8.49 2.27 2.27M20.16 10.81c.34.27.59.69.59 1.19s-.22.9-.57 1.18l-2.29 1.32L15.39 12l2.5-2.5 2.27 1.31M6.05 2.66l10.76 6.22-2.27 2.27L6.05 2.66z"/></svg>
+                                <span class="badge-text"><small>Get it on</small><strong>Google Play</strong></span>
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat"><div class="stat-number">6</div><div class="stat-label">Curated Workouts</div></div>
+                            <div class="stat"><div class="stat-number">100+</div><div class="stat-label">Exercises</div></div>
+                            <div class="stat"><div class="stat-number">3</div><div class="stat-label">Languages</div></div>
+                        </div>
                     </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <div class="stat-number">6</div>
-                            <div class="stat-label">Curated Workouts</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">100+</div>
-                            <div class="stat-label">Exercises</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">∞</div>
-                            <div class="stat-label">Empowerment</div>
+                    <div class="hero-visual">
+                        <img src="/assets/images/hero-fitness.png" alt="Woman training with Fit Femme" loading="eager" decoding="async">
+                        <div class="hero-chip">
+                            <div class="hero-chip-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="hero-chip-meta">
+                                <div class="hero-chip-title">Glute Gains · Round 2</div>
+                                <div class="hero-chip-sub">00:32 left · Donkey Kicks</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="hero-gradient"></div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="features">
+        <!-- Features -->
+        <section id="features" class="section features">
             <div class="container">
-                <h2>Why Fit Femme?</h2>
+                <div class="section-head">
+                    <h2>A workout app that <span class="display gradient-text">feels like you</span></h2>
+                    <p>Designed for women, in a dark cinematic theme with the kind of polish you'd expect from a premium app.</p>
+                </div>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Guided Timers</h3>
-                        <p>No confusing videos. Follow guided timers while we count the reps. Focus on your form, not the screen.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h3>Guided timers</h3>
+                        <p>No confusing videos. Follow guided timers while we count the reps for you — focus on form, not the screen.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Visual Progress</h3>
-                        <p>See your workout distribution across muscle groups. Track which areas you're focusing on with precision.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg></div>
+                        <h3>Visual progress</h3>
+                        <p>See your training distribution across muscle groups with a pentagon chart that shows what you're really building.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">💪</div>
-                        <h3>Exercise Demos</h3>
-                        <p>Visual GIF demonstrations for every exercise. Get proper form guidance for maximum results.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/><circle cx="12" cy="12" r="9"/></svg></div>
+                        <h3>Exercise demos</h3>
+                        <p>Visual loops for every exercise. Get proper form guidance the first time, every time.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🎨</div>
-                        <h3>Beautiful Design</h3>
-                        <p>Dark mode with cinematic photography. Liquid glass UI inspired by modern luxury design.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.4 1.1 6.7L12 17l-5.6 3 1.1-6.7L3 8.9 9 8z"/></svg></div>
+                        <h3>Liquid Glass UI</h3>
+                        <p>Dark mode with cinematic photography and a soft glass interface inspired by modern luxury design.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🌟</div>
-                        <h3>Celebrate You</h3>
-                        <p>Premium app designed for women. Celebrate your curves, your culture, and your strength.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                        <h3>Celebrate you</h3>
+                        <p>Built around outcome-based goals — lean & toned, booty builder, flat stomach — with imagery that looks like you.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>No Subscriptions</h3>
-                        <p>Get lifetime access to all workouts. One-time premium experience, no recurring fees.</p>
+                        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                        <h3>Smart food scanner</h3>
+                        <p>Snap your plate and get an instant nutrition breakdown that auto-balances against the calories you just burned.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Workouts Section -->
-        <section class="workouts">
+        <!-- Workouts -->
+        <section class="section workouts">
             <div class="container">
-                <h2>Our Workout Collection</h2>
+                <div class="section-head">
+                    <h2>Six workouts. <span class="display gradient-text">Endless variations.</span></h2>
+                    <p>Hand-curated routines that adapt to your goal, your week and your weekly commitment.</p>
+                </div>
                 <div class="workouts-grid">
-                    <div class="workout-card">
-                        <div class="workout-label">HIIT</div>
-                        <h3>Full Body Burn</h3>
-                        <p>30 mins • High Intensity</p>
-                        <ul>
-                            <li>Jump Squats</li>
-                            <li>Burpees</li>
-                            <li>Mountain Climbers</li>
-                            <li>Push-ups</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Strength</div>
-                        <h3>Glute Gains</h3>
-                        <p>15 mins • Medium Intensity</p>
-                        <ul>
-                            <li>Glute Bridge Walk</li>
-                            <li>Donkey Kicks</li>
-                            <li>Resistance Band Work</li>
-                            <li>Weighted Squats</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Core</div>
-                        <h3>Core Crusher</h3>
-                        <p>20 mins • High Intensity</p>
-                        <ul>
-                            <li>Bicycle Crunches</li>
-                            <li>Leg Raises</li>
-                            <li>Russian Twists</li>
-                            <li>Plank Variations</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Cardio</div>
-                        <h3>Cardio Queen</h3>
-                        <p>25 mins • High Intensity</p>
-                        <ul>
-                            <li>High Knee Taps</li>
-                            <li>Jump Rope</li>
-                            <li>Box Jumps</li>
-                            <li>Sprint Intervals</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Stretch</div>
-                        <h3>Flexibility Flow</h3>
-                        <p>20 mins • Low Intensity</p>
-                        <ul>
-                            <li>Forward Folds</li>
-                            <li>Hamstring Stretches</li>
-                            <li>Hip Openers</li>
-                            <li>Yoga Poses</li>
-                        </ul>
-                    </div>
-                    <div class="workout-card">
-                        <div class="workout-label">Core</div>
-                        <h3>No-Equipment Abs</h3>
-                        <p>15 mins • High Intensity</p>
-                        <ul>
-                            <li>Jack Split Crunches</li>
-                            <li>Reverse Crunches</li>
-                            <li>Bicycle Crunches</li>
-                            <li>Dead Bugs</li>
-                        </ul>
-                    </div>
+                    <div class="workout-card"><div class="workout-label">HIIT</div><h3>Full Body Burn</h3><div class="meta">30 min · High intensity</div><ul><li>Jump Squats</li><li>Burpees</li><li>Mountain Climbers</li><li>Push-ups</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Strength</div><h3>Glute Gains</h3><div class="meta">15 min · Medium intensity</div><ul><li>Glute Bridge Walk</li><li>Donkey Kicks</li><li>Resistance Band Work</li><li>Weighted Squats</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Core</div><h3>Core Crusher</h3><div class="meta">20 min · High intensity</div><ul><li>Bicycle Crunches</li><li>Leg Raises</li><li>Russian Twists</li><li>Plank Variations</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Cardio</div><h3>Cardio Queen</h3><div class="meta">25 min · High intensity</div><ul><li>High Knee Taps</li><li>Jump Rope</li><li>Box Jumps</li><li>Sprint Intervals</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Stretch</div><h3>Flexibility Flow</h3><div class="meta">20 min · Low intensity</div><ul><li>Forward Folds</li><li>Hamstring Stretches</li><li>Hip Openers</li><li>Yoga Poses</li></ul></div>
+                    <div class="workout-card"><div class="workout-label">Core</div><h3>No-Equipment Abs</h3><div class="meta">15 min · High intensity</div><ul><li>Jack Split Crunches</li><li>Reverse Crunches</li><li>Bicycle Crunches</li><li>Dead Bugs</li></ul></div>
                 </div>
             </div>
         </section>
 
-        <!-- CTA Section -->
+        <!-- CTA -->
         <section id="download" class="cta-section">
             <div class="container">
                 <div class="cta-box">
-                    <h2>Ready to Celebrate Your Power?</h2>
-                    <p>Join thousands of women transforming their fitness journey with guided timers and visual progress tracking.</p>
-                    <button class="btn btn-primary" style="font-size: 18px; padding: 16px 48px;" id="download-cta">Download Fit Femme Now <span>→</span></button>
-                    <p class="cta-note">Available on iOS and Android • No subscription required</p>
+                    <h2>Ready to <span class="display gradient-text">celebrate your power?</span></h2>
+                    <p>Download Fit Femme on iPhone or Android and start your first guided workout in under 30 seconds.</p>
+                    <div class="store-badges">
+                        <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="store-badge" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.fitfemme.app" class="store-badge" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.59.34-1.11.84-1.35L13.69 12 3.84 21.85c-.5-.25-.84-.76-.84-1.35M16.81 15.12 6.05 21.34l8.49-8.49 2.27 2.27M20.16 10.81c.34.27.59.69.59 1.19s-.22.9-.57 1.18l-2.29 1.32L15.39 12l2.5-2.5 2.27 1.31M6.05 2.66l10.76 6.22-2.27 2.27L6.05 2.66z"/></svg>
+                            <span class="badge-text"><small>Get it on</small><strong>Google Play</strong></span>
+                        </a>
+                    </div>
+                    <p class="cta-note">Available on iOS and Android · Premium plans from $1.99/month</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>Fit Femme</h4>
-                    <p>Premium workouts with guided timers. Celebrate your power, curves, and culture.</p>
+                    <p>Premium workouts with guided timers. Celebrate your power, your curves and your culture.</p>
                 </div>
                 <div class="footer-section">
                     <h4>Product</h4>
                     <ul>
                         <li><a href="#features">Features</a></li>
-                        <li><a href="#download">Download App</a></li>
+                        <li><a href="#download">Download app</a></li>
                         <li><a href="/marketing/sources.html">Sources</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="/marketing/privacy.html">Privacy Policy</a></li>
-                        <li><a href="/marketing/terms.html">Terms of Service</a></li>
+                        <li><a href="/marketing/privacy.html">Privacy policy</a></li>
+                        <li><a href="/marketing/terms.html">Terms of service</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -218,10 +194,17 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Fit Femme. Made with love for women. All rights reserved.</p>
+                <p>&copy; 2026 Fit Femme. Made with love for women everywhere.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Sticky mobile CTA: always-visible download bar so the primary
+         action is one tap away while users browse the long-form page. -->
+    <div class="mobile-cta" role="region" aria-label="Download Fit Femme">
+        <a href="https://apps.apple.com/nz/app/fit-femme/id6757249898" class="btn btn-primary" id="mobile-cta-btn">Download <span class="arrow">→</span></a>
+        <a href="#features" class="btn btn-secondary">Features</a>
+    </div>
 
     <script src="script.js"></script>
 </body>
