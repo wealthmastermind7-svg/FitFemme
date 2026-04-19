@@ -631,9 +631,17 @@ const REVIEWS = [
 // signed-in account, or after iOS has used up its annual prompt quota).
 // Using `itms-apps://` on iOS jumps straight into the App Store app instead
 // of bouncing through Safari.
-// Curated explainer of the science behind the personalized plan.
-// Tapping any entry in the "Sources behind your plan" list opens this.
-const SOURCES_URL = "https://g.co/gemini/share/52963124ffc1";
+// Per-source citations behind the personalized plan. Each entry maps the
+// i18n key shown in the list to the canonical primary-source URL it cites.
+const SOURCE_LINKS: { key: string; url: string }[] = [
+  // Mifflin–St Jeor BMR equation — NCBI StatPearls chapter on indirect
+  // calorimetry / RMR estimation that documents the equation.
+  { key: "onb2.howto.src1", url: "https://www.ncbi.nlm.nih.gov/books/NBK279077/" },
+  // WHO physical activity guidelines.
+  { key: "onb2.howto.src2", url: "https://www.who.int/news-room/fact-sheets/detail/physical-activity" },
+  // Academy of Nutrition & Dietetics — protein for active adults.
+  { key: "onb2.howto.src3", url: "https://www.eatright.org/fitness/sports-and-performance/fueling-your-workout/protein-and-the-athlete" },
+];
 
 const APP_STORE_ID = "6757249898";
 const APP_STORE_URL_HTTPS = `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
@@ -988,17 +996,12 @@ export function HowToReachStep() {
       <ThemedText style={howStyles.sourcesIntro}>
         {t("onb2.howto.sourcesIntro")}
       </ThemedText>
-      {[
-        "onb2.howto.src1",
-        "onb2.howto.src2",
-        "onb2.howto.src3",
-        "onb2.howto.src4",
-      ].map((k) => (
+      {SOURCE_LINKS.map(({ key, url }) => (
         <Pressable
-          key={k}
+          key={key}
           onPress={() => {
             tap();
-            Linking.openURL(SOURCES_URL).catch(() => {
+            Linking.openURL(url).catch(() => {
               /* nothing else to do */
             });
           }}
@@ -1008,7 +1011,7 @@ export function HowToReachStep() {
             pressed && { opacity: 0.6 },
           ]}
         >
-          <ThemedText style={howStyles.sourceLine}>· {t(k)}</ThemedText>
+          <ThemedText style={howStyles.sourceLine}>· {t(key)}</ThemedText>
           <Feather
             name="external-link"
             size={12}

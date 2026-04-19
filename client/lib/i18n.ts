@@ -150,8 +150,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "onb2.howto.sourcesIntro": "Sources behind your plan:",
     "onb2.howto.src1": "Mifflin–St Jeor BMR equation",
     "onb2.howto.src2": "WHO physical activity guidelines",
-    "onb2.howto.src3": "Academy of Nutrition & Dietetics — protein for active women",
-    "onb2.howto.src4": "Reviewed by certified women's health coaches",
+    "onb2.howto.src3": "Academy of Nutrition & Dietetics — protein for active adults",
     "onb2.howto.cta": "Enter Fit Femme",
 
     // Workouts
@@ -825,8 +824,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "onb2.howto.sourcesIntro": "Fuentes detrás de tu plan:",
     "onb2.howto.src1": "Ecuación de Mifflin–St Jeor",
     "onb2.howto.src2": "Guías de actividad física de la OMS",
-    "onb2.howto.src3": "Academy of Nutrition & Dietetics — proteína para mujeres activas",
-    "onb2.howto.src4": "Revisado por coaches certificadas en salud femenina",
+    "onb2.howto.src3": "Academy of Nutrition & Dietetics — proteína para adultos activos",
     "onb2.howto.cta": "Entrar a Fit Femme",
 
     // Workouts
@@ -1491,8 +1489,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "onb2.howto.sourcesIntro": "Fontes por trás do seu plano:",
     "onb2.howto.src1": "Equação de Mifflin–St Jeor",
     "onb2.howto.src2": "Diretrizes de atividade física da OMS",
-    "onb2.howto.src3": "Academy of Nutrition & Dietetics — proteína para mulheres ativas",
-    "onb2.howto.src4": "Revisado por coaches certificadas em saúde feminina",
+    "onb2.howto.src3": "Academy of Nutrition & Dietetics — proteína para adultos ativos",
     "onb2.howto.cta": "Entrar no Fit Femme",
 
     // Workouts
