@@ -1067,6 +1067,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Estiramiento de Flexor de Cadera",
     "exercise.doublePigeonPose": "Doble Pose de Paloma",
     "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
+    "exercise.jackSplitCrunches": "Abdominales con Apertura de Piernas",
+    "exercise.reverseCrunch": "Abdominal Inverso",
+    "exercise.deadBug": "Bicho Muerto",
+    "exercise.hollowHold": "Sostén en Hueco",
 
     // How it works section
     "workout.howItWorks": "Cómo funciona",
