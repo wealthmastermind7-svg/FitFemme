@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import {
   type InsertUser,
   type InsertWebPurchase,
@@ -15,6 +15,10 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
 
   upsertWebPurchase(purchase: InsertWebPurchase): Promise<WebPurchase>;
+  getWebPurchase(
+    appUserId: string,
+    productId: string,
+  ): Promise<WebPurchase | undefined>;
   listWebPurchasesByEmail(email: string): Promise<WebPurchase[]>;
   listAllWebPurchases(limit?: number): Promise<WebPurchase[]>;
 }
@@ -74,6 +78,27 @@ export class MemStorage implements IStorage {
           : undefined,
       })
       .returning();
+    return row;
+  }
+
+  // Exact lookup by the unique (app_user_id, product_id) pair. Used by
+  // the webhook handler to detect duplicate INITIAL_PURCHASE deliveries
+  // before sending a welcome email (the upsert itself is already
+  // idempotent, but it can't tell us "did this row already exist").
+  async getWebPurchase(
+    appUserId: string,
+    productId: string,
+  ): Promise<WebPurchase | undefined> {
+    const [row] = await db
+      .select()
+      .from(webPurchases)
+      .where(
+        and(
+          eq(webPurchases.appUserId, appUserId),
+          eq(webPurchases.productId, productId),
+        ),
+      )
+      .limit(1);
     return row;
   }
 

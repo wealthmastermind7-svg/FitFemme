@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import * as fs from "fs";
 import * as path from "path";
 import { storage } from "./storage";
+import { sendWelcomeEmail } from "./welcome-email";
 
 // ── Plans ────────────────────────────────────────────────────────────────
 // The three tiers Fit Femme sells. Prices match the App Store / Google
@@ -278,6 +279,14 @@ export function registerWebCheckoutRoutes(app: Express) {
           ? appUserId
           : (emailAttr ?? appUserId);
 
+        // Check for an existing row BEFORE upserting so we can tell
+        // a brand-new purchase apart from a retried webhook delivery.
+        // RevenueCat retries the same event on any non-2xx response,
+        // and a few legitimate clients (e.g. Pix) take hours to settle
+        // so duplicates are common. Without this guard a single
+        // purchase could trigger multiple welcome emails.
+        const existing = await storage.getWebPurchase(appUserId, productId);
+
         await storage.upsertWebPurchase({
           email,
           appUserId,
@@ -289,6 +298,24 @@ export function registerWebCheckoutRoutes(app: Express) {
           eventTimestampMs: event.event_timestamp_ms ?? null,
           raw: event,
         });
+
+        // Fire-and-forget welcome email on the first purchase. We
+        // intentionally do NOT await — email delivery must never
+        // delay the webhook ack or RevenueCat will retry the entire
+        // event (re-running the upsert above). sendWelcomeEmail
+        // swallows its own errors, so an unhandled rejection here
+        // would be a bug in that module.
+        if (
+          (event.type ?? "").toUpperCase() === "INITIAL_PURCHASE" &&
+          !existing &&
+          email &&
+          email.includes("@")
+        ) {
+          void sendWelcomeEmail({
+            to: email,
+            country: event.country_code ?? null,
+          });
+        }
         return res.json({ ok: true });
       } catch (err) {
         const message = err instanceof Error ? err.message : "webhook error";
