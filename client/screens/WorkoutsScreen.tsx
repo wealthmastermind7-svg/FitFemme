@@ -246,9 +246,42 @@ interface WorkoutListItemProps {
   index: number;
 }
 
+const WORKOUT_TITLE_KEYS: Record<string, string> = {
+  "Full Body Burn": "workout.fullBodyBurn",
+  "Glute Gains": "workout.gluteGains",
+  "Core Crusher": "workout.coreCrusher",
+  "Cardio Queen": "workout.cardioQueen",
+  "Flexibility Flow": "workout.flexibilityFlow",
+  "No-Equipment Abs": "workout.noEquipmentAbs",
+};
+
+const INTENSITY_KEYS: Record<string, string> = {
+  High: "workout.intensityHigh",
+  Medium: "workout.intensityMedium",
+  Low: "workout.intensityLow",
+};
+
+const MUSCLE_GROUP_KEYS: Record<string, string> = {
+  "Full Body": "muscle.fullBody",
+  Glutes: "muscle.glutes",
+  Legs: "muscle.legs",
+  Core: "muscle.core",
+  Abs: "muscle.abs",
+  Cardio: "muscle.cardio",
+  Flexibility: "muscle.flexibility",
+  Arms: "muscle.arms",
+  Back: "muscle.back",
+  Chest: "muscle.chest",
+  Shoulders: "muscle.shoulders",
+};
+
 function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemProps) {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const imageSource = getWorkoutImage(workout.coverImage, language);
+  const titleKey = WORKOUT_TITLE_KEYS[workout.title];
+  const titleText = titleKey ? t(titleKey) : workout.title;
+  const intensityKey = INTENSITY_KEYS[workout.intensity];
+  const intensityText = intensityKey ? t(intensityKey) : workout.intensity;
 
   return (
     <Pressable style={[styles.listItem, locked && styles.listItemLocked]} onPress={onPress}>
@@ -268,27 +301,31 @@ function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemPro
         ) : null}
       </ImageBackground>
       <View style={styles.listItemContent}>
-        <ThemedText style={styles.listItemTitle}>{workout.title}</ThemedText>
+        <ThemedText style={styles.listItemTitle}>{titleText}</ThemedText>
         <View style={styles.listItemMeta}>
           <View style={styles.listItemMetaItem}>
             <Feather name="clock" size={12} color={Colors.white40} />
             <ThemedText style={styles.listItemMetaText}>
-              {workout.duration} min
+              {workout.duration} {t("workout.min")}
             </ThemedText>
           </View>
           <View style={styles.listItemMetaItem}>
             <Feather name="activity" size={12} color={Colors.white40} />
             <ThemedText style={styles.listItemMetaText}>
-              {workout.intensity}
+              {intensityText}
             </ThemedText>
           </View>
         </View>
         <View style={styles.listItemTags}>
-          {workout.muscleGroups.slice(0, 2).map((group) => (
-            <View key={group} style={styles.tag}>
-              <ThemedText style={styles.tagText}>{group}</ThemedText>
-            </View>
-          ))}
+          {workout.muscleGroups.slice(0, 2).map((group) => {
+            const muscleKey = MUSCLE_GROUP_KEYS[group];
+            const muscleText = muscleKey ? t(muscleKey) : group;
+            return (
+              <View key={group} style={styles.tag}>
+                <ThemedText style={styles.tagText}>{muscleText}</ThemedText>
+              </View>
+            );
+          })}
         </View>
       </View>
       <View style={styles.listItemAction}>
