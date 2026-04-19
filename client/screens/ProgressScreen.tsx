@@ -288,9 +288,32 @@ export default function ProgressScreen() {
     }
   }, [entries, leftEntry, rightEntry, t]);
 
-  // Right header "+" button
+  // Header buttons: explicit back chevron on the left, "+" on the right.
+  // We render our own back button (instead of relying on the native one)
+  // because Progress can be deep-linked from Home — in that case the
+  // default native back goes to "Profile", not where the user came from.
+  // We pop if we can, otherwise fall back to the Profile root.
+  const goBack = useCallback(() => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate("Profile" as never);
+    }
+  }, [navigation]);
+
   useEffect(() => {
     navigation.setOptions?.({
+      headerBackVisible: false,
+      headerLeft: () => (
+        <Pressable
+          onPress={goBack}
+          hitSlop={12}
+          accessibilityLabel={t("common.back")}
+          style={({ pressed }) => [styles.headerBtn, pressed && { opacity: 0.6 }]}
+        >
+          <Feather name="chevron-left" size={26} color={Colors.primary} />
+        </Pressable>
+      ),
       headerRight: () => (
         <Pressable
           onPress={addPhoto}
@@ -301,7 +324,7 @@ export default function ProgressScreen() {
         </Pressable>
       ),
     });
-  }, [navigation, addPhoto]);
+  }, [navigation, addPhoto, goBack, t]);
 
   const PhotoSlot = ({
     entry,
@@ -421,6 +444,17 @@ export default function ProgressScreen() {
                   </ThemedText>
                 </View>
               ) : null}
+              <Pressable
+                onPress={() => removeEntry(e.id)}
+                hitSlop={10}
+                accessibilityLabel={t("progress.removePhoto")}
+                style={({ pressed }) => [
+                  styles.thumbDelete,
+                  pressed && { opacity: 0.7 },
+                ]}
+              >
+                <Feather name="x" size={14} color={Colors.white} />
+              </Pressable>
             </Pressable>
           );
         })}
@@ -601,6 +635,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   thumbBadgeAfter: { backgroundColor: Colors.primary },
+  thumbDelete: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   thumbBadgeText: { fontSize: 9, fontWeight: "800", color: Colors.white, letterSpacing: 0.5 },
   helpText: {
     color: Colors.white40,
