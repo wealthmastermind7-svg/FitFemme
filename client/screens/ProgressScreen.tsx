@@ -37,6 +37,12 @@ import { useLanguage } from "@/lib/i18n";
 const KG_PER_LB = 0.45359237;
 const PHOTOS_DIR = (FileSystem.documentDirectory ?? "") + "progress-photos/";
 
+// Inspirational sample photos shown in the compare slots before the user has
+// added any of their own. These are bundled assets (not real users) and are
+// labelled "Sample" in the UI so it's clear they're placeholders.
+const SAMPLE_BEFORE = require("../../assets/images/progress/before-placeholder.png");
+const SAMPLE_AFTER = require("../../assets/images/progress/after-placeholder.png");
+
 function makeId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -270,10 +276,13 @@ export default function ProgressScreen() {
     entry,
     isPrimary,
     label,
+    placeholder,
   }: {
     entry: ProgressEntry | null;
     isPrimary: boolean;
     label: string;
+    /** Inspirational image to show when there's no real entry yet. */
+    placeholder?: number;
   }) => (
     <Pressable
       onPress={!entry ? addPhoto : undefined}
@@ -284,6 +293,18 @@ export default function ProgressScreen() {
     >
       {entry ? (
         <Image source={{ uri: entry.uri }} style={styles.slotImage} resizeMode="cover" />
+      ) : placeholder ? (
+        <>
+          <Image source={placeholder} style={styles.slotImage} resizeMode="cover" />
+          <View style={styles.slotSampleBadge}>
+            <ThemedText style={styles.slotSampleText}>
+              {t("progress.sample").toUpperCase()}
+            </ThemedText>
+          </View>
+          <View style={styles.slotAddHint}>
+            <Feather name="plus" size={18} color={Colors.white} />
+          </View>
+        </>
       ) : (
         <View style={styles.slotEmpty}>
           <Feather name="image" size={28} color={Colors.white40} />
@@ -314,8 +335,18 @@ export default function ProgressScreen() {
       ]}
     >
       <View style={styles.compareRow}>
-        <PhotoSlot entry={leftEntry} isPrimary={false} label={t("progress.before")} />
-        <PhotoSlot entry={rightEntry} isPrimary label={t("progress.after")} />
+        <PhotoSlot
+          entry={leftEntry}
+          isPrimary={false}
+          label={t("progress.before")}
+          placeholder={leftEntry ? undefined : SAMPLE_BEFORE}
+        />
+        <PhotoSlot
+          entry={rightEntry}
+          isPrimary
+          label={t("progress.after")}
+          placeholder={rightEntry ? undefined : SAMPLE_AFTER}
+        />
       </View>
 
       <View style={styles.toggleRow}>
@@ -409,6 +440,32 @@ const styles = StyleSheet.create({
   slotPrimary: { borderColor: Colors.primary },
   slotImage: { ...StyleSheet.absoluteFillObject },
   slotEmpty: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
+  slotSampleBadge: {
+    position: "absolute",
+    top: Spacing.sm,
+    left: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  slotSampleText: {
+    color: Colors.white,
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 1,
+  },
+  slotAddHint: {
+    position: "absolute",
+    top: Spacing.sm,
+    right: Spacing.sm,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   slotOverlay: {
     padding: Spacing.md,
     backgroundColor: "rgba(0,0,0,0.35)",

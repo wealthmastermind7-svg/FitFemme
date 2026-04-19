@@ -17,6 +17,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { GlassCard } from "@/components/GlassCard";
 import { CircularProgress } from "@/components/CircularProgress";
 import { WorkoutCard } from "@/components/WorkoutCard";
+import { Image as ExpoImage } from "expo-image";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import {
   storage,
@@ -439,6 +440,79 @@ export default function HomeScreen() {
           </Pressable>
         </View>
       )}
+
+      {/* Watch the Change — visual transformation preview. Falls back to bundled
+          sample silhouettes until the user has logged 2+ real photos, so the
+          card never looks empty. Tapping deep-links into the Profile stack's
+          Progress screen. */}
+      {(() => {
+        const entries = profile.progressEntries ?? [];
+        const left =
+          entries.length >= 1
+            ? { uri: entries[0].uri }
+            : require("../../assets/images/progress/before-placeholder.png");
+        const right =
+          entries.length >= 2
+            ? { uri: entries[entries.length - 1].uri }
+            : require("../../assets/images/progress/after-placeholder.png");
+        const isSample = entries.length < 2;
+        return (
+          <Pressable
+            style={styles.changeCardWrapper}
+            onPress={() =>
+              (navigation as any).navigate("Main", {
+                screen: "ProfileTab",
+                params: { screen: "Progress" },
+              })
+            }
+          >
+            <GlassCard style={styles.changeCard}>
+              <View style={styles.changeCardImages}>
+                <View style={styles.changeImgWrap}>
+                  <ExpoImage source={left} style={styles.changeImg} contentFit="cover" />
+                  <View style={styles.changeImgLabel}>
+                    <ThemedText style={styles.changeImgLabelText}>
+                      {t("progress.before").toUpperCase()}
+                    </ThemedText>
+                  </View>
+                </View>
+                <View style={styles.changeImgWrap}>
+                  <ExpoImage source={right} style={styles.changeImg} contentFit="cover" />
+                  <View style={[styles.changeImgLabel, styles.changeImgLabelAfter]}>
+                    <ThemedText style={styles.changeImgLabelText}>
+                      {t("progress.after").toUpperCase()}
+                    </ThemedText>
+                  </View>
+                </View>
+              </View>
+              {isSample ? (
+                <View style={styles.changeSampleChip}>
+                  <ThemedText style={styles.changeSampleChipText}>
+                    {t("progress.sample").toUpperCase()}
+                  </ThemedText>
+                </View>
+              ) : null}
+              <View style={styles.changeCopyRow}>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={styles.changeTitle}>
+                    {t("progress.homeCardTitle")}
+                  </ThemedText>
+                  <ThemedText style={styles.changeSubtitle}>
+                    {entries.length === 0
+                      ? t("progress.homeCardSubtitle")
+                      : entries.length === 1
+                      ? t("progress.homeCardCta")
+                      : t("progress.homeCardSubtitle")}
+                  </ThemedText>
+                </View>
+                <View style={styles.changeChevron}>
+                  <Feather name="chevron-right" size={18} color={Colors.white} />
+                </View>
+              </View>
+            </GlassCard>
+          </Pressable>
+        );
+      })()}
 
       <View style={styles.workoutsSection}>
         <View style={styles.workoutsHeader}>
@@ -1002,6 +1076,87 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     color: Colors.primary,
+  },
+  changeCardWrapper: {
+    paddingHorizontal: Spacing["2xl"],
+    marginTop: Spacing["2xl"],
+  },
+  changeCard: {
+    padding: 0,
+    overflow: "hidden",
+  },
+  changeCardImages: {
+    flexDirection: "row",
+    gap: 2,
+    backgroundColor: Colors.backgroundDark,
+  },
+  changeImgWrap: {
+    flex: 1,
+    aspectRatio: 0.78,
+    backgroundColor: Colors.backgroundDark,
+    overflow: "hidden",
+  },
+  changeImg: {
+    width: "100%",
+    height: "100%",
+  },
+  changeImgLabel: {
+    position: "absolute",
+    top: Spacing.md,
+    left: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  changeImgLabelAfter: {
+    backgroundColor: Colors.primary,
+  },
+  changeImgLabelText: {
+    color: Colors.white,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+  },
+  changeSampleChip: {
+    position: "absolute",
+    top: Spacing.md,
+    right: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  changeSampleChipText: {
+    color: Colors.white,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.2,
+  },
+  changeCopyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
+  },
+  changeTitle: {
+    fontSize: 17,
+    fontWeight: "800",
+    color: Colors.white,
+    marginBottom: 2,
+  },
+  changeSubtitle: {
+    fontSize: 13,
+    color: Colors.white60,
+  },
+  changeChevron: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   chartSection: {
     paddingHorizontal: Spacing["2xl"],
