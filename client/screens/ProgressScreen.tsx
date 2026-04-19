@@ -26,6 +26,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import * as Haptics from "expo-haptics";
+import { captureRef, releaseCapture } from "react-native-view-shot";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 
@@ -243,15 +244,45 @@ export default function ProgressScreen() {
     [leftId, rightId],
   );
 
+  const shareCardRef = useRef<View>(null);
+
   const shareLatest = useCallback(async () => {
-    const target = rightEntry ?? leftEntry ?? entries[entries.length - 1];
-    if (!target) return;
+    // The composed share card is rendered off-screen below — we capture it
+    // as a PNG so the user always shares a side-by-side comparison rather
+    // than a single photo. Falls back to sharing the latest single image if
+    // the capture fails for any reason.
+    const fallback = rightEntry ?? leftEntry ?? entries[entries.length - 1];
     try {
       const available = await Sharing.isAvailableAsync();
       if (!available) return;
-      await Sharing.shareAsync(target.uri, {
-        dialogTitle: t("progress.shareTitle"),
-      });
+      let uri: string;
+      try {
+        uri = await captureRef(shareCardRef, {
+          format: "png",
+          quality: 1,
+          result: "tmpfile",
+        });
+      } catch {
+        if (!fallback) return;
+        uri = fallback.uri;
+      }
+      try {
+        await Sharing.shareAsync(uri, {
+          dialogTitle: t("progress.shareTitle"),
+          mimeType: "image/png",
+        });
+      } finally {
+        // Free the captured tmpfile so heavy share usage doesn't pile up
+        // PNGs in the app sandbox. Safe no-op if the uri is the fallback
+        // (the user's own persisted photo).
+        if (uri !== fallback?.uri) {
+          try {
+            releaseCapture(uri);
+          } catch {
+            /* nothing to release */
+          }
+        }
+      }
     } catch {
       /* user cancelled or unsupported */
     }
@@ -412,6 +443,54 @@ export default function ProgressScreen() {
       ) : null}
 
       <ThemedText style={styles.privacy}>{t("progress.privacy")}</ThemedText>
+
+      {/* Off-screen share composition. Captured by react-native-view-shot when
+          the user taps Share so they always send a polished side-by-side
+          comparison instead of a single photo. Positioned far off-screen
+          (rather than display:none) because RN refs only attach to mounted,
+          measured views. collapsable={false} keeps the native node alive on
+          Android. */}
+      <View
+        ref={shareCardRef}
+        collapsable={false}
+        style={styles.shareCard}
+        pointerEvents="none"
+      >
+        <View style={styles.shareHeader}>
+          <ThemedText style={styles.shareBrand}>FIT FEMME</ThemedText>
+          <ThemedText style={styles.shareHeadline}>
+            {t("progress.title")}
+          </ThemedText>
+        </View>
+        <View style={styles.sharePair}>
+          {[
+            { entry: leftEntry, label: t("progress.before"), placeholder: SAMPLE_BEFORE },
+            { entry: rightEntry, label: t("progress.after"), placeholder: SAMPLE_AFTER },
+          ].map((s, i) => (
+            <View key={i} style={styles.sharePane}>
+              <Image
+                source={s.entry ? { uri: s.entry.uri } : s.placeholder}
+                style={styles.shareImg}
+                resizeMode="cover"
+              />
+              <View style={styles.shareCaption}>
+                <ThemedText style={styles.shareCaptionLabel}>
+                  {s.label.toUpperCase()}
+                </ThemedText>
+                {!hideWeight && s.entry?.weightKg ? (
+                  <ThemedText style={styles.shareCaptionWeight}>
+                    {formatWeight(s.entry.weightKg, profile?.units)}
+                  </ThemedText>
+                ) : null}
+                <ThemedText style={styles.shareCaptionDate}>
+                  {s.entry ? formatDate(s.entry.dateISO, language) : "—"}
+                </ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+        <ThemedText style={styles.shareFooter}>fitfemme.app</ThemedText>
+      </View>
     </ScrollView>
   );
 }
@@ -546,5 +625,86 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: Spacing.lg,
     lineHeight: 16,
+  },
+  // ─── Off-screen share composition ──────────────────────────────────────
+  // Fixed size so the captured PNG looks identical regardless of phone size.
+  // Positioned far off-screen so it never affects layout or hit-testing.
+  shareCard: {
+    position: "absolute",
+    left: -10000,
+    top: -10000,
+    width: 1080,
+    height: 1350,
+    backgroundColor: Colors.backgroundDark,
+    paddingHorizontal: 56,
+    paddingTop: 56,
+    paddingBottom: 56,
+  },
+  shareHeader: {
+    alignItems: "center",
+    marginBottom: 32,
+  },
+  shareBrand: {
+    color: Colors.primary,
+    fontSize: 26,
+    fontWeight: "800",
+    letterSpacing: 6,
+    marginBottom: 8,
+  },
+  shareHeadline: {
+    color: Colors.white,
+    fontSize: 56,
+    fontWeight: "800",
+    letterSpacing: -1,
+  },
+  sharePair: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 16,
+  },
+  sharePane: {
+    flex: 1,
+    borderRadius: 32,
+    overflow: "hidden",
+    backgroundColor: "#000",
+  },
+  shareImg: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+  },
+  shareCaption: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 28,
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  shareCaptionLabel: {
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: "800",
+    letterSpacing: 4,
+    marginBottom: 6,
+  },
+  shareCaptionWeight: {
+    color: Colors.white,
+    fontSize: 44,
+    fontWeight: "800",
+    marginBottom: 4,
+  },
+  shareCaptionDate: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 22,
+    fontWeight: "600",
+  },
+  shareFooter: {
+    color: Colors.white40,
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: 3,
+    textAlign: "center",
+    marginTop: 28,
   },
 });
