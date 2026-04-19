@@ -228,12 +228,11 @@ function setupErrorHandler(app: express.Application) {
   // LATAM web checkout (Pix / OXXO / cards) and the RevenueCat webhook.
   // Registered BEFORE expo + landing middleware so /subscribe wins.
   // Bootstrap the web_purchases table so a fresh deploy works without
-  // a separate `drizzle-kit push` step. Idempotent.
-  try {
-    await ensureWebCheckoutSchema();
-  } catch (err) {
-    console.error("ensureWebCheckoutSchema failed:", err);
-  }
+  // a separate `drizzle-kit push` step. Idempotent. Fail fast on
+  // failure — if the schema can't come up, the webhook can't record
+  // purchases and restore lookups will silently break, so refusing
+  // to start is safer than serving a broken checkout flow.
+  await ensureWebCheckoutSchema();
   registerWebCheckoutRoutes(app);
 
   configureExpoAndLanding(app);

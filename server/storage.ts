@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import {
   type InsertUser,
   type InsertWebPurchase,
@@ -95,5 +95,3 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
-// Suppress unused-import warning for `and` in case future queries need it.
-void and;
