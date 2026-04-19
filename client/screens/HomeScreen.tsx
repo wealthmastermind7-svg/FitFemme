@@ -43,7 +43,13 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const heroSource =
+    language === "pt"
+      ? require("../../assets/images/hero-fitness-pt.png")
+      : language === "es"
+      ? require("../../assets/images/hero-fitness-es.png")
+      : require("../../assets/images/hero-fitness.png");
 
   const [profile, setProfile] = useState<UserProfile>(sampleUserProfile);
   const [metrics, setMetrics] = useState<DailyMetrics>(sampleDailyMetrics);
@@ -106,7 +112,7 @@ export default function HomeScreen() {
     >
       <View style={styles.heroContainer}>
         <ImageBackground
-          source={require("../../assets/images/hero-fitness.png")}
+          source={heroSource}
           style={styles.heroImage}
           resizeMode="cover"
         >
