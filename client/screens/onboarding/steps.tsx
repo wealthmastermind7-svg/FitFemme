@@ -4,7 +4,7 @@
  * (`./index.tsx`) owns the state machine and persistence.
  */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Linking, Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as StoreReview from "expo-store-review";
@@ -626,28 +626,79 @@ const REVIEWS = [
   },
 ];
 
+// Real App Store listing for Fit Femme. We open this when the OS-level
+// in-app rating prompt isn't available (Android, web, simulator without a
+// signed-in account, or after iOS has used up its annual prompt quota).
+// Using `itms-apps://` on iOS jumps straight into the App Store app instead
+// of bouncing through Safari.
+const APP_STORE_ID = "6757249898";
+const APP_STORE_URL_HTTPS = `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
+const APP_STORE_URL_IOS = `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review`;
+
+async function openAppStoreReview() {
+  // iOS: try the deep link first, fall back to https.
+  if (Platform.OS === "ios") {
+    try {
+      const can = await Linking.canOpenURL(APP_STORE_URL_IOS);
+      if (can) {
+        await Linking.openURL(APP_STORE_URL_IOS);
+        return;
+      }
+    } catch {
+      /* fall through to https */
+    }
+  }
+  try {
+    await Linking.openURL(APP_STORE_URL_HTTPS);
+  } catch {
+    /* nothing else we can do */
+  }
+}
+
+async function promptForReview() {
+  // Prefer the native in-app rating sheet (no app switch, best UX).
+  // If anything blocks it, send the user to the live App Store page.
+  if (Platform.OS !== "web") {
+    try {
+      const available = await StoreReview.isAvailableAsync();
+      const hasAction = available ? await StoreReview.hasAction() : false;
+      if (available && hasAction) {
+        await StoreReview.requestReview();
+        return;
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  await openAppStoreReview();
+}
+
 export function ReviewsStep() {
   const { t } = useLanguage();
 
-  // Surface the native App Store / Play Store rating prompt while the user is
-  // looking at the social-proof page. The OS throttles this aggressively
-  // (max ~3 prompts per 365 days on iOS), so we don't need our own debounce.
-  // Web has no notion of a store rating; skip entirely.
+  // Surface the rating prompt automatically a moment after the user lands
+  // on this step. iOS throttles its native sheet (~3/year) so this is safe
+  // to fire on every onboarding pass — the OS will silently ignore it once
+  // the quota is hit, and our manual button below still works as a fallback.
   useEffect(() => {
-    if (Platform.OS === "web") return;
     let cancelled = false;
-    const timer = setTimeout(async () => {
-      try {
-        const available = await StoreReview.isAvailableAsync();
-        if (!available || cancelled) return;
-        // hasAction guards against environments (e.g. simulators without a
-        // signed-in App Store account) where requesting would be a no-op.
-        const hasAction = await StoreReview.hasAction();
-        if (!hasAction || cancelled) return;
-        await StoreReview.requestReview();
-      } catch {
-        // Never let a rating-prompt failure block onboarding.
-      }
+    const timer = setTimeout(() => {
+      if (cancelled) return;
+      // Auto-trigger only attempts the native sheet — we don't want to
+      // yank the user out of onboarding into Safari uninvited. The
+      // explicit "Rate Fit Femme" button is what handles the URL fallback.
+      if (Platform.OS === "web") return;
+      (async () => {
+        try {
+          const available = await StoreReview.isAvailableAsync();
+          if (!available) return;
+          const hasAction = await StoreReview.hasAction();
+          if (!hasAction) return;
+          await StoreReview.requestReview();
+        } catch {
+          /* never let a rating prompt block onboarding */
+        }
+      })();
     }, 700);
     return () => {
       cancelled = true;
@@ -658,19 +709,24 @@ export function ReviewsStep() {
   return (
     <>
       <StepHeading title={t("onb2.reviews.title")} />
-      <View style={reviewStyles.statsRow}>
-        <View style={reviewStyles.statBlock}>
-          <View style={reviewStyles.starsRow}>
-            <ThemedText style={reviewStyles.statBig}>4.9</ThemedText>
-            <Feather name="star" size={20} color={Colors.primary} />
-          </View>
-          <ThemedText style={reviewStyles.statSub}>{t("onb2.reviews.avg")}</ThemedText>
-        </View>
-        <View style={reviewStyles.statBlock}>
-          <ThemedText style={reviewStyles.statBig}>250K+</ThemedText>
-          <ThemedText style={reviewStyles.statSub}>{t("onb2.reviews.women")}</ThemedText>
-        </View>
-      </View>
+
+      <Pressable
+        onPress={() => {
+          tap();
+          promptForReview();
+        }}
+        style={({ pressed }) => [
+          reviewStyles.rateBtn,
+          pressed && { opacity: 0.85 },
+        ]}
+        accessibilityRole="button"
+        accessibilityLabel={t("onb2.reviews.rateCta")}
+      >
+        <Feather name="star" size={18} color={Colors.white} />
+        <ThemedText style={reviewStyles.rateBtnText}>
+          {t("onb2.reviews.rateCta")}
+        </ThemedText>
+      </Pressable>
 
       {REVIEWS.map((r, idx) => (
         <Animated.View
@@ -1046,6 +1102,18 @@ const reviewStyles = StyleSheet.create({
   avatarTxt: { fontSize: 22 },
   cardName: { fontSize: 15, fontWeight: "700", color: Colors.white },
   cardQuote: { fontSize: 15, color: Colors.white80, lineHeight: 22 },
+  rateBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.lg,
+    marginBottom: Spacing.xl,
+  },
+  rateBtnText: { color: Colors.white, fontSize: 16, fontWeight: "700" },
 });
 
 const buildStyles = StyleSheet.create({
