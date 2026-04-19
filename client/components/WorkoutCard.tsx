@@ -35,12 +35,7 @@ const INTENSITY_KEYS: Record<string, string> = {
   Low: "workout.intensityLow",
 };
 
-const workoutImages: { [key: number]: any } = {
-  1: require("../../assets/images/workouts/workout1.png"),
-  2: require("../../assets/images/workouts/workout2.png"),
-  3: require("../../assets/images/workouts/workout3.png"),
-  4: require("../../assets/images/workouts/workout4.png"),
-};
+import { getWorkoutImage } from "@/lib/workoutImages";
 
 interface WorkoutCardProps {
   workout: Workout;
@@ -50,7 +45,7 @@ interface WorkoutCardProps {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const scale = useSharedValue(1);
 
   const titleKey = WORKOUT_TITLE_KEYS[workout.title];
@@ -73,7 +68,7 @@ export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
     scale.value = withSpring(1, { damping: 15, stiffness: 150 });
   };
 
-  const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
+  const imageSource = getWorkoutImage(workout.coverImage, language);
 
   return (
     <AnimatedPressable

@@ -40,12 +40,7 @@ const FILTER_KEYS: Record<string, string> = {
   "New": "workouts.filters.new",
 };
 
-const workoutImages: { [key: number]: any } = {
-  1: require("../../assets/images/workouts/workout1.png"),
-  2: require("../../assets/images/workouts/workout2.png"),
-  3: require("../../assets/images/workouts/workout3.png"),
-  4: require("../../assets/images/workouts/workout4.png"),
-};
+import { getWorkoutImage } from "@/lib/workoutImages";
 
 const CATEGORIES = ["All", "HIIT", "Strength", "Cardio", "Core", "Stretch"];
 const FILTERS = ["Popular", "Short", "No Equipment", "New"];
@@ -55,7 +50,7 @@ export default function WorkoutsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { isSubscribed } = useSubscription();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState("Popular");
   const [paywallVisible, setPaywallVisible] = useState(false);
@@ -180,7 +175,7 @@ export default function WorkoutsScreen() {
           onPress={() => handleWorkoutPress("1")}
         >
           <ImageBackground
-            source={workoutImages[1]}
+            source={getWorkoutImage(1, language)}
             style={styles.featuredImage}
             imageStyle={styles.featuredImageStyle}
           >
@@ -252,7 +247,8 @@ interface WorkoutListItemProps {
 }
 
 function WorkoutListItem({ workout, onPress, index, locked }: WorkoutListItemProps) {
-  const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
+  const { language } = useLanguage();
+  const imageSource = getWorkoutImage(workout.coverImage, language);
 
   return (
     <Pressable style={[styles.listItem, locked && styles.listItemLocked]} onPress={onPress}>

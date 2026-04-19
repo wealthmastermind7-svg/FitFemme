@@ -27,7 +27,9 @@ import { useLanguage, getExerciseTranslationKey } from "@/lib/i18n";
 
 const { width } = Dimensions.get("window");
 
-const workoutImages: { [key: number]: any } = {
+import { getWorkoutImage } from "@/lib/workoutImages";
+
+const _unusedImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
   2: require("../../assets/images/workouts/workout2.png"),
   3: require("../../assets/images/workouts/workout3.png"),
@@ -70,7 +72,7 @@ export default function WorkoutPlayerScreen() {
   const navigation = useNavigation();
   const route = useRoute<WorkoutPlayerRouteProp>();
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
@@ -313,7 +315,7 @@ export default function WorkoutPlayerScreen() {
     buttonScale.value = withSpring(1, { damping: 15, stiffness: 150 });
   };
 
-  const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
+  const imageSource = getWorkoutImage(workout.coverImage, language);
 
   return (
     <View style={styles.container}>

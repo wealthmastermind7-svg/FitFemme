@@ -96,3 +96,51 @@ id = "PCYncM3oTbMM6_Sz76c6G"
 uri = "file://assets/images/hero-fitness-pt.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "r8jyllcOrHHmBc0ZouDw_"
+uri = "file://assets/images/workouts/workout1-es.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "73RMeDlBicRUZE5d1vAxD"
+uri = "file://assets/images/workouts/workout2-es.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TYPwtYB8GFWeRKv-3yMV8"
+uri = "file://assets/images/workouts/workout3-es.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "2djEZZNV_PL2aWhITZWgm"
+uri = "file://assets/images/workouts/workout4-es.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Yxlw9eS4QAu2af6d2WkaV"
+uri = "file://assets/images/workouts/workout1-pt.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OVPwcuQ4QceK8ib1QCFBZ"
+uri = "file://assets/images/workouts/workout2-pt.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "dhPg5IIutHDirG5yRMAO7"
+uri = "file://assets/images/workouts/workout3-pt.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "pdIImfCV8POsNiGSDJ4lH"
+uri = "file://assets/images/workouts/workout4-pt.png"
+type = "image"
+title = "generated_image"

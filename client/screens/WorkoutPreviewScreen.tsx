@@ -23,7 +23,9 @@ import { sampleWorkouts } from "@/lib/storage";
 import { RootStackParamList } from "@/navigation/RootStackNavigator";
 import { useLanguage, getExerciseTranslationKey } from "@/lib/i18n";
 
-const workoutImages: { [key: number]: any } = {
+import { getWorkoutImage } from "@/lib/workoutImages";
+
+const _unusedImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
   2: require("../../assets/images/workouts/workout2.png"),
   3: require("../../assets/images/workouts/workout3.png"),
@@ -38,7 +40,7 @@ export default function WorkoutPreviewScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<WorkoutPreviewRouteProp>();
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const workoutId = route.params?.workoutId || "1";
   const workout = sampleWorkouts.find((w) => w.id === workoutId) || sampleWorkouts[0];
@@ -65,7 +67,7 @@ export default function WorkoutPreviewScreen() {
     buttonScale.value = withSpring(1, { damping: 15, stiffness: 150 });
   };
 
-  const imageSource = workoutImages[workout.coverImage] || workoutImages[1];
+  const imageSource = getWorkoutImage(workout.coverImage, language);
 
   const totalSets = workout.exercises.reduce((acc, ex) => acc + ex.sets, 0);
   const totalExercises = workout.exercises.length;
