@@ -4,7 +4,7 @@
  * (`./index.tsx`) owns the state machine and persistence.
  */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Linking, Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Image, Linking, Modal, Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as StoreReview from "expo-store-review";
@@ -667,55 +667,123 @@ async function openAppStoreReview() {
   }
 }
 
-async function promptForReview() {
-  // Prefer the native in-app rating sheet (no app switch, best UX).
-  // If anything blocks it, send the user to the live App Store page.
-  if (Platform.OS !== "web") {
-    try {
-      const available = await StoreReview.isAvailableAsync();
-      const hasAction = available ? await StoreReview.hasAction() : false;
-      if (available && hasAction) {
-        await StoreReview.requestReview();
-        return;
-      }
-    } catch {
-      /* fall through */
-    }
-  }
-  await openAppStoreReview();
+/**
+ * Custom branded "Enjoying Fit Femme?" prompt — modeled on the Cal AI
+ * popup the user shared, themed in the Fit Femme pink palette.
+ *
+ * Why a custom modal instead of `StoreReview.requestReview()`?
+ *   1. The native sheet is *not shown in TestFlight* — Apple disables
+ *      `SKStoreReviewController` for non-production builds, so users
+ *      were seeing nothing at all.
+ *   2. Apple does not allow theming the native sheet; this is the only
+ *      way to match the requested visual.
+ *
+ * Tapping any star deep-links the user straight into the App Store
+ * review composer for our real listing (`id=6757249898`). On iOS we
+ * use `itms-apps://` so it opens inside the App Store app instead of
+ * bouncing through Safari. Works in TestFlight, web, and production.
+ */
+function ReviewPromptModal({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const { t } = useLanguage();
+  const [hovered, setHovered] = useState(0);
+
+  const handleStar = (n: number) => {
+    setHovered(n);
+    tap();
+    // Briefly show the user their tap registered before sending them off.
+    setTimeout(() => {
+      onClose();
+      openAppStoreReview();
+    }, 180);
+  };
+
+  return (
+    <Modal
+      transparent
+      visible={visible}
+      animationType="fade"
+      onRequestClose={onClose}
+      statusBarTranslucent
+    >
+      <View style={promptStyles.backdrop}>
+        <View style={promptStyles.card}>
+          <View style={promptStyles.iconWrap}>
+            <Image
+              source={require("../../../assets/images/icon.png")}
+              style={promptStyles.icon}
+            />
+          </View>
+          <ThemedText style={promptStyles.title}>
+            {t("onb2.reviews.promptTitle")}
+          </ThemedText>
+          <ThemedText style={promptStyles.subtitle}>
+            {t("onb2.reviews.promptBody")}
+          </ThemedText>
+          <View style={promptStyles.starsRow}>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <Pressable
+                key={n}
+                hitSlop={6}
+                onPress={() => handleStar(n)}
+                style={({ pressed }) => [
+                  promptStyles.starBtn,
+                  pressed && { transform: [{ scale: 0.92 }] },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={`${n} ${n === 1 ? "star" : "stars"}`}
+              >
+                <Feather
+                  name="star"
+                  size={34}
+                  color={Colors.primary}
+                  style={
+                    hovered >= n
+                      ? { textShadowColor: Colors.primary, textShadowRadius: 8 }
+                      : { opacity: 0.9 }
+                  }
+                />
+              </Pressable>
+            ))}
+          </View>
+          <Pressable
+            onPress={() => {
+              tap();
+              onClose();
+            }}
+            style={({ pressed }) => [
+              promptStyles.dismissBtn,
+              pressed && { opacity: 0.7 },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t("onb2.reviews.notNow")}
+          >
+            <ThemedText style={promptStyles.dismissText}>
+              {t("onb2.reviews.notNow")}
+            </ThemedText>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
 }
 
 export function ReviewsStep() {
   const { t } = useLanguage();
+  const [promptOpen, setPromptOpen] = useState(false);
 
-  // Surface the rating prompt automatically a moment after the user lands
-  // on this step. iOS throttles its native sheet (~3/year) so this is safe
-  // to fire on every onboarding pass — the OS will silently ignore it once
-  // the quota is hit, and our manual button below still works as a fallback.
+  // Pop the custom prompt automatically a moment after the user lands
+  // on this step. The user can dismiss with "Not Now" without leaving
+  // the onboarding flow, or tap a star to be sent to the App Store
+  // review composer.
   useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      if (cancelled) return;
-      // Auto-trigger only attempts the native sheet — we don't want to
-      // yank the user out of onboarding into Safari uninvited. The
-      // explicit "Rate Fit Femme" button is what handles the URL fallback.
-      if (Platform.OS === "web") return;
-      (async () => {
-        try {
-          const available = await StoreReview.isAvailableAsync();
-          if (!available) return;
-          const hasAction = await StoreReview.hasAction();
-          if (!hasAction) return;
-          await StoreReview.requestReview();
-        } catch {
-          /* never let a rating prompt block onboarding */
-        }
-      })();
-    }, 700);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
+    const timer = setTimeout(() => setPromptOpen(true), 600);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -725,7 +793,7 @@ export function ReviewsStep() {
       <Pressable
         onPress={() => {
           tap();
-          promptForReview();
+          setPromptOpen(true);
         }}
         style={({ pressed }) => [
           reviewStyles.rateBtn,
@@ -739,6 +807,11 @@ export function ReviewsStep() {
           {t("onb2.reviews.rateCta")}
         </ThemedText>
       </Pressable>
+
+      <ReviewPromptModal
+        visible={promptOpen}
+        onClose={() => setPromptOpen(false)}
+      />
 
       {REVIEWS.map((r, idx) => (
         <Animated.View
@@ -1140,6 +1213,67 @@ const reviewStyles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   rateBtnText: { color: Colors.white, fontSize: 16, fontWeight: "700" },
+});
+
+const promptStyles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: Spacing.xl,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: 24,
+    paddingVertical: Spacing.xl,
+    paddingHorizontal: Spacing.xl,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(212,17,115,0.25)",
+  },
+  iconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: Spacing.md,
+    backgroundColor: Colors.backgroundDark,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: { width: 64, height: 64 },
+  title: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: Colors.white,
+    textAlign: "center",
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: Colors.white80,
+    textAlign: "center",
+    marginBottom: Spacing.lg,
+  },
+  starsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  starBtn: { padding: 4 },
+  dismissBtn: {
+    width: "100%",
+    backgroundColor: Colors.primary,
+    paddingVertical: 12,
+    borderRadius: 999,
+    alignItems: "center",
+  },
+  dismissText: { color: Colors.white, fontSize: 15, fontWeight: "700" },
 });
 
 const buildStyles = StyleSheet.create({
