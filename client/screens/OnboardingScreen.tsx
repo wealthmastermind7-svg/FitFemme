@@ -429,6 +429,7 @@ function WelcomeStep({
   insetsBottom: number;
 }) {
   const { t } = useLanguage();
+  const isPt = t("onboarding.title") === "Bem-vinda ao Fit Femme";
   const buttonScale = useSharedValue(1);
   const animatedButtonStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
@@ -436,7 +437,11 @@ function WelcomeStep({
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../../assets/images/onboarding/slide3.png")}
+        source={
+          isPt
+            ? require("@assets/IMG_4868_1776573583845.png")
+            : require("../../assets/images/onboarding/slide3.png")
+        }
         style={styles.welcomeBg}
         resizeMode="cover"
       >
