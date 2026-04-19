@@ -19,7 +19,7 @@ function getDeviceLanguage(): Language {
   return DEFAULT_LANGUAGE;
 }
 
-const translations: Record<Language, Record<string, string>> = {
+export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Onboarding
     "onboarding.title": "Welcome to Fit Femme",

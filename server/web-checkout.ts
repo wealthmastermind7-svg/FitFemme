@@ -88,6 +88,30 @@ function renderTemplate(
   return html;
 }
 
+// ── Webhook payload types ────────────────────────────────────────────────
+// Subset of the RevenueCat webhook event we rely on. Extra fields are
+// preserved verbatim in `raw` for support / forensics.
+// See https://www.revenuecat.com/docs/integrations/webhooks/event-types-and-fields
+interface RevenueCatSubscriberAttribute {
+  value?: string;
+  updated_at_ms?: number;
+}
+
+interface RevenueCatEvent {
+  type?: string;
+  app_user_id?: string;
+  product_id?: string;
+  store?: string;
+  country_code?: string;
+  event_timestamp_ms?: number;
+  subscriber_attributes?: Record<string, RevenueCatSubscriberAttribute>;
+  [key: string]: unknown;
+}
+
+interface RevenueCatWebhookBody {
+  event?: RevenueCatEvent;
+}
+
 // ── Webhook signature verification ───────────────────────────────────────
 // RevenueCat webhooks include an Authorization header that must equal
 // REVENUECAT_WEBHOOK_AUTH (set in both the dashboard and this env).
@@ -195,34 +219,39 @@ export function registerWebCheckoutRoutes(app: Express) {
         return res.status(401).json({ error: "unauthorized" });
       }
       try {
-        const body = req.body as { event?: any };
-        const event = body?.event ?? {};
+        const body = (req.body ?? {}) as RevenueCatWebhookBody;
+        const event: RevenueCatEvent = body.event ?? {};
         const appUserId = String(event.app_user_id ?? "").trim();
         const productId = String(event.product_id ?? "").trim();
         if (!appUserId || !productId) {
-          return res.status(400).json({ error: "missing app_user_id or product_id" });
+          return res
+            .status(400)
+            .json({ error: "missing app_user_id or product_id" });
         }
         // RevenueCat lets you pass an email via aliases or attributes.
         // We tell the checkout page to set App User ID = email, so we
         // can use it directly here.
+        const emailAttr = event.subscriber_attributes?.["$email"]?.value;
         const email = appUserId.includes("@")
           ? appUserId
-          : String(event.subscriber_attributes?.$email?.value ?? appUserId);
+          : (emailAttr ?? appUserId);
 
         await storage.upsertWebPurchase({
           email,
           appUserId,
           productId,
           plan: mapProductToPlan(productId),
-          status: mapEventToStatus(String(event.type ?? "")),
-          processor: String(event.store ?? "web_billing"),
-          country: String(event.country_code ?? "") || null,
+          status: mapEventToStatus(event.type ?? ""),
+          processor: event.store ?? "web_billing",
+          country: event.country_code ?? null,
+          eventTimestampMs: event.event_timestamp_ms ?? null,
           raw: event,
         });
         return res.json({ ok: true });
-      } catch (err: any) {
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "webhook error";
         console.error("revenuecat webhook error:", err);
-        return res.status(500).json({ error: err?.message ?? "webhook error" });
+        return res.status(500).json({ error: message });
       }
     },
   );

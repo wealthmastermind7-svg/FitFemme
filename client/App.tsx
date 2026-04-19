@@ -13,11 +13,17 @@ import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { initializeRevenueCat, SubscriptionProvider } from "@/lib/revenuecat";
 import { LanguageProvider } from "@/lib/i18n";
+import { assertNoIosWebCheckoutLinks } from "@/lib/compliance";
+
+// App Store guideline 3.1.3: fail fast in dev if anyone adds an in-app
+// link to the LATAM web checkout. Production builds log instead.
+assertNoIosWebCheckoutLinks();
 
 try {
   initializeRevenueCat();
-} catch (err: any) {
-  Alert.alert("RevenueCat Unavailable", err?.message ?? "Unknown error");
+} catch (err: unknown) {
+  const message = err instanceof Error ? err.message : "Unknown error";
+  Alert.alert("RevenueCat Unavailable", message);
 }
 
 export default function App() {
