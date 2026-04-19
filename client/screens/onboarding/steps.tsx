@@ -631,6 +631,10 @@ const REVIEWS = [
 // signed-in account, or after iOS has used up its annual prompt quota).
 // Using `itms-apps://` on iOS jumps straight into the App Store app instead
 // of bouncing through Safari.
+// Curated explainer of the science behind the personalized plan.
+// Tapping any entry in the "Sources behind your plan" list opens this.
+const SOURCES_URL = "https://g.co/gemini/share/52963124ffc1";
+
 const APP_STORE_ID = "6757249898";
 const APP_STORE_URL_HTTPS = `https://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
 const APP_STORE_URL_IOS = `itms-apps://itunes.apple.com/app/id${APP_STORE_ID}?action=write-review`;
@@ -990,9 +994,28 @@ export function HowToReachStep() {
         "onb2.howto.src3",
         "onb2.howto.src4",
       ].map((k) => (
-        <ThemedText key={k} style={howStyles.sourceLine}>
-          · {t(k)}
-        </ThemedText>
+        <Pressable
+          key={k}
+          onPress={() => {
+            tap();
+            Linking.openURL(SOURCES_URL).catch(() => {
+              /* nothing else to do */
+            });
+          }}
+          accessibilityRole="link"
+          style={({ pressed }) => [
+            howStyles.sourceRow,
+            pressed && { opacity: 0.6 },
+          ]}
+        >
+          <ThemedText style={howStyles.sourceLine}>· {t(k)}</ThemedText>
+          <Feather
+            name="external-link"
+            size={12}
+            color={Colors.white60}
+            style={{ marginLeft: 6, marginTop: 4 }}
+          />
+        </Pressable>
       ))}
     </>
   );
@@ -1219,7 +1242,8 @@ const howStyles = StyleSheet.create({
   tipIcon: { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   tipText: { flex: 1, fontSize: 14, color: Colors.white90, fontWeight: "500" },
   sourcesIntro: { fontSize: 14, color: Colors.white80, marginBottom: Spacing.sm, lineHeight: 20 },
-  sourceLine: { fontSize: 13, color: Colors.white60, lineHeight: 22, paddingLeft: Spacing.sm },
+  sourceRow: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 2 },
+  sourceLine: { fontSize: 13, color: Colors.white60, lineHeight: 22, paddingLeft: Spacing.sm, flexShrink: 1 },
 });
 
 /* ------------------------------------------------------------------ */
