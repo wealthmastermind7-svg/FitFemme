@@ -144,3 +144,9 @@ id = "pdIImfCV8POsNiGSDJ4lH"
 uri = "file://assets/images/workouts/workout4-pt.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "enfz2QftN8iTEl8YghkwI"
+uri = "file://assets/images/onboarding/welcome-es.png"
+type = "image"
+title = "generated_image"
