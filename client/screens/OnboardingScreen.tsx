@@ -167,7 +167,7 @@ export default function OnboardingScreen() {
       <KeyboardAwareScrollViewCompat
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
-        bottomOffset={120}
+        bottomOffset={180}
       >
         <Animated.View
           key={step}
@@ -333,7 +333,10 @@ export default function OnboardingScreen() {
       <View
         style={[
           styles.footer,
-          { paddingBottom: insets.bottom + Spacing.lg },
+          {
+            paddingBottom: insets.bottom + Spacing.lg,
+            marginBottom: Platform.OS === "ios" ? 0 : 120,
+          },
         ]}
       >
         <Pressable
