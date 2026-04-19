@@ -513,6 +513,8 @@ export default function StatsScreen() {
             />
             {labels.map((label, idx) => {
               const point = getPoint(idx, 110);
+              const muscleKey = `muscle.${label.toLowerCase()}`;
+              const translated = t(muscleKey);
               return (
                 <SvgText
                   key={`label-${idx}`}
@@ -523,7 +525,7 @@ export default function StatsScreen() {
                   textAnchor="middle"
                   fontWeight="600"
                 >
-                  {label}
+                  {translated && translated !== muscleKey ? translated : label}
                 </SvgText>
               );
             })}
