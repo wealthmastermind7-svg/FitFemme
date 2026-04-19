@@ -12,25 +12,37 @@ const LANGUAGE_NAMES: Record<string, string> = {
 
 function buildNutritionPrompt(language: string): string {
   const langName = LANGUAGE_NAMES[language] ?? "English";
+  const examples: Record<string, string> = {
+    en: `{"dish":"Vegetarian Plate","description":"A balanced vegetarian meal with eggs and vegetables.","ingredients":["Eggs","Carrots","Pasta","Green vegetables","Mushrooms"]}`,
+    es: `{"dish":"Plato Vegetariano","description":"Una comida vegetariana equilibrada con huevos y verduras.","ingredients":["Huevos","Zanahorias","Pasta","Verduras verdes","Champiñones"]}`,
+    pt: `{"dish":"Prato Vegetariano","description":"Uma refeição vegetariana equilibrada com ovos e legumes.","ingredients":["Ovos","Cenouras","Macarrão","Verduras","Cogumelos"]}`,
+  };
+  const example = examples[language] ?? examples.en;
   return `You are a professional nutritionist and food recognition expert.
-Analyze the food in this image and return a JSON object ONLY — no extra text, no markdown.
 
-The JSON must follow this exact shape:
+CRITICAL LANGUAGE REQUIREMENT: You MUST write the values for "dish", "description", and every entry in "ingredients" in ${langName} ONLY. Do NOT use English unless ${langName} is English. This is mandatory — responses with English text when ${langName} is required will be rejected.
+
+Return a JSON object ONLY — no extra text, no markdown, no code fences.
+
+Required shape:
 {
-  "dish": "Name of the dish",
+  "dish": "Name of the dish in ${langName}",
   "calories": <estimated number>,
   "protein": <grams>,
   "carbs": <grams>,
   "fat": <grams>,
   "fiber": <grams>,
   "healthScore": <integer 1-10>,
-  "description": "One-sentence description of the dish.",
-  "ingredients": ["ingredient1", "ingredient2", ...]
+  "description": "One-sentence description of the dish in ${langName}.",
+  "ingredients": ["ingredient1 in ${langName}", "ingredient2 in ${langName}", ...]
 }
 
-IMPORTANT: All text values ("dish", "description", and every entry in "ingredients") MUST be written in ${langName}. Numeric values stay as numbers. Do not mix languages.
+Example of a correct response in ${langName}:
+${example}
 
-Be accurate and realistic. If no food is detected, return:
+Numeric values must remain numbers (not strings). Do not mix languages.
+
+If no food is detected, return:
 {"error": "No food detected in the image."}`;
 }
 
