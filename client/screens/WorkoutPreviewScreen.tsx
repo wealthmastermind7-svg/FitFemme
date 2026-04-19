@@ -88,11 +88,45 @@ export default function WorkoutPreviewScreen() {
     return t(key) || intensity;
   };
 
+  const EQUIPMENT_KEYS: Record<string, string> = {
+    "No Equipment": "workout.noEquipment",
+    "Resistance Band": "workout.equipment.resistanceBand",
+    "Mat": "workout.equipment.mat",
+    "Dumbbells": "workout.equipment.dumbbells",
+  };
+
   const translateEquipment = (equipment: string[]) => {
     if (equipment.length === 0 || (equipment.length === 1 && equipment[0] === "")) {
       return t("workout.noEquipment") || "No Equipment";
     }
-    return equipment.join(", ");
+    return equipment.map((e) => (EQUIPMENT_KEYS[e] ? t(EQUIPMENT_KEYS[e]) : e)).join(", ");
+  };
+
+  const WORKOUT_TITLE_KEYS: Record<string, string> = {
+    "Full Body Burn": "workout.fullBodyBurn",
+    "Glute Gains": "workout.gluteGains",
+    "Core Crusher": "workout.coreCrusher",
+    "Cardio Queen": "workout.cardioQueen",
+    "Flexibility Flow": "workout.flexibilityFlow",
+    "No-Equipment Abs": "workout.noEquipmentAbs",
+  };
+
+  const CATEGORY_KEYS: Record<string, string> = {
+    HIIT: "workouts.categories.hiit",
+    Strength: "workouts.categories.strength",
+    Cardio: "workouts.categories.cardio",
+    Core: "workouts.categories.core",
+    Stretch: "workouts.categories.stretch",
+  };
+
+  const translateWorkoutTitle = (title: string) => {
+    const key = WORKOUT_TITLE_KEYS[title];
+    return key ? t(key) : title;
+  };
+
+  const translateCategory = (category: string) => {
+    const key = CATEGORY_KEYS[category];
+    return key ? t(key) : category;
   };
 
   return (
@@ -127,8 +161,8 @@ export default function WorkoutPreviewScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.workoutHeader}>
-          <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
-          <ThemedText style={styles.workoutCategory}>{workout.category}</ThemedText>
+          <ThemedText style={styles.workoutTitle}>{translateWorkoutTitle(workout.title)}</ThemedText>
+          <ThemedText style={styles.workoutCategory}>{translateCategory(workout.category)}</ThemedText>
         </View>
 
         <View style={styles.statsRow}>
