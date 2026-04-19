@@ -78,3 +78,9 @@ id = "0BBWlAKSiwlswWEkkZGb0"
 uri = "file://assets/images/meals/bb2.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "vgsKNpxAC8NbVDeQjsvcP"
+uri = "file://assets/images/onboarding/welcome-pt.png"
+type = "image"
+title = "generated_image"

@@ -439,7 +439,7 @@ function WelcomeStep({
       <ImageBackground
         source={
           isPt
-            ? require("@assets/IMG_4868_1776573583845.png")
+            ? require("../../assets/images/onboarding/welcome-pt.png")
             : require("../../assets/images/onboarding/slide3.png")
         }
         style={styles.welcomeBg}
