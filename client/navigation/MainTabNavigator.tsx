@@ -213,6 +213,19 @@ export default function MainTabNavigator() {
             <Feather name="user" size={size} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          // When the user taps the Profile tab, always send them to the
+          // Profile root — never leave them deep inside a sub-screen
+          // (e.g. Progress) that was reached via a deep-link from Home.
+          tabPress: (e) => {
+            const state = navigation.getState();
+            const tab = state.routes.find((r: any) => r.name === "ProfileTab");
+            if (tab?.state && (tab.state.index ?? 0) > 0) {
+              e.preventDefault();
+              (navigation as any).navigate("ProfileTab", { screen: "Profile" });
+            }
+          },
+        })}
       />
     </Tab.Navigator>
   );
