@@ -11,6 +11,29 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { Workout } from "@/lib/storage";
+import { useLanguage } from "@/lib/i18n";
+
+const WORKOUT_TITLE_KEYS: Record<string, string> = {
+  "Full Body Burn": "workout.fullBodyBurn",
+  "Glute Gains": "workout.gluteGains",
+  "Core Crusher": "workout.coreCrusher",
+  "Cardio Queen": "workout.cardioQueen",
+  "Flexibility Flow": "workout.flexibilityFlow",
+  "No-Equipment Abs": "workout.noEquipmentAbs",
+};
+
+const EQUIPMENT_KEYS: Record<string, string> = {
+  "No Equipment": "workout.noEquipment",
+  "Resistance Band": "workout.equipment.resistanceBand",
+  "Mat": "workout.equipment.mat",
+  "Dumbbells": "workout.equipment.dumbbells",
+};
+
+const INTENSITY_KEYS: Record<string, string> = {
+  High: "workout.intensityHigh",
+  Medium: "workout.intensityMedium",
+  Low: "workout.intensityLow",
+};
 
 const workoutImages: { [key: number]: any } = {
   1: require("../../assets/images/workouts/workout1.png"),
@@ -27,7 +50,16 @@ interface WorkoutCardProps {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
+  const { t } = useLanguage();
   const scale = useSharedValue(1);
+
+  const titleKey = WORKOUT_TITLE_KEYS[workout.title];
+  const titleText = titleKey ? t(titleKey) : workout.title;
+  const intensityKey = INTENSITY_KEYS[workout.intensity];
+  const intensityText = intensityKey ? t(intensityKey) : workout.intensity;
+  const firstEquipment = workout.equipment[0];
+  const equipmentKey = firstEquipment ? EQUIPMENT_KEYS[firstEquipment] : undefined;
+  const equipmentText = equipmentKey ? t(equipmentKey) : firstEquipment;
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -64,20 +96,20 @@ export function WorkoutCard({ workout, onPress }: WorkoutCardProps) {
         </View>
         <View style={styles.content}>
           <ThemedText style={styles.title} numberOfLines={2}>
-            {workout.title}
+            {titleText}
           </ThemedText>
           <View style={styles.meta}>
             <ThemedText style={styles.metaText}>
-              {workout.intensity} Intensity
+              {intensityText} {t("workout.intensity")}
             </ThemedText>
             <ThemedText style={styles.metaDot}>  </ThemedText>
             <ThemedText style={styles.metaText}>
-              {workout.equipment[0]}
+              {equipmentText}
             </ThemedText>
           </View>
           <Pressable style={styles.startButton}>
             <Feather name="eye" size={14} color={Colors.white} />
-            <ThemedText style={styles.startText}>Preview</ThemedText>
+            <ThemedText style={styles.startText}>{t("workouts.preview")}</ThemedText>
           </Pressable>
         </View>
       </ImageBackground>

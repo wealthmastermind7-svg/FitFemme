@@ -461,6 +461,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Medium",
     "workout.intensityLow": "Low",
     "workout.noEquipment": "No Equipment",
+    "workout.equipment.resistanceBand": "Resistance Band",
+    "workout.equipment.mat": "Mat",
+    "workout.equipment.dumbbells": "Dumbbells",
+    "home.quote": "\"Your only competition is who you were yesterday.\"",
 
     // Bottom navigation tabs
     "nav.home": "Home",
@@ -973,6 +977,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Medio",
     "workout.intensityLow": "Bajo",
     "workout.noEquipment": "Sin Equipamiento",
+    "workout.equipment.resistanceBand": "Banda Elástica",
+    "workout.equipment.mat": "Esterilla",
+    "workout.equipment.dumbbells": "Mancuernas",
+    "home.quote": "\"Tu única competencia es quien eras ayer.\"",
 
     // Bottom navigation tabs
     "nav.home": "Inicio",
@@ -1485,6 +1493,10 @@ const translations: Record<Language, Record<string, string>> = {
     "workout.intensityMedium": "Médio",
     "workout.intensityLow": "Baixo",
     "workout.noEquipment": "Sem Equipamento",
+    "workout.equipment.resistanceBand": "Faixa Elástica",
+    "workout.equipment.mat": "Tapete",
+    "workout.equipment.dumbbells": "Halteres",
+    "home.quote": "\"Sua única competição é quem você era ontem.\"",
 
     // Bottom navigation tabs
     "nav.home": "Início",

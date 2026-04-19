@@ -503,7 +503,7 @@ export default function HomeScreen() {
 
       <View style={styles.quoteSection}>
         <ThemedText style={styles.quote}>
-          "Your only competition is who you were yesterday."
+          {t("home.quote")}
         </ThemedText>
       </View>
     </ScrollView>
