@@ -107,6 +107,18 @@ export default function WorkoutPlayerScreen() {
     }
   };
 
+  const WORKOUT_TITLE_KEYS: Record<string, string> = {
+    "Full Body Burn": "workout.fullBodyBurn",
+    "Glute Gains": "workout.gluteGains",
+    "Core Crusher": "workout.coreCrusher",
+    "Cardio Queen": "workout.cardioQueen",
+    "Flexibility Flow": "workout.flexibilityFlow",
+    "No-Equipment Abs": "workout.noEquipmentAbs",
+  };
+  const translatedWorkoutTitle = WORKOUT_TITLE_KEYS[workout.title]
+    ? t(WORKOUT_TITLE_KEYS[workout.title])
+    : workout.title;
+
   const encouragingMessages = [
     "Great form!",
     "You got this!",
@@ -340,7 +352,7 @@ export default function WorkoutPlayerScreen() {
           <Feather name="x" size={24} color={Colors.white} />
         </Pressable>
         <View style={styles.headerInfo}>
-          <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
+          <ThemedText style={styles.workoutTitle}>{translatedWorkoutTitle}</ThemedText>
           <ThemedText style={styles.workoutMeta}>
             {currentExerciseIndex + 1} / {exercises.length} {t("workouts.exercises")}
           </ThemedText>
