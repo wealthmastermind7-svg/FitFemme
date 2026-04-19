@@ -55,6 +55,7 @@ import {
   DirectionStep,
   HeightWeightStep,
   HowToReachStep,
+  NameStep,
   PlanReadyStep,
   ReviewsStep,
   SourceStep,
@@ -68,6 +69,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 /** Ordered list of step IDs (post-welcome). */
 const STEPS = [
+  "name",
   "workouts",
   "source",
   "tried",
@@ -96,6 +98,7 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<StepId>("welcome");
 
   // Collected answers
+  const [name, setName] = useState<string>("");
   const [daysPerWeek, setDaysPerWeek] = useState<number | null>(null);
   const [source, setSource] = useState<string | null>(null);
   const [triedOthers, setTriedOthers] = useState<boolean | null>(null);
@@ -167,9 +170,10 @@ export default function OnboardingFlow() {
         units === "Imperial"
           ? Math.round(weightKg / 0.45359237)
           : Math.round(weightKg);
+      const trimmedName = name.trim();
       await storage.saveUserProfile({
         ...sampleUserProfile,
-        name: sampleUserProfile.name,
+        name: trimmedName.length > 0 ? trimmedName : sampleUserProfile.name,
         age,
         weight: weightForProfile,
         units,
@@ -239,6 +243,10 @@ export default function OnboardingFlow() {
   let scrollable = true;
 
   switch (step) {
+    case "name":
+      body = <NameStep value={name} onChange={setName} />;
+      canContinue = name.trim().length > 0;
+      break;
     case "workouts":
       body = <WorkoutsStep value={daysPerWeek} onChange={setDaysPerWeek} />;
       canContinue = daysPerWeek !== null;

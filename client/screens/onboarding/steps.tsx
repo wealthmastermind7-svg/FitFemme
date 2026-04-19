@@ -4,7 +4,7 @@
  * (`./index.tsx`) owns the state machine and persistence.
  */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as StoreReview from "expo-store-review";
@@ -1152,4 +1152,53 @@ const howStyles = StyleSheet.create({
   tipText: { flex: 1, fontSize: 14, color: Colors.white90, fontWeight: "500" },
   sourcesIntro: { fontSize: 14, color: Colors.white80, marginBottom: Spacing.sm, lineHeight: 20 },
   sourceLine: { fontSize: 13, color: Colors.white60, lineHeight: 22, paddingLeft: Spacing.sm },
+});
+
+/* ------------------------------------------------------------------ */
+/* Step 0a — name                                                      */
+/* ------------------------------------------------------------------ */
+
+export function NameStep({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <>
+      <StepHeading
+        title={t("onb.name.title")}
+        subtitle={t("onb.name.subtitle")}
+      />
+      <TextInput
+        value={value}
+        onChangeText={onChange}
+        placeholder={t("onb.name.placeholder")}
+        placeholderTextColor={Colors.white40}
+        autoFocus
+        autoCorrect={false}
+        autoCapitalize="words"
+        returnKeyType="done"
+        maxLength={40}
+        style={nameStyles.input}
+      />
+    </>
+  );
+}
+
+const nameStyles = StyleSheet.create({
+  input: {
+    marginTop: Spacing.lg,
+    backgroundColor: Colors.backgroundLight,
+    borderRadius: BorderRadius.lg,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
+    fontSize: 20,
+    fontWeight: "600",
+    color: Colors.white,
+    borderWidth: 1.5,
+    borderColor: "transparent",
+  },
 });
