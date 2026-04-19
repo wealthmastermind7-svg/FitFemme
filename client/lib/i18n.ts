@@ -520,6 +520,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Kneeling Hip Flexor Stretch",
     "exercise.doublePigeonPose": "Double Pigeon Pose",
     "exercise.cowYogaPose": "Cow Yoga Pose Bitilasana",
+    "exercise.jackSplitCrunches": "Jack Split Crunches",
+    "exercise.reverseCrunch": "Reverse Crunch",
+    "exercise.deadBug": "Dead Bug",
+    "exercise.hollowHold": "Hollow Hold",
 
     // How it works section
     "workout.howItWorks": "How it works",
@@ -1606,6 +1610,10 @@ const translations: Record<Language, Record<string, string>> = {
     "exercise.kneelingHipFlexor": "Alongamento de Flexor do Quadril",
     "exercise.doublePigeonPose": "Pose Dupla do Pombo",
     "exercise.cowYogaPose": "Pose de Vaca Yoga Bitilasana",
+    "exercise.jackSplitCrunches": "Abdominais com Abertura de Pernas",
+    "exercise.reverseCrunch": "Abdominal Invertido",
+    "exercise.deadBug": "Inseto Morto",
+    "exercise.hollowHold": "Sustentação em Vão",
 
     // How it works section
     "workout.howItWorks": "Como funciona",
@@ -1727,6 +1735,10 @@ export function getExerciseTranslationKey(exerciseName: string): string {
     "Kneeling Hip Flexor Stretch": "exercise.kneelingHipFlexor",
     "Double Pigeon Pose": "exercise.doublePigeonPose",
     "Cow Yoga Pose Bitilasana": "exercise.cowYogaPose",
+    "Jack Split Crunches": "exercise.jackSplitCrunches",
+    "Reverse Crunch": "exercise.reverseCrunch",
+    "Dead Bug": "exercise.deadBug",
+    "Hollow Hold": "exercise.hollowHold",
   };
   return nameMap[exerciseName] || exerciseName;
 }
