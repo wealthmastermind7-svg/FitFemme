@@ -199,7 +199,7 @@ export default function FoodScannerScreen() {
         <Pressable onPress={() => navigation.goBack()} hitSlop={14} style={styles.headerBtn}>
           <Feather name="x" size={20} color="rgba(255,255,255,0.7)" />
         </Pressable>
-        <ThemedText style={styles.headerTitle}>Food Scanner</ThemedText>
+        <ThemedText style={styles.headerTitle}>{t("scanner.headerTitle")}</ThemedText>
         {imageUri ? (
           <Pressable onPress={reset} hitSlop={14} style={styles.headerBtn}>
             <Feather name="refresh-cw" size={18} color="rgba(255,255,255,0.7)" />
@@ -274,8 +274,8 @@ export default function FoodScannerScreen() {
             {/* Center label (only when no result) */}
             {!result && (
               <View style={styles.circleCenter}>
-                <ThemedText style={styles.circleTitleSmall}>Analyse Food</ThemedText>
-                <ThemedText style={styles.circleTitleBig}>Plate</ThemedText>
+                <ThemedText style={styles.circleTitleSmall}>{t("scanner.analyseFood")}</ThemedText>
+                <ThemedText style={styles.circleTitleBig}>{t("scanner.plate")}</ThemedText>
               </View>
             )}
 
@@ -303,7 +303,7 @@ export default function FoodScannerScreen() {
             <View style={styles.pillContent}>
               <Feather name="activity" size={18} color={activeTab === "stats" && result ? ACCENT : CORAL} />
               <ThemedText style={[styles.pillLabel, activeTab === "stats" && result && { color: ACCENT }]}>
-                STATS
+                {t("scanner.stats")}
               </ThemedText>
             </View>
           </Pressable>
@@ -319,7 +319,7 @@ export default function FoodScannerScreen() {
             <View style={styles.pillContent}>
               <Feather name="pie-chart" size={18} color={activeTab === "macros" && result ? ACCENT : CORAL} />
               <ThemedText style={[styles.pillLabel, activeTab === "macros" && result && { color: ACCENT }]}>
-                MACROS
+                {t("scanner.macros")}
               </ThemedText>
             </View>
           </Pressable>
@@ -330,17 +330,17 @@ export default function FoodScannerScreen() {
               {analyzing ? (
                 <View style={styles.scanBtn}>
                   <ActivityIndicator color="#fff" size="small" />
-                  <ThemedText style={styles.scanBtnText}>Analysing...</ThemedText>
+                  <ThemedText style={styles.scanBtnText}>{t("scanner.analysing")}</ThemedText>
                 </View>
               ) : imageUri ? (
                 <Pressable style={styles.scanBtn} onPress={analyze}>
                   <Feather name="zap" size={18} color="#fff" />
-                  <ThemedText style={styles.scanBtnText}>ANALYSE NOW</ThemedText>
+                  <ThemedText style={styles.scanBtnText}>{t("scanner.analyseNow")}</ThemedText>
                 </Pressable>
               ) : (
                 <Pressable style={styles.scanBtn} onPress={() => pickImage(true)}>
                   <Feather name="camera" size={18} color="#fff" />
-                  <ThemedText style={styles.scanBtnText}>SCAN ME</ThemedText>
+                  <ThemedText style={styles.scanBtnText}>{t("scanner.scanMe")}</ThemedText>
                 </Pressable>
               )}
             </View>
@@ -351,7 +351,7 @@ export default function FoodScannerScreen() {
         {!imageUri && !result && (
           <Pressable style={styles.galleryBtn} onPress={() => pickImage(false)}>
             <Feather name="image" size={16} color="rgba(255,255,255,0.45)" />
-            <ThemedText style={styles.galleryBtnText}>Choose from gallery instead</ThemedText>
+            <ThemedText style={styles.galleryBtnText}>{t("scanner.chooseGallery")}</ThemedText>
           </Pressable>
         )}
         </>
@@ -391,16 +391,16 @@ export default function FoodScannerScreen() {
             {/* MACROS tab */}
             {activeTab === "macros" && (
               <View style={styles.tabPanel}>
-                <ThemedText style={styles.panelTitle}>Macronutrients</ThemedText>
+                <ThemedText style={styles.panelTitle}>{t("scanner.macronutrients")}</ThemedText>
                 <View style={styles.macroGrid}>
-                  <MacroTile label="Protein" value={result.protein} unit="g" color="#4fc3f7" icon="activity" />
-                  <MacroTile label="Carbs" value={result.carbs} unit="g" color="#f0c93e" icon="layers" />
-                  <MacroTile label="Fat" value={result.fat} unit="g" color="#ff8a65" icon="droplet" />
-                  <MacroTile label="Fiber" value={result.fiber} unit="g" color="#81c784" icon="feather" />
+                  <MacroTile label={t("scanner.protein")} value={result.protein} unit="g" color="#4fc3f7" icon="activity" />
+                  <MacroTile label={t("scanner.carbs")} value={result.carbs} unit="g" color="#f0c93e" icon="layers" />
+                  <MacroTile label={t("scanner.fat")} value={result.fat} unit="g" color="#ff8a65" icon="droplet" />
+                  <MacroTile label={t("scanner.fiber")} value={result.fiber} unit="g" color="#81c784" icon="feather" />
                 </View>
                 {result.ingredients.length > 0 && (
                   <View style={styles.ingredientsSection}>
-                    <ThemedText style={styles.panelSubtitle}>Detected Ingredients</ThemedText>
+                    <ThemedText style={styles.panelSubtitle}>{t("scanner.detectedIngredients")}</ThemedText>
                     <View style={styles.tagRow}>
                       {result.ingredients.map((ing, i) => (
                         <View key={i} style={styles.tag}>
@@ -416,18 +416,18 @@ export default function FoodScannerScreen() {
             {/* STATS tab */}
             {activeTab === "stats" && (
               <View style={styles.tabPanel}>
-                <ThemedText style={styles.panelTitle}>Nutrition Score</ThemedText>
-                <StatRow label="Health Score" value={`${result.healthScore} / 10`} color={healthColor(result.healthScore)} fill={result.healthScore / 10} />
-                <StatRow label="Protein Ratio" value={`${Math.round((result.protein * 4 / result.calories) * 100)}%`} color="#4fc3f7" fill={(result.protein * 4) / result.calories} />
-                <StatRow label="Carb Ratio" value={`${Math.round((result.carbs * 4 / result.calories) * 100)}%`} color="#f0c93e" fill={(result.carbs * 4) / result.calories} />
-                <StatRow label="Fat Ratio" value={`${Math.round((result.fat * 9 / result.calories) * 100)}%`} color="#ff8a65" fill={(result.fat * 9) / result.calories} />
+                <ThemedText style={styles.panelTitle}>{t("scanner.nutritionScore")}</ThemedText>
+                <StatRow label={t("scanner.healthScore")} value={`${result.healthScore} / 10`} color={healthColor(result.healthScore)} fill={result.healthScore / 10} />
+                <StatRow label={t("scanner.proteinRatio")} value={`${Math.round((result.protein * 4 / result.calories) * 100)}%`} color="#4fc3f7" fill={(result.protein * 4) / result.calories} />
+                <StatRow label={t("scanner.carbRatio")} value={`${Math.round((result.carbs * 4 / result.calories) * 100)}%`} color="#f0c93e" fill={(result.carbs * 4) / result.calories} />
+                <StatRow label={t("scanner.fatRatio")} value={`${Math.round((result.fat * 9 / result.calories) * 100)}%`} color="#ff8a65" fill={(result.fat * 9) / result.calories} />
               </View>
             )}
 
             {/* Scan another */}
             <Pressable style={styles.scanAnotherBtn} onPress={reset}>
               <Feather name="camera" size={15} color={ACCENT} />
-              <ThemedText style={styles.scanAnotherText}>Scan another meal</ThemedText>
+              <ThemedText style={styles.scanAnotherText}>{t("scanner.scanAnother")}</ThemedText>
             </Pressable>
           </>
         )}
