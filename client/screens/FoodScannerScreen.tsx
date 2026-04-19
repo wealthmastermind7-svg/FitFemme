@@ -60,7 +60,7 @@ export default function FoodScannerScreen() {
   const [scanCount, setScanCount] = useState(0);
   const [scanCountLoaded, setScanCountLoaded] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   React.useEffect(() => {
     storage
@@ -100,7 +100,7 @@ export default function FoodScannerScreen() {
     } else {
       const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!perm.granted) {
-        Alert.alert("Gallery access needed", "Please allow photo library access.");
+        Alert.alert(t("scanner.galleryNeeded"), t("scanner.galleryNeededMsg"));
         return;
       }
       const picked = await ImagePicker.launchImageLibraryAsync({
@@ -130,7 +130,7 @@ export default function FoodScannerScreen() {
       const resp = await fetch(url.toString(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageBase64 }),
+        body: JSON.stringify({ imageBase64, language }),
       });
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({}));
@@ -175,7 +175,7 @@ export default function FoodScannerScreen() {
         console.log("Failed to compute feedback:", fbErr);
       }
     } catch (e: any) {
-      Alert.alert("Analysis failed", e.message ?? "Something went wrong. Please try again.");
+      Alert.alert(t("scanner.analysisFailed"), e.message ?? t("scanner.analysisFailedMsg"));
     } finally {
       setAnalyzing(false);
     }

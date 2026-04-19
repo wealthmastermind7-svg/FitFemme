@@ -377,9 +377,9 @@ export default function HomeScreen() {
                 <Feather name="camera" size={22} color={Colors.white} />
               </View>
               <View style={{ flex: 1 }}>
-                <ThemedText style={styles.scannerTitle}>Scan your meal</ThemedText>
+                <ThemedText style={styles.scannerTitle}>{t("scanner.cardTitle")}</ThemedText>
                 <ThemedText style={styles.scannerSubtitle}>
-                  Get instant calories, macros & health score
+                  {t("scanner.cardSubtitle")}
                 </ThemedText>
               </View>
               <View style={styles.scannerArrow}>

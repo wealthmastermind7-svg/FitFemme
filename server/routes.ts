@@ -4,7 +4,15 @@ import { createServer, type Server } from "node:http";
 const MOONSHOT_API_URL = "https://api.moonshot.ai/v1/chat/completions";
 const MOONSHOT_MODEL = "moonshot-v1-8k-vision-preview";
 
-const NUTRITION_PROMPT = `You are a professional nutritionist and food recognition expert.
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  es: "Spanish (Spanish from Spain/Latin America)",
+  pt: "Brazilian Portuguese",
+};
+
+function buildNutritionPrompt(language: string): string {
+  const langName = LANGUAGE_NAMES[language] ?? "English";
+  return `You are a professional nutritionist and food recognition expert.
 Analyze the food in this image and return a JSON object ONLY — no extra text, no markdown.
 
 The JSON must follow this exact shape:
@@ -20,10 +28,13 @@ The JSON must follow this exact shape:
   "ingredients": ["ingredient1", "ingredient2", ...]
 }
 
+IMPORTANT: All text values ("dish", "description", and every entry in "ingredients") MUST be written in ${langName}. Numeric values stay as numbers. Do not mix languages.
+
 Be accurate and realistic. If no food is detected, return:
 {"error": "No food detected in the image."}`;
+}
 
-async function analyzeFood(base64: string): Promise<object> {
+async function analyzeFood(base64: string, language: string): Promise<object> {
   const key = process.env.MOONSHOT_API_KEY;
   if (!key) throw new Error("MOONSHOT_API_KEY is not configured.");
 
@@ -41,7 +52,7 @@ async function analyzeFood(base64: string): Promise<object> {
           },
           {
             type: "text",
-            text: NUTRITION_PROMPT,
+            text: buildNutritionPrompt(language),
           },
         ],
       },
@@ -80,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ── Food scanner ────────────────────────────────────────────────────────
   app.post("/api/ai/analyze-food", async (req: Request, res: Response) => {
     try {
-      const { imageBase64 } = req.body as { imageBase64?: string };
+      const { imageBase64, language } = req.body as { imageBase64?: string; language?: string };
       if (!imageBase64) {
         return res.status(400).json({ error: "imageBase64 is required." });
       }
@@ -88,7 +99,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (imageBase64.length > 10_000_000) {
         return res.status(400).json({ error: "Image too large. Please use a smaller photo." });
       }
-      const result = await analyzeFood(imageBase64);
+      const lang = language === "es" || language === "pt" ? language : "en";
+      const result = await analyzeFood(imageBase64, lang);
       return res.json(result);
     } catch (err: any) {
       console.error("analyze-food error:", err);
