@@ -88,6 +88,38 @@ function renderTemplate(
   return html;
 }
 
+// ── Rate limiting (anti-enumeration) ─────────────────────────────────────
+// In-memory token bucket per IP. Restore lookups are intentionally
+// rare (a user clicking "I already paid"); aggressive limits make
+// brute-forcing email addresses infeasible without locking real
+// users out. RevenueCat is the entitlement source of truth, so this
+// endpoint is purely a UX hint — failing closed costs nothing.
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 5;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function clientIp(req: Request): string {
+  const fwd = (req.header("x-forwarded-for") ?? "").split(",")[0].trim();
+  return fwd || req.ip || "unknown";
+}
+
+function rateLimitOk(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || bucket.resetAt < now) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+  bucket.count += 1;
+  return bucket.count <= RATE_MAX;
+}
+
+// Periodic GC so the map cannot grow without bound.
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of rateBuckets) if (v.resetAt < now) rateBuckets.delete(k);
+}, RATE_WINDOW_MS).unref?.();
+
 // ── Webhook payload types ────────────────────────────────────────────────
 // Subset of the RevenueCat webhook event we rely on. Extra fields are
 // preserved verbatim in `raw` for support / forensics.
@@ -195,15 +227,25 @@ export function registerWebCheckoutRoutes(app: Express) {
   });
 
   // GET /api/web-purchases/lookup?email=... — used by the restore page.
-  // Returns ONLY a boolean to avoid leaking purchase history / enabling
-  // account enumeration. RevenueCat remains the source of truth; this
-  // is purely a UX confirmation.
+  // Returns ONLY a boolean to avoid leaking purchase history. To
+  // prevent paid-account enumeration we (a) rate-limit by IP and
+  // (b) on rate-limit hit return the same neutral 200 shape an
+  // unknown email would, so an attacker cannot tell whether they
+  // tripped the limit on a real address. RevenueCat remains the
+  // source of truth; this endpoint is purely a UX hint.
   app.get(
     "/api/web-purchases/lookup",
     async (req: Request, res: Response) => {
       const email = String(req.query.email ?? "").trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ error: "valid email required" });
+      }
+      if (!rateLimitOk(clientIp(req))) {
+        // Constant-shape "no active sub" reply. The restore page
+        // tells the user to check their email either way, so a
+        // false negative here just nudges them to support — never
+        // exposes whether the address has an account.
+        return res.json({ hasActive: false });
       }
       const rows = await storage.listWebPurchasesByEmail(email);
       const hasActive = rows.some((r) => r.status === "active");

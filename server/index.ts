@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { registerWebCheckoutRoutes } from "./web-checkout";
+import { ensureWebCheckoutSchema } from "./db";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -226,6 +227,13 @@ function setupErrorHandler(app: express.Application) {
 
   // LATAM web checkout (Pix / OXXO / cards) and the RevenueCat webhook.
   // Registered BEFORE expo + landing middleware so /subscribe wins.
+  // Bootstrap the web_purchases table so a fresh deploy works without
+  // a separate `drizzle-kit push` step. Idempotent.
+  try {
+    await ensureWebCheckoutSchema();
+  } catch (err) {
+    console.error("ensureWebCheckoutSchema failed:", err);
+  }
   registerWebCheckoutRoutes(app);
 
   configureExpoAndLanding(app);
