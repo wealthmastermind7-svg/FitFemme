@@ -188,7 +188,7 @@ export default function WorkoutsScreen() {
               <ThemedText style={styles.featuredBadgeText}>{t("workouts.featuredBadge")}</ThemedText>
             </View>
             <View style={styles.featuredContent}>
-              <ThemedText style={styles.featuredTitle}>{sampleWorkouts[0].title}</ThemedText>
+              <ThemedText style={styles.featuredTitle}>{WORKOUT_TITLE_KEYS[sampleWorkouts[0].title] ? t(WORKOUT_TITLE_KEYS[sampleWorkouts[0].title]) : sampleWorkouts[0].title}</ThemedText>
               <ThemedText style={styles.featuredMeta}>
                 {sampleWorkouts[0].duration} {t("workout.min")} · {translateIntensity(sampleWorkouts[0].intensity)} · {sampleWorkouts[0].equipment.join(", ") || t("workout.noEquipment")}
               </ThemedText>
