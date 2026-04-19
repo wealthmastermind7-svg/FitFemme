@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +18,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/theme";
-import { useSubscription } from "@/lib/revenuecat";
+import { getAndroidWebCheckoutUrl, useSubscription } from "@/lib/revenuecat";
+import { useLanguage } from "@/lib/i18n";
 
 interface PaywallProps {
   isVisible: boolean;
@@ -38,6 +40,28 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
   const { offerings, restore, isRestoring } = useSubscription();
+  const { language, t } = useLanguage();
+
+  // Android-only: Pix/OXXO web checkout CTA. iOS returns null
+  // (App Store guideline 3.1.3). Country defaults to language-based
+  // best guess; the /subscribe page lets users change plans/locale.
+  const androidWebCheckoutUrl =
+    Platform.OS === "android"
+      ? getAndroidWebCheckoutUrl({
+          lang: language,
+          country:
+            language === "pt" ? "BR" : language === "es" ? "MX" : undefined,
+        })
+      : null;
+
+  const openWebCheckout = async () => {
+    if (!androidWebCheckoutUrl) return;
+    try {
+      await Linking.openURL(androidWebCheckoutUrl);
+    } catch {
+      Alert.alert("Could not open browser", "Please try again.");
+    }
+  };
 
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: ["revenuecat", "customer-info"] });
@@ -77,6 +101,26 @@ export default function Paywall({ isVisible, onClose }: PaywallProps) {
             }
             onDismiss={onClose}
           />
+
+          {androidWebCheckoutUrl ? (
+            <Pressable
+              onPress={openWebCheckout}
+              style={[
+                styles.webCheckoutBtn,
+                { paddingBottom: 14 + insets.bottom },
+              ]}
+            >
+              <Feather name="external-link" size={16} color="#fff" />
+              <View style={styles.webCheckoutTextWrap}>
+                <ThemedText style={styles.webCheckoutTitle}>
+                  {t("paywall.web.cta")}
+                </ThemedText>
+                <ThemedText style={styles.webCheckoutSubtitle}>
+                  {t("paywall.web.subtitle")}
+                </ThemedText>
+              </View>
+            </Pressable>
+          ) : null}
         </View>
       </Modal>
     );
@@ -206,4 +250,19 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.3)",
   },
   previewRestoreText: { color: "#fff", fontSize: 14, fontWeight: "600" },
+  webCheckoutBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  webCheckoutTextWrap: { flex: 1 },
+  webCheckoutTitle: { color: "#fff", fontSize: 14, fontWeight: "700" },
+  webCheckoutSubtitle: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: 12,
+    marginTop: 2,
+  },
 });

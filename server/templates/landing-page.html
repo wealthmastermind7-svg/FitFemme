@@ -185,6 +185,44 @@
         width: 100%;
         height: 100%;
       }
+
+      .web-checkout-banner {
+        display: none;
+        margin: 0 0 24px;
+        padding: 18px 20px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #d41173 0%, #9b1058 100%);
+        color: #fff;
+        text-align: left;
+      }
+      .web-checkout-banner.visible {
+        display: block;
+      }
+      .web-checkout-banner h2 {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 4px;
+        color: #fff;
+      }
+      .web-checkout-banner p {
+        font-size: 13px;
+        margin: 0 0 12px;
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.4;
+      }
+      .web-checkout-banner a.web-checkout-cta {
+        display: inline-block;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        background: #fff;
+        color: #9b1058;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+      .web-checkout-banner a.web-checkout-cta:hover {
+        opacity: 0.92;
+      }
       .open-button {
         display: inline-block;
         padding: 12px 24px;
@@ -339,6 +377,19 @@
         <h1>APP_NAME_PLACEHOLDER</h1>
         <p class="subtitle">Preview this app on your phone</p>
 
+        <div class="web-checkout-banner" id="web-checkout-banner">
+          <h2 id="web-checkout-title">Subscribe on the web</h2>
+          <p id="web-checkout-copy">
+            Pay with Pix, OXXO, or local cards — no app store account needed.
+          </p>
+          <a
+            id="web-checkout-cta"
+            class="web-checkout-cta"
+            href="/subscribe?utm_source=landing&amp;utm_medium=web&amp;utm_campaign=latam_web_checkout"
+            >Subscribe on the web</a
+          >
+        </div>
+
         <div class="steps-container">
           <div class="step">
             <div class="step-header">
@@ -406,6 +457,78 @@
           (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
         const deepLink = "exps://EXPS_URL_PLACEHOLDER";
+
+        // ── LATAM web checkout banner ──────────────────────────────
+        // Surface the /subscribe CTA only to visitors who likely need
+        // to pay outside the app stores (Brazil → Pix, Mexico → OXXO
+        // / local cards). Everyone else keeps the unchanged Expo Go
+        // landing experience. Detection uses query overrides first
+        // (so support links like ?country=BR work), then the browser
+        // language. Timezone is a tie-breaker for users on English
+        // locales physically in BR/MX.
+        function detectLatam() {
+          const params = new URLSearchParams(window.location.search);
+          const qCountry = (params.get("country") || "").toUpperCase();
+          const qLang = (params.get("lang") || "").toLowerCase();
+          if (qCountry === "BR" || qLang === "pt") {
+            return { country: "BR", lang: "pt" };
+          }
+          if (qCountry === "MX" || qLang === "es") {
+            return { country: "MX", lang: "es" };
+          }
+          const nav = (navigator.language || "").toLowerCase();
+          if (nav.startsWith("pt")) return { country: "BR", lang: "pt" };
+          if (nav.startsWith("es-mx") || nav === "es-mx")
+            return { country: "MX", lang: "es" };
+          try {
+            const tz =
+              Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+            if (tz.startsWith("America/Sao_Paulo") ||
+                tz.startsWith("America/Bahia") ||
+                tz.startsWith("America/Fortaleza") ||
+                tz.startsWith("America/Recife") ||
+                tz.startsWith("America/Belem") ||
+                tz.startsWith("America/Manaus")) {
+              return { country: "BR", lang: "pt" };
+            }
+            if (tz.startsWith("America/Mexico_City") ||
+                tz.startsWith("America/Monterrey") ||
+                tz.startsWith("America/Cancun") ||
+                tz.startsWith("America/Tijuana") ||
+                tz.startsWith("America/Merida")) {
+              return { country: "MX", lang: "es" };
+            }
+          } catch (_) {}
+          return null;
+        }
+
+        const latam = detectLatam();
+        if (latam) {
+          const banner = document.getElementById("web-checkout-banner");
+          const cta = document.getElementById("web-checkout-cta");
+          const title = document.getElementById("web-checkout-title");
+          const copy = document.getElementById("web-checkout-copy");
+          if (latam.lang === "pt") {
+            title.textContent = "Assine pela web";
+            copy.textContent =
+              "Pague com Pix ou cartão local — sem precisar de conta na App Store.";
+            cta.textContent = "Assinar pela web";
+          } else if (latam.lang === "es") {
+            title.textContent = "Suscríbete por la web";
+            copy.textContent =
+              "Paga con OXXO o tarjeta local — sin cuenta de App Store.";
+            cta.textContent = "Suscribirme por la web";
+          }
+          const params = new URLSearchParams({
+            lang: latam.lang,
+            country: latam.country,
+            utm_source: "landing",
+            utm_medium: "web",
+            utm_campaign: "latam_web_checkout",
+          });
+          cta.href = "/subscribe?" + params.toString();
+          banner.classList.add("visible");
+        }
 
         // Adjust store buttons based on platform
         const appStoreBtn = document.getElementById("app-store-btn");

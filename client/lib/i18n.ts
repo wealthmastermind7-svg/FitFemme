@@ -441,6 +441,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "One-time, keep forever",
     "paywall.noResults": "No workouts found",
     "paywall.legal": "Subscriptions auto-renew unless cancelled. Manage in device settings.",
+    "paywall.web.cta": "Pay on the web with Pix or local cards",
+    "paywall.web.subtitle": "Opens fitfemme in your browser",
 
     // Workout Preview & Player
     "workout.preview": "Workout Preview",
@@ -988,6 +990,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "Pago único, acceso para siempre",
     "paywall.noResults": "No se encontraron entrenamientos",
     "paywall.legal": "Las suscripciones se renuevan automáticamente. Gestionar en ajustes del dispositivo.",
+    "paywall.web.cta": "Pagar por la web con OXXO o tarjeta local",
+    "paywall.web.subtitle": "Se abrirá fitfemme en tu navegador",
 
     // Workout Preview & Player
     "workout.preview": "Vista Previa de Entrenamiento",
@@ -1535,6 +1539,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "paywall.sub.lifetime": "Pagamento único, acesso para sempre",
     "paywall.noResults": "Nenhum treino encontrado",
     "paywall.legal": "As assinaturas são renovadas automaticamente. Gerencie nas configurações do dispositivo.",
+    "paywall.web.cta": "Pagar pela web com Pix ou cartão local",
+    "paywall.web.subtitle": "Abrirá fitfemme no seu navegador",
 
     // Workout Preview & Player
     "workout.preview": "Visualização do Treino",

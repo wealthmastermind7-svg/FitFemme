@@ -3,6 +3,7 @@
 // Copy mirrors server/templates/subscribe-success.html so users see a
 // consistent message between the success page and their inbox.
 import { getUncachableResendClient } from "./resend-client";
+import { buildSubscribeUrl } from "./subscribe-links";
 
 export type WelcomeLang = "en" | "es" | "pt";
 
@@ -176,8 +177,15 @@ export async function sendWelcomeEmail(
     return false;
   }
   const lang = langForCountry(args.country);
-  const base = publicBase();
-  const restoreUrl = `${base}/subscribe/restore?lang=${lang}`;
+  const restoreUrl = buildSubscribeUrl({
+    lang,
+    country: args.country ?? undefined,
+    path: "/subscribe/restore",
+    source: "email",
+    medium: "email",
+    campaign: "welcome_web_purchase",
+    baseUrl: publicBase() || undefined,
+  });
   const c = copyFor(lang, restoreUrl);
   // Inject the resolved restore URL into the template line.
   c.restoreLine = c.restoreLine.split("{LINK}").join(restoreUrl);
