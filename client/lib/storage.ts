@@ -33,6 +33,22 @@ export interface UserProfile {
   carbsGoal?: number;
   fatGoal?: number;
   healthScore?: number;
+  /**
+   * "Watch the change" gallery. Photos are persisted in the app sandbox
+   * (expo-file-system documentDirectory), never uploaded anywhere — that's
+   * the privacy promise the Progress screen makes to the user.
+   */
+  progressEntries?: ProgressEntry[];
+}
+
+export interface ProgressEntry {
+  id: string;
+  /** Local file:// URI inside the app's document directory. */
+  uri: string;
+  /** ISO date the photo was captured. */
+  dateISO: string;
+  /** Weight at the time of the photo, stored in kg for unit-agnostic compare. */
+  weightKg?: number;
 }
 
 /**

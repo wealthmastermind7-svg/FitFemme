@@ -402,6 +402,31 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>{t("progress.section")}</ThemedText>
+        <Pressable onPress={() => (navigation as any).navigate("Progress")}>
+          <GlassCard style={styles.settingsCard}>
+            <View style={styles.goalRow}>
+              <View style={styles.progressIconBubble}>
+                <Feather name="image" size={14} color={Colors.white} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <ThemedText style={styles.goalRowTitle}>{t("progress.title")}</ThemedText>
+                <ThemedText style={styles.goalRowSub}>
+                  {(profile.progressEntries?.length ?? 0) === 0
+                    ? t("progress.entryCardEmpty")
+                    : t("progress.entryCardCount").replace(
+                        "{n}",
+                        String(profile.progressEntries?.length ?? 0),
+                      )}
+                </ThemedText>
+              </View>
+              <Feather name="chevron-right" size={20} color={Colors.white60} />
+            </View>
+          </GlassCard>
+        </Pressable>
+      </View>
+
+      <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>{t("profile.account")}</ThemedText>
         <GlassCard style={styles.settingsCard}>
           {accountSettings.map((item) => renderSettingItem(item, true, false))}
@@ -682,6 +707,14 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+  },
+  progressIconBubble: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   goalRowTitle: {
     fontSize: 16,
