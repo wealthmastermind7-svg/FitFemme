@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.fitfemme.app"
+      "package": "com.cerolauto.fitfemme"
     },
     "web": {
       "output": "single",
@@ -44,6 +44,11 @@
     ],
     "experiments": {
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "acadc517-1351-4f49-b516-4826cadd1078"
+      }
     }
   }
 }

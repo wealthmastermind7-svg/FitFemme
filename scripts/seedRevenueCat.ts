@@ -31,7 +31,7 @@ const PROJECT_NAME = "Fit Femme";
 const APP_STORE_APP_NAME = "Fit Femme iOS";
 const APP_STORE_BUNDLE_ID = "com.fitfemme.app";
 const PLAY_STORE_APP_NAME = "Fit Femme Android";
-const PLAY_STORE_PACKAGE_NAME = "com.fitfemme.app";
+const PLAY_STORE_PACKAGE_NAME = "com.cerolauto.fitfemme";
 
 const ENTITLEMENT_IDENTIFIER = "pro";
 const ENTITLEMENT_DISPLAY_NAME = "Pro Access";

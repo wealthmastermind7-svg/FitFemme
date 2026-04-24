@@ -1,10 +1,10 @@
 // Fit Femme — marketing landing
 // Sends Download CTAs to the right store based on the visitor's device.
-// Bundle ID: com.fitfemme.app · Apple App ID: 6757249898
+// Android package: com.cerolauto.fitfemme · iOS bundle: com.fitfemme.app · Apple App ID: 6757249898
 (function () {
   var APP_STORE_URL = "https://apps.apple.com/nz/app/fit-femme/id6757249898";
   var PLAY_STORE_URL =
-    "https://play.google.com/store/apps/details?id=com.fitfemme.app";
+    "https://play.google.com/store/apps/details?id=com.cerolauto.fitfemme";
 
   function detectStore() {
     var ua = navigator.userAgent || "";
